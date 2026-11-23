@@ -49,13 +49,15 @@ export async function openItem(item, opts = {}) {
 export function itemCard(item, prog, { select = false, selected = false } = {}) {
   const pct = progressPct(prog);
   const meta = item.type === "manga" ? `${item.pages || "?"}p` : item.type === "audio" ? "Audio" : item.source?.kind === "epub" ? "EPUB" : item.source?.kind === "gutenberg" ? "Gutenberg" : "Book";
+  const hasCW = /\bContent warning\b|\bRated R\b|\bMature\b/i.test(item.description || item.blurb || "");
+  const baseBadge = item.type !== "manga" ? TYPE_LABEL[item.type] : item.link ? "AniList" : "";
   return `<div class="card ${selected ? "selected" : ""}" data-id="${esc(item.id)}">
     ${select ? `<input type="checkbox" class="select-box" data-sel="${esc(item.id)}" ${selected ? "checked" : ""} aria-label="Select ${esc(item.title)}">` : ""}
     <button class="icon-btn menu-btn" type="button" data-menu="${esc(item.id)}" aria-label="More for ${esc(item.title)}">${icon("more")}</button>
     <button class="card-hit" type="button" data-open="${esc(item.id)}" aria-label="Open ${esc(item.title)}"></button>
-    ${coverHtml(coverSrc(item), item.title, { pct, badge: item.type !== "manga" ? TYPE_LABEL[item.type] : item.link ? "AniList" : "" })}
+    ${coverHtml(coverSrc(item), item.title, { pct, badge: hasCW ? (baseBadge ? `${baseBadge} · CW` : "CW") : baseBadge })}
     <span class="card-t">${esc(item.title)}</span>
-    <span class="card-m">${esc(item.series || item.author || "")}${item.series || item.author ? " · " : ""}${meta}${pct ? ` · ${pct}%` : ""}${item.offline?.length ? " · offline" : ""}</span>
+    <span class="card-m">${esc(item.series || item.author || "")}${item.series || item.author ? " · " : ""}${meta}${pct ? ` · ${pct}%` : ""}${item.offline?.length ? " · offline" : ""}${hasCW ? " · CW" : ""}</span>
   </div>`;
 }
 
