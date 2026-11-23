@@ -33,6 +33,12 @@ export const TYPE_LABEL = { manga: "Manga", book: "Book", audio: "Audiobook" };
 
 export async function openItem(item, opts = {}) {
   if (!item) return toast("That isn't on your shelf any more.");
+  const desc = String(item.description || item.blurb || "");
+  const cw = desc.match(/Content warning[^.]*\./i)?.[0] || (/\bRated R\b|\bMature\b/i.test(desc) ? desc : "");
+  if (cw && !sessionStorage.getItem("kitsune.cw." + item.id)) {
+    if (!confirm(`${item.title}\n\n${cw}\n\nContinue to this title?`)) return;
+    try { sessionStorage.setItem("kitsune.cw." + item.id, "1"); } catch {}
+  }
   if (item.source?.kind === "shelf") { location.hash = "item/" + encodeURIComponent(item.id); return; }
   if (item.type === "audio") return (await import("../readers/audio.js")).playItem(item, opts);
   if (item.type === "book") return (await import("../readers/book.js")).openBook(item, opts);
