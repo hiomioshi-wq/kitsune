@@ -80,6 +80,7 @@ const routes = {
   settings: () => import("./views/settings.js"),
   sanctuary: () => import("./views/sanctuary.js"),
   constellations: () => import("./views/constellations.js"),
+  mythic: () => import("./xmas/mythic.js"),
 };
 
 const KIDS_HIDDEN = new Set(["discover", "manga", "ai", "feeds"]);
