@@ -302,7 +302,7 @@ async function go(input, { push = true, newTab: inNew = false, fresh = false } =
   t.data = r;
   if (!cacheHit) { try { const ch = await cookieHeaders(url); WCache.put(url, r, { cookied: !!ch["X-KB-Cookie"], priv: settings.incognito }); } catch {} }
   if (r.truncated) toast("This page is very long: showing its first 4 MB.");
-  if ((r.status === 404 || r.status === 410) && !/web\.archive\.org/.test(r.url)) {
+  if ((r.status === 404 || r.status === 410) && !settings.incognito && !/web\.archive\.org/.test(r.url)) {
     // A page that's gone: offer the Internet Archive's last copy, if it has one.
     fetch("/api/browse?url=" + encodeURIComponent("https://archive.org/wayback/available?url=" + encodeURIComponent(url))).then((x) => x.json()).then((j) => {
       const snap = JSON.parse(j.text || "{}").archived_snapshots?.closest; if (!snap?.available || T() !== t) return;
@@ -1451,7 +1451,7 @@ async function instantAnswer(q, box) {
   const my = ++iaSeq;
   { const quick = quickAnswer(q); if (quick) { await null; if (my !== iaSeq || box.hidden) return; box.insertAdjacentHTML("afterbegin", `<div class="kb-answer kb-def"><span><em>${esc(quick.kind)}</em><strong>${esc(quick.value)}</strong><small>${esc(quick.detail)}</small></span><button type="button" class="btn btn-sm" data-copyans="${esc(quick.value)}">Copy</button></div>`); box.querySelector("[data-copyans]")?.addEventListener("mousedown", (e) => { e.preventDefault(); navigator.clipboard?.writeText(e.target.dataset.copyans).then(() => toast("Copied.")); }); return; } }
   setTimeout(() => { if (my !== iaSeq || box.hidden) return; import("../webanswers.js").then(async (A) => { const r = await A.answer(q).catch(() => null); if (r && my === iaSeq && !box.hidden) box.insertAdjacentHTML("afterbegin", `<div class="kb-answer kb-def"><span><em>${esc(r.kind)}</em><strong>${esc(r.value)}</strong><small>${esc(r.detail)}</small></span></div>`); }).catch(() => {}); }, 400);
-  if (/^https?:|\.[a-z]{2,}(\/|$)|@/.test(q) || q.split(/\s+/).length > 5 || q.length < 3) return;
+  if (settings.incognito || /^https?:|\.[a-z]{2,}(\/|$)|@/.test(q) || q.split(/\s+/).length > 5 || q.length < 3) return;
   const title = (q[0].toUpperCase() + q.slice(1)).replace(/\s+/g, "_"); // Wikipedia only folds the first letter
   const [wiki, dict] = await Promise.all([
     E.preview("https://en.wikipedia.org/wiki/" + encodeURIComponent(title)).catch(() => null),

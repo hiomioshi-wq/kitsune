@@ -71,8 +71,10 @@ export const adapters = [
   async (u) => {
     if (u.hostname !== "t.me" && u.hostname !== "telegram.me") return null; const m = u.pathname.match(/^\/(?:s\/)?([A-Za-z]\w{3,})\/?(\d+)?$/); if (!m || /^(joinchat|addstickers|share|proxy|socks|iv)$/i.test(m[1])) return null;
     const j = await get(`https://t.me/s/${m[1]}${m[2] ? "/" + m[2] : ""}`); if (!j.html || !/tgme_widget_message/.test(j.html)) return null;
-    const doc = new DOMParser().parseFromString(j.html, "text/html"); doc.querySelectorAll("script,iframe,object,embed").forEach((n) => n.remove()); doc.querySelectorAll("*").forEach((el) => { for (const a of [...el.attributes]) if (/^on/i.test(a.name)) el.removeAttribute(a.name); });
-    return { html: doc.body.innerHTML, url: j.url || u.href };
+    const d = new DOMParser().parseFromString(j.html, "text/html");
+    d.querySelectorAll("script,iframe,object,embed").forEach((n) => n.remove());
+    d.querySelectorAll("*").forEach((el) => { for (const a of [...el.attributes]) if (/^on/i.test(a.name)) el.removeAttribute(a.name); });
+    return { html: d.documentElement.outerHTML, url: j.url || u.href };
   },
   // ---- YouTube playlists ----
   async (u) => {
