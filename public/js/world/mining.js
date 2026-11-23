@@ -98,7 +98,7 @@ export function buildMineFloor(depth) {
 
   g[12 * MW + 5] = 3; // Lift up at spawn
   let lx = cx, ly = cy;
-  if (Math.hypot(lx - 5, ly - 12) < 8) { lx = MW - 6; ly = 12; carve(lx, ly, 2); }
+  if (Math.hypot(lx - 5, ly - 12) < 8) { lx = MW - 6; ly = 12; for (let x = Math.min(cx, lx); x <= Math.max(cx, lx); x++) carve(x, ly, 2); }
   g[ly * MW + lx] = 2; // Ladder down
 
   const pool = VEINS.filter((v) => depth >= v.minD);
