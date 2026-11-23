@@ -196,9 +196,9 @@ export async function render(view, _n, params = []) {
     panel(`Foxfire Goods · ${s.mon} mon`, tabsHtml(tabs, tab) + body, (p) => {
       $$("[data-t]", p).forEach((b) => (b.onclick = () => shop(b.dataset.t)));
       const swap = $("#wd-swap", p); if (swap) swap.onclick = () => { if (s.mon < 10 || s.win.swap >= 100) return; const got = earn(5, { bonus: false }); if (!got) return toast("Snowbells are paused right now."); s.mon -= 10; s.win.swap += got; save(); hud(); ping("choice"); shop("swap"); };
-      const claim = $("#wd-claim", p); if (claim) claim.onclick = () => { s.bank = earned; s.mon += due; save(); hud(); ping("done"); shop("bank"); };
-      $$("[data-hat]", p).forEach((b) => (b.onclick = () => { const h = HATS.find((x) => x[0] === b.dataset.hat); if (!s.hats.includes(h[0])) { s.mon -= h[2]; s.hats.push(h[0]); s.hat = h[0]; ping("done"); } else s.hat = s.hat === h[0] ? "" : h[0]; save(); hud(); shop("hats"); }));
-      $$("[data-f]", p).forEach((b) => (b.onclick = () => { const f = FURNITURE.find((x) => x[0] === b.dataset.f); s.mon -= f[2]; s.furn[f[0]] = (s.furn[f[0]] || 0) + 1; save(); hud(); ping("choice"); shop("furn"); }));
+      const claim = $("#wd-claim", p); if (claim) claim.onclick = () => { const curDue = Math.max(0, earned - s.bank); if (!curDue) return; s.bank = earned; s.mon += curDue; save(); hud(); ping("done"); shop("bank"); };
+      $$("[data-hat]", p).forEach((b) => (b.onclick = () => { const h = HATS.find((x) => x[0] === b.dataset.hat); if (!s.hats.includes(h[0])) { if (s.mon < h[2]) return; s.mon -= h[2]; s.hats.push(h[0]); s.hat = h[0]; ping("done"); } else s.hat = s.hat === h[0] ? "" : h[0]; save(); hud(); shop("hats"); }));
+      $$("[data-f]", p).forEach((b) => (b.onclick = () => { const f = FURNITURE.find((x) => x[0] === b.dataset.f); if (!f || s.mon < f[2]) return; s.mon -= f[2]; s.furn[f[0]] = (s.furn[f[0]] || 0) + 1; save(); hud(); ping("choice"); shop("furn"); }));
     });
   }
   function house(sel) {

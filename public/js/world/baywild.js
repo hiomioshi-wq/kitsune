@@ -254,7 +254,7 @@ const mmss = (ms) => { const s = Math.max(0, Math.ceil(ms / 1000)); return `${Ma
 function openGift(b, tier) {
   const w = ensureWild(b), r = Math.random();
   const shells = [60, 180, 420][tier], tix = [10, 25, 60][tier], jackpot = [200, 600, 1500][tier];
-  if (tier === 2 && r < .02 && !w.plush.golden) return { k: "plush", id: "golden" };
+  if (tier === 2 && r < .02 && !w.plush.golden) { w.plush.golden = 1; return { k: "plush", id: "golden" }; }
   const q = r;
   if (q < .32) { const v = shells + Math.floor(Math.random() * 40); b.shells += v; b.t.earned = (b.t.earned || 0) + v; return { k: "shells", v }; }
   if (q < .48) { b.tickets = (b.tickets || 0) + tix; return { k: "tickets", v: tix }; }

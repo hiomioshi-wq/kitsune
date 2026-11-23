@@ -109,11 +109,13 @@ async function blind(b) {
 }
 
 function clash(b, off) {
+  let curKey = null;
   const start = async (size) => {
+    if (curKey) document.removeEventListener("keydown", curKey, true);
     const list = shuffle(pool()).slice(0, size); if (list.length < 2) { b.innerHTML = `<p class="muted">Add at least two titles.</p>`; return; }
     let round = list, next = [], i = 0;
     const key = (e) => { if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return; if (!$("[data-w]", b)) return; e.preventDefault(); e.stopPropagation(); win(e.key === "ArrowLeft" ? 0 : 1); };
-    document.addEventListener("keydown", key, true); off.push(() => document.removeEventListener("keydown", key, true));
+    curKey = key; document.addEventListener("keydown", key, true); off.push(() => document.removeEventListener("keydown", key, true));
     const win = (w) => { next.push(round[i + w]); i += 2; if (i === round.length - 1) { next.push(round[i]); i += 1; } if (i >= round.length) { round = next; next = []; i = 0; } if (round.length === 1) champ(round[0]); else show(); };
     const show = () => { const a = round[i], z = round[i + 1], name = round.length === 2 ? "Final" : round.length <= 4 ? "Semi-final" : round.length <= 8 ? "Quarter-final" : `Round of ${round.length}`; b.innerHTML = `<div class="cl-head"><span class="pill">${name}</span><span class="muted">Match ${Math.floor(i / 2) + 1} of ${Math.floor(round.length / 2)}</span></div><div class="cl-arena">${[a, z].map((e, n) => `<button class="cl-card" type="button" data-w="${n}" aria-label="Choose ${esc(e.title)}"><span class="cl-cv">${cover(e)}</span><strong>${esc(e.title)}</strong></button>`).join(`<span class="cl-vs">VS</span>`)}</div><p class="hint">Click one, or press the left or right arrow.</p>`; $$("[data-w]", b).forEach((x) => (x.onclick = () => win(+x.dataset.w))); };
     const champ = async (e) => { const wins = (await kvGet("clashWins", {})) || {}; wins[e.id] = (wins[e.id] || 0) + 1; kvSet("clashWins", wins); document.dispatchEvent(new CustomEvent("kitsune:done")); b.innerHTML = `<div class="cl-champ"><p class="eyebrow">Champion</p><div class="cl-cv">${cover(e)}</div><h2>${esc(e.title)}</h2><p class="muted">${wins[e.id] === 1 ? "First title win." : `${wins[e.id]} title wins.`}</p><button class="btn btn-accent" type="button" id="cl-read">Read it</button> <button class="btn" type="button" id="cl-again">Play again</button></div>`; $("#cl-read", b).onclick = () => openEntry(e); $("#cl-again", b).onclick = menu; };
