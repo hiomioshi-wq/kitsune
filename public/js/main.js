@@ -78,6 +78,7 @@ const routes = {
   search: () => import("./views/search.js"),
   own: () => import("./views/own.js"),
   settings: () => import("./views/settings.js"),
+  sanctuary: () => import("./views/sanctuary.js"),
 };
 
 const KIDS_HIDDEN = new Set(["discover", "manga", "ai", "feeds"]);
