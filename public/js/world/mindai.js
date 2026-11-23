@@ -262,7 +262,7 @@ export async function speakAs(who, userText, stateSummary = "") {
 
   if (!provider) {
     const list = FALLBACKS[key] || [
-      `${typeof who === "object" && who?.lines?.[0] ? who.lines[0] : "Keep your wits about you out here."} [REWARD:10]`,
+      `${typeof who === "object" && who?.lines?.[0] ? who.lines[0] : "Keep your wits about you out here."}`,
       "If you're heading across the map, take this with you. [HEAL:4] [TASK:Explore the next area]",
     ];
     const picked = list[Math.floor(Math.random() * list.length)];
@@ -279,6 +279,6 @@ export async function speakAs(who, userText, stateSummary = "") {
       return { ...parsed, provider };
     }
   } catch {}
-  const list = FALLBACKS[key] || [`${typeof who === "object" && who?.lines?.[0] ? who.lines[0] : "Good luck out there."} [REWARD:10]`];
+  const list = FALLBACKS[key] || [`${typeof who === "object" && who?.lines?.[0] ? who.lines[0] : "Good luck out there."}`];
   return { ...parseVoiceCmds(list[Math.floor(Math.random() * list.length)]), provider: "offline" };
 }
