@@ -55,7 +55,10 @@ async function viaWordPress(u) {
     let list; try { list = await json(`${u.origin}/wp-json/wp/v2/${type}?slug=${encodeURIComponent(slug)}&_embed=author`); } catch { return null; }
     const p = Array.isArray(list) && list[0]; if (!p?.content?.rendered) continue;
     const t = p.title.rendered.replace(/<[^>]+>/g, "");
-    return page(t, `<h1>${p.title.rendered}</h1><div class="meta">${esc(p._embedded?.author?.[0]?.name || "")} · ${esc(when(p.date))}</div>${p.content.rendered}`, `Shown from the site's WordPress REST API.`, u.origin + "/");
+    const clean = new DOMParser().parseFromString(p.content.rendered, "text/html");
+    clean.querySelectorAll("script,iframe,object,embed").forEach((n) => n.remove());
+    clean.querySelectorAll("*").forEach((el) => { for (const a of [...el.attributes]) if (/^on/i.test(a.name)) el.removeAttribute(a.name); });
+    return page(t, `<h1>${esc(t)}</h1><div class="meta">${esc(p._embedded?.author?.[0]?.name || "")} · ${esc(when(p.date))}</div>${clean.body.innerHTML}`, `Shown from the site's WordPress REST API.`, u.origin + "/");
   }
   return null;
 }

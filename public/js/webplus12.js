@@ -76,6 +76,7 @@ function selectionReader(getSel, t) {
   const sel = getSel(); if (!sel?.rangeCount || sel.isCollapsed) return toast("Select the part of the page you want to read first.");
   const box = document.createElement("div"); for (let i = 0; i < sel.rangeCount; i++) box.append(sel.getRangeAt(i).cloneContents());
   box.querySelectorAll("script,style,iframe,form,button,input,nav").forEach((n) => n.remove());
+  box.querySelectorAll("*").forEach((el) => { for (const a of [...el.attributes]) if (/^on/i.test(a.name)) el.removeAttribute(a.name); });
   const m = modal({ title: "Just this part", wide: true, body: `<p class="muted" style="margin-top:0">${esc(t.title || "")} · ${esc(hostOf(t.url))}</p><article id="sr-a" style="font:18px/1.7 Georgia,serif;max-width:40rem;margin:0 auto">${box.innerHTML}</article><p style="margin-top:14px"><button class="btn" type="button" id="sr-p">Print or save as PDF</button> <button class="btn" type="button" id="sr-c">Copy text</button></p>` });
   m.root.querySelectorAll("#sr-a img").forEach((i) => { i.style.maxWidth = "100%"; i.style.height = "auto"; });
   $("#sr-c", m.root).onclick = () => navigator.clipboard?.writeText($("#sr-a", m.root).innerText).then(() => toast("Copied."));

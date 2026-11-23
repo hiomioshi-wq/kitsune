@@ -41,6 +41,7 @@ export function items(c) {
       try { await fixDoc(d, abs, false); } catch {}
       try { fixDoc2(d, abs); } catch {}
       const src = grab(d); src.querySelectorAll("script,style,iframe,form,nav,header,footer,aside,noscript,link,meta,[class*=cookie],[class*=consent],[class*=newsletter]").forEach((n) => n.remove());
+      src.querySelectorAll("*").forEach((el) => { for (const a of [...el.attributes]) if (/^on/i.test(a.name)) el.removeAttribute(a.name); });
       src.querySelectorAll("[href]").forEach((a) => a.setAttribute("href", abs(a.getAttribute("href")) || "#")); src.querySelectorAll("[src]").forEach((a) => a.setAttribute("src", abs(a.getAttribute("src")) || ""));
       src.querySelectorAll("[srcset]").forEach((a) => a.removeAttribute("srcset"));
       const sec = document.createElement("section"); sec.className = "kb-more"; sec.style.cssText = "margin-top:32px;padding-top:16px;border-top:3px double #8888";

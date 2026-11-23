@@ -60,6 +60,7 @@ export function createArena(o) {
         st.beat[id] = (st.beat[id] || 0) + 1;
         st.best[id] = Math.min(st.best[id] || 1e9, Math.round(secs));
         if (first) {
+          s.mon += 300;
           trophy(B.hat, B.furn);
           addRenown(150);
           toast(`Victory! Won ${B.hatName} & ${B.furnName}! (+300 mon)`);

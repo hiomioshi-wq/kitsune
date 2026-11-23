@@ -722,7 +722,7 @@ function menuItems() {
     { label: AS.on ? "Stop auto-scroll" : "Auto-scroll (hands-free reading)", icon: "play", run: autoScroll },
     { label: "Pop out video (picture-in-picture)", icon: "expand", run: popOutVideo },
     { label: "Video speed…", icon: "play", run: videoSpeed },
-    { label: localStorage.getItem("kitsune.webDarkNight") === "1" ? "Dark pages at night: on" : "Dark pages at night: off", icon: "moon", run: () => { const on = localStorage.getItem("kitsune.webDarkNight") !== "1"; try { localStorage.setItem("kitsune.webDarkNight", on ? "1" : "0"); } catch {} toast(on ? "Pages turn dark at night (follows Settings → Dark at night, or 8 pm to 7 am)." : "Pages keep their own colours at night."); go(T().url, { push: false }); } },
+    { label: localStorage.getItem("kitsune.webDarkNight") === "1" ? "Dark pages at night: on" : "Dark pages at night: off", icon: "moon", run: () => { const on = localStorage.getItem("kitsune.webDarkNight") !== "1"; try { localStorage.setItem("kitsune.webDarkNight", on ? "1" : "0"); } catch {} toast(on ? "Pages turn dark at night (follows Settings → Dark at night, or 8 pm to 7 am)." : "Pages keep their own colours at night."); if (T().url) go(T().url, { push: false }); } },
     { label: "QR code for this page", icon: "grid", run: qrDialog },
     { label: "Site settings…", icon: "sliders", run: siteSettings },
     { label: "Print or save as PDF", icon: "download", run: printPage },
@@ -748,7 +748,7 @@ function menuItems() {
     { label: "Daemons (watch pages, feeds, scripts)…", icon: "clock", run: async () => (await import("../daemons.js")).manager(T().url || "") },
     { label: "Extensions: export or import…", icon: "download", run: extensionsHub },
     { label: "Page info", icon: "list", run: pageInfo },
-    { label: mobileFor(T().url || "") ? "Request the desktop site" : "Request the mobile site", icon: "sliders", run: () => { setMobile(T().url || "", !mobileFor(T().url || "")); go(T().url, { push: false }); } },
+    { label: mobileFor(T().url || "") ? "Request the desktop site" : "Request the mobile site", icon: "sliders", run: () => { setMobile(T().url || "", !mobileFor(T().url || "")); if (T().url) go(T().url, { push: false }); } },
     { label: "Save to my library", icon: "plus", run: saveToLibrary },
     { label: "Read later (S)", icon: "bookmark", run: readLater },
     { label: "Make a book from my reading list…", icon: "book", run: makeBookDialog },
@@ -1488,7 +1488,8 @@ function pageFiles(root) {
   for (const a of root.querySelectorAll("a[href]")) {
     const u = a.href; if (!/^https?:/.test(u) || !FILE_EXT.test(u.split("?")[0] + "?") || seen.has(u)) continue;
     seen.add(u);
-    const name = decodeURIComponent(u.split("?")[0].split("/").pop());
+    const rawName = u.split("?")[0].split("/").pop();
+    let name = rawName; try { name = decodeURIComponent(rawName); } catch {}
     out.push({ url: u, name, ext: name.split(".").pop().toLowerCase(), label: a.textContent.trim().replace(/\s+/g, " ").slice(0, 80) || name });
   }
   return out;
@@ -1803,7 +1804,8 @@ function suggestLive(root, t) {
 // =====================================================================
 // v76: optional cookies, kept on this device, per site, off by default
 // =====================================================================
-const regOf = (h) => h.split(".").slice(-2).join(".");
+const MULTI_PSL = /^(co|com|org|net|edu|gov|ac)\.[a-z]{2}$|^(github\.io|gitlab\.io|vercel\.app|netlify\.app|herokuapp\.com|appspot\.com|pages\.dev)$/i;
+const regOf = (h) => { const p = h.toLowerCase().split("."); return p.length >= 3 && MULTI_PSL.test(p.slice(-2).join(".")) ? p.slice(-3).join(".") : p.slice(-2).join("."); };
 const ckSites = () => { try { return new Set(JSON.parse(localStorage.getItem("kitsune.cookieSites") || "[]")); } catch { return new Set(); } };
 const cookiesAllowed = (url) => { try { return !settings.incognito && ckSites().has(regOf(new URL(url).hostname)); } catch { return false; } };
 function setCookiesAllowed(url, on) { const s = ckSites(), r = regOf(new URL(url).hostname); on ? s.add(r) : s.delete(r); try { localStorage.setItem("kitsune.cookieSites", JSON.stringify([...s])); } catch {} }
@@ -2061,9 +2063,9 @@ function viewText(t, r) {
 // A small, safe Markdown renderer (headings, lists, quotes, code, links, emphasis).
 // With a base address, relative links and images resolve against the page that served the Markdown.
 function markdown(md, base = "") {
-  const rel = (u) => { if (!base || /^(https?:|mailto:|data:|#)/i.test(u)) return u; try { return new URL(u, base).href; } catch { return u; } };
+  const rel = (u, img = false) => { let s = u; if (base && !/^(https?:|mailto:|data:|#)/i.test(u)) { try { s = new URL(u, base).href; } catch { return "#"; } } return (img ? /^(https?:|data:image\/|#)/i : /^(https?:|mailto:|#)/i).test(s) ? s : "#"; };
   const inline = (s) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>").replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/(^|[^*])\*(?!\s)(.+?)\*/g, "$1<em>$2</em>")
-    .replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, (_, a, u) => `<img alt="${a}" src="${esc(rel(u))}" referrerpolicy="no-referrer">`).replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, a, u) => `<a href="${esc(rel(u))}">${a}</a>`);
+    .replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, (_, a, u) => `<img alt="${a}" src="${esc(rel(u, true))}" referrerpolicy="no-referrer">`).replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, a, u) => `<a href="${esc(rel(u))}">${a}</a>`);
   const out = []; let list = null, code = null;
   for (const line of String(md).split("\n")) {
     if (/^```/.test(line)) { if (code) { out.push(`<pre><code>${esc(code.join("\n"))}</code></pre>`); code = null; } else code = []; continue; }

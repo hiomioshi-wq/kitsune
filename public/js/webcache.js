@@ -32,7 +32,7 @@ export function prefetch(url, fetcher) {
   const k = key(url);
   if (store.has(k) || queued.has(k) || running >= 2 || SKIP.test(url) || localStorage.getItem("kitsune.webNoPrefetch") === "1") return;
   queued.add(k); running++;
-  Promise.resolve(fetcher(url)).then((r) => { if (r && r.status < 400 && (r.html || r.text)) { put(url, r); warm(r); } }).catch(() => {}).finally(() => { running--; queued.delete(k); });
+  Promise.resolve(fetcher(url)).then((r) => { if (r && r.status < 400 && (r.html || r.text) && !r.private && !r.signedIn) { put(url, r); warm(r); } }).catch(() => {}).finally(() => { running--; queued.delete(k); });
 }
 export function watchLinks(root, base, fetcher, sameSiteOnly = true) {
   if (!root || root.__kbPrefetch) return; root.__kbPrefetch = true;
@@ -95,7 +95,7 @@ export function persist() {
   if (!dirty) return; dirty = false;
   try {
     const out = []; let total = 0;
-    for (const [u, e] of [...store.entries()].reverse()) { if (out.length >= SAVE_PAGES || total + e.bytes > SAVE_BYTES) break; if (e.r.html && e.r.html.length > 3_000_000) continue; out.push({ u, at: e.at, r: { url: e.r.url, status: e.r.status, kind: e.r.kind, html: e.r.html, text: e.r.text, ctype: e.r.ctype, adapted: e.r.adapted } }); total += e.bytes; }
+    for (const [u, e] of [...store.entries()].reverse()) { if (out.length >= SAVE_PAGES || total + e.bytes > SAVE_BYTES) break; if (e.r.private || e.r.signedIn) continue; if (e.r.html && e.r.html.length > 3_000_000) continue; out.push({ u, at: e.at, r: { url: e.r.url, status: e.r.status, kind: e.r.kind, html: e.r.html, text: e.r.text, ctype: e.r.ctype, adapted: e.r.adapted } }); total += e.bytes; }
     kvSet("webPageStore", out);
   } catch {}
 }
