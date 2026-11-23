@@ -35,7 +35,8 @@ export async function openItem(item, opts = {}) {
   if (!item) return toast("That isn't on your shelf any more.");
   const desc = String(item.description || item.blurb || "");
   const cw = desc.match(/Content warning[^.]*\./i)?.[0] || (/\bRated R\b|\bMature\b/i.test(desc) ? desc : "");
-  if (cw && !sessionStorage.getItem("kitsune.cw." + item.id)) {
+  const gateOn = localStorage.getItem("kitsune.cwGate") !== "0";
+  if (cw && gateOn && !sessionStorage.getItem("kitsune.cw." + item.id)) {
     if (!confirm(`${item.title}\n\n${cw}\n\nContinue to this title?`)) return;
     try { sessionStorage.setItem("kitsune.cw." + item.id, "1"); } catch {}
   }
@@ -49,7 +50,10 @@ export async function openItem(item, opts = {}) {
 export function itemCard(item, prog, { select = false, selected = false } = {}) {
   const pct = progressPct(prog);
   const meta = item.type === "manga" ? `${item.pages || "?"}p` : item.type === "audio" ? "Audio" : item.source?.kind === "epub" ? "EPUB" : item.source?.kind === "gutenberg" ? "Gutenberg" : "Book";
-  const hasCW = /\bContent warning\b|\bRated R\b|\bMature\b/i.test(item.description || item.blurb || "");
+  const desc = String(item.description || item.blurb || "");
+  const muted = (localStorage.getItem("kitsune.mutedCW") || "").split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
+  if (localStorage.getItem("kitsune.hideMutedCW") === "1" && muted.length && muted.some((k) => desc.toLowerCase().includes(k))) return "";
+  const hasCW = /\bContent warning\b|\bRated R\b|\bMature\b/i.test(desc);
   const baseBadge = item.type !== "manga" ? TYPE_LABEL[item.type] : item.link ? "AniList" : "";
   return `<div class="card ${selected ? "selected" : ""}" data-id="${esc(item.id)}">
     ${select ? `<input type="checkbox" class="select-box" data-sel="${esc(item.id)}" ${selected ? "checked" : ""} aria-label="Select ${esc(item.title)}">` : ""}

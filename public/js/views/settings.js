@@ -16,6 +16,14 @@ export async function render(view, _name, params) {
   view.innerHTML = `
     <div class="page-head"><div><p class="eyebrow">Make it yours</p><h1 class="h1">Settings</h1></div></div>
     <div class="settings">
+      <div class="panel"><h3 class="h3">Content Safety &amp; Trigger Filter</h3>
+        <div class="setting"><div><strong>Content-warning confirmation</strong><p>Ask before opening titles that carry a Content Warning, Mature, or Rated R label.</p></div>
+          <label class="check" style="margin:0"><input type="checkbox" id="s-cw-gate" ${localStorage.getItem("kitsune.cwGate") !== "0" ? "checked" : ""}> On</label></div>
+        <div class="setting"><div><strong>Muted trigger keywords</strong><p>Comma-separated topics to flag or hide (e.g. <code>self-harm, gore, suicide</code>).</p></div>
+          <input class="field" id="s-cw-muted" type="text" value="${esc(localStorage.getItem("kitsune.mutedCW") || "")}" placeholder="e.g. self-harm, gore" style="max-width:260px"></div>
+        <div class="setting"><div><strong>Hide muted titles from shelves</strong><p>Hide cards whose content warning matches your muted keywords.</p></div>
+          <label class="check" style="margin:0"><input type="checkbox" id="s-cw-hide" ${localStorage.getItem("kitsune.hideMutedCW") === "1" ? "checked" : ""}> Hide</label></div>
+      </div>
       <div class="panel"><h3 class="h3">Appearance</h3>
         <div class="setting"><div><strong>Theme studio</strong><p>${/:/.test(settings.theme) ? "You're using a custom theme. " : ""}Presets like Washi paper and Akihabara neon, your own colours and fonts, cursors, and shareable theme codes.</p></div>
           <a class="btn btn-accent" href="#studio">${icon("sliders")}Open theme studio</a></div>
@@ -191,6 +199,9 @@ export async function render(view, _name, params) {
   $("#s-theme", view).onclick = (e) => { const x = e.target.closest("[data-v]"); if (!x) return; settings.theme = x.dataset.v; saveSettings(); $$("#s-theme button", view).forEach((y) => y.setAttribute("aria-pressed", String(y === x))); };
   { const night = () => { settings.nightSchedule = { on: $("#s-night", view).checked, from: $("#s-night-from", view).value || "20:00", to: $("#s-night-to", view).value || "07:00" }; saveSettings(); import("../store.js").then((S) => S.applyTheme()); };
     ["#s-night", "#s-night-from", "#s-night-to"].forEach((id) => $(id, view)?.addEventListener("change", night)); }
+  $("#s-cw-gate", view)?.addEventListener("change", (e) => { try { localStorage.setItem("kitsune.cwGate", e.target.checked ? "1" : "0"); } catch {} toast("Saved."); });
+  $("#s-cw-muted", view)?.addEventListener("change", (e) => { try { localStorage.setItem("kitsune.mutedCW", e.target.value); } catch {} toast("Muted keywords updated."); });
+  $("#s-cw-hide", view)?.addEventListener("change", (e) => { try { localStorage.setItem("kitsune.hideMutedCW", e.target.checked ? "1" : "0"); } catch {} toast("Saved."); });
   $("#s-accent", view).onclick = (e) => { const x = e.target.closest("[data-v]"); if (!x) return; settings.accent = x.dataset.v; saveSettings(); $$("#s-accent .swatch", view).forEach((y) => y.setAttribute("aria-pressed", String(y === x))); };
   import("./cursorpicker.js").then((m) => { const b = $("#s-cursors", view); if (b) m.mountCursorPicker(b); }).catch(() => {});
   import("./decorpicker.js").then((m) => { const b = $("#s-decor", view); if (b) m.mountDecor(b); }).catch(() => {});
