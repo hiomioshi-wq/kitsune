@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="600" height="900">
+    <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a1020"/><stop offset=".6" stop-color="#170a12"/><stop offset="1" stop-color="#050406"/></linearGradient></defs>
+    <rect width="600" height="900" fill="url(#g)"/><path d="M 300 480 C 250 480 230 530 235 580 C 240 640 270 680 300 680 C 330 680 360 640 365 580 C 370 530 350 480 300 480 Z" fill="#2a1a30" stroke="#5ad8ff" stroke-width="3"/>
+    <circle cx="275" cy="575" r="12" fill="#5ad8ff"/><circle cx="325" cy="575" r="12" fill="#5ad8ff"/>
+    <path d="M 220 720 Q 300 680 380 720 L 400 820 L 200 820 Z" fill="#2a1a30" stroke="#5ad8ff" stroke-width="3"/>
+    <circle cx="300" cy="755" r="10" fill="#9af0ff"/><circle cx="300" cy="755" r="22" fill="none" stroke="#5ad8ff" stroke-width="2" opacity=".5"/>
+    <path d="M 120 840 Q 300 800 480 840" stroke="#6a3a20" stroke-width="20" fill="none"/>
+    <text x="300" y="120" text-anchor="middle" font-size="26" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="800" fill="#e8d9c4" letter-spacing="10">INCARNATE</text>
+    <text x="300" y="150" text-anchor="middle" font-size="16" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" fill="#5ad8ff" letter-spacing="8">THE CORRUPTION SAGA</text>
+    <text x="300" y="300" text-anchor="middle" font-size="20" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="700" fill="#5ad8ff" letter-spacing="5">A SPINOFF</text>
+    <text x="300" y="360" text-anchor="middle" font-size="54" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="900" fill="#f5ece0"><tspan x="300" dy="0">Remade</tspan></text>
+  </svg>

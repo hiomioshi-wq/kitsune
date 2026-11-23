@@ -1,0 +1,876 @@
+{
+ "blackwood:Yuki": {
+  "st": 12,
+  "h": "#2a2430",
+  "c": "#4a5670",
+  "a": "#d7dbe6",
+  "f": "cardigan",
+  "x": [
+   "bags"
+  ],
+  "sk": 1,
+  "e": "#4b3a2e"
+ },
+ "blackwood:Kevin": {
+  "k": "ghost",
+  "st": 1,
+  "h": "#6e5a48",
+  "c": "#7a8296",
+  "a": "#e3b04b",
+  "f": "smart",
+  "x": [
+   "glasses",
+   "badge"
+  ],
+  "sk": 1,
+  "e": "#5e6c7c"
+ },
+ "blackwood:Kevina": {
+  "k": "ghost",
+  "st": 9,
+  "h": "#6e5a48",
+  "c": "#7a8296",
+  "a": "#b49ae0",
+  "f": "cardigan",
+  "x": [
+   "glasses"
+  ],
+  "sk": 1,
+  "e": "#5e6c7c"
+ },
+ "blackwood:Lux": {
+  "k": "",
+  "st": 2,
+  "h": "#efe6c8",
+  "c": "#f2efe8",
+  "a": "#c79a2e",
+  "f": "fur",
+  "x": [
+   "earrings"
+  ],
+  "sk": 0,
+  "e": "#6d5bb0"
+ },
+ "blackwood:Velvette": {
+  "k": "",
+  "st": 13,
+  "h": "#17151a",
+  "c": "#1d1c22",
+  "a": "#c8ccd6",
+  "f": "leather",
+  "x": [
+   "chain"
+  ],
+  "sk": 1,
+  "e": "#c8ccd6"
+ },
+ "blackwood:Grim Reaper": {
+  "k": "",
+  "o": 1,
+  "st": 14,
+  "h": "#e6e4de",
+  "c": "#55565e",
+  "a": "#1d1c22",
+  "f": "longcoat",
+  "x": [
+   "cap",
+   "bags"
+  ],
+  "sk": 0,
+  "e": "#6f7a86"
+ },
+ "blackwood:Madison": {
+  "k": "",
+  "st": 6,
+  "h": "#853a20",
+  "c": "#f3c4d6",
+  "a": "#fff4f8",
+  "f": "vest",
+  "x": [
+   "bow"
+  ],
+  "sk": 0,
+  "e": "#3f8a6c"
+ },
+ "blackwood:Simone": {
+  "k": "",
+  "st": 14,
+  "h": "#92949e",
+  "c": "#6b6d78",
+  "a": "#3c3d46",
+  "f": "longcoat",
+  "x": [
+   "ring"
+  ],
+  "sk": 3,
+  "e": "#4b3a2e"
+ },
+ "blackwood:Sasha": {
+  "k": "",
+  "st": 16,
+  "h": "#4b2e1b",
+  "c": "#5a5c66",
+  "a": "#2c3560",
+  "f": "smart",
+  "x": [
+   "glasses"
+  ],
+  "sk": 2,
+  "e": "#4b3a2e"
+ },
+ "blackwood:Violet": {
+  "k": "",
+  "st": 17,
+  "h": "#b8622c",
+  "h2": "#f4efe6",
+  "c": "#d4702a",
+  "a": "#c79a2e",
+  "f": "sleeveless",
+  "x": [
+   "browcut"
+  ],
+  "sk": 1,
+  "e": "#ff8a3c"
+ },
+ "blackwood:Famine": {
+  "k": "",
+  "st": 16,
+  "h": "#17151a",
+  "c": "#e4d8bc",
+  "a": "#1d1c22",
+  "f": "smart",
+  "x": [
+   "tooth",
+   "gaunt"
+  ],
+  "sk": 3,
+  "e": "#3a2a20"
+ },
+ "blackwood:Conquest": {
+  "k": "",
+  "st": 2,
+  "h": "#e684b4",
+  "c": "#2c2438",
+  "a": "#e684b4",
+  "f": "leather",
+  "x": [
+   "earrings"
+  ],
+  "sk": 0,
+  "e": "#e684b4"
+ },
+ "blackwood:Death": {
+  "k": "",
+  "st": 9,
+  "h": "#17151a",
+  "c": "#55565e",
+  "a": "#1d1c22",
+  "f": "smart",
+  "x": [],
+  "sk": 4,
+  "e": "#8a8d99"
+ },
+ "blackwood:War": {
+  "k": "",
+  "st": 5,
+  "h": "#a3142c",
+  "c": "#6e1f33",
+  "a": "#e3b04b",
+  "f": "casual",
+  "x": [
+   "sash",
+   "bandage"
+  ],
+  "sk": 2,
+  "e": "#ff8a2e"
+ },
+ "blackwood:Saffron": {
+  "k": "",
+  "st": 15,
+  "h": "#b8452a",
+  "c": "#1d8058",
+  "a": "#d4a11e",
+  "f": "cardigan",
+  "x": [
+   "earrings"
+  ],
+  "sk": 1,
+  "e": "#3f8a6c"
+ },
+ "blackwood:Mina": {
+  "k": "",
+  "st": 3,
+  "h": "#17151a",
+  "c": "#6b5f86",
+  "a": "#c8ccd6",
+  "f": "cardigan",
+  "x": [
+   "headphones"
+  ],
+  "sk": 2,
+  "e": "#4b3a2e"
+ },
+ "blackwood:Mother": {
+  "k": "",
+  "o": 1,
+  "st": 16,
+  "h": "#c9c6bf",
+  "c": "#d8c9a4",
+  "a": "#7a5a30",
+  "f": "cardigan",
+  "x": [
+   "strawhat",
+   "glasses"
+  ],
+  "sk": 2,
+  "e": "#4b3a2e"
+ },
+ "blackwood:Sugar Rush": {
+  "k": "",
+  "st": 18,
+  "h": "#ff5fa8",
+  "c": "#c2267a",
+  "a": "#ffe14d",
+  "f": "bomber",
+  "x": [],
+  "sk": 1,
+  "e": "#ff5fa8"
+ },
+ "blackwood:Celeste": {
+  "k": "",
+  "st": 16,
+  "h": "#e8dfc4",
+  "c": "#e9e6df",
+  "a": "#c79a2e",
+  "f": "longcoat",
+  "x": [
+   "earrings"
+  ],
+  "sk": 0,
+  "e": "#6d5bb0",
+  "o": 0
+ },
+ "blackwood:Riggs": {
+  "k": "",
+  "st": 14,
+  "h": "#3a2719",
+  "c": "#1f2a55",
+  "a": "#c79a2e",
+  "f": "uniform",
+  "x": [
+   "cap"
+  ],
+  "sk": 3,
+  "e": "#4b3a2e"
+ },
+ "blackwood:Rusk": {
+  "k": "",
+  "st": 5,
+  "h": "#c9622a",
+  "c": "#1f2a55",
+  "a": "#c79a2e",
+  "f": "uniform",
+  "x": [
+   "freckles"
+  ],
+  "sk": 0,
+  "e": "#3b78c9"
+ },
+ "blackwood:Pike": {
+  "k": "",
+  "st": 14,
+  "h": "#17151a",
+  "c": "#1f2a55",
+  "a": "#c79a2e",
+  "f": "uniform",
+  "x": [
+   "scar"
+  ],
+  "sk": 5,
+  "e": "#3a2a20"
+ },
+ "blackwood:Drake": {
+  "k": "",
+  "st": 4,
+  "h": "#e2c070",
+  "c": "#1f2a55",
+  "a": "#c79a2e",
+  "f": "uniform",
+  "x": [],
+  "sk": 1,
+  "e": "#6f7a86"
+ },
+ "incarnate:Mark": {
+  "k": "",
+  "st": 1,
+  "h": "#4b2e1b",
+  "c": "#ecebe6",
+  "a": "#2c5aa8",
+  "f": "tee",
+  "x": [
+   "bags"
+  ],
+  "sk": 1,
+  "e": "#5e6c7c"
+ },
+ "incarnate:Raven": {
+  "k": "",
+  "st": 2,
+  "h": "#17151a",
+  "c": "#1d1c22",
+  "a": "#b5303a",
+  "f": "leather",
+  "x": [
+   "choker"
+  ],
+  "sk": 0,
+  "e": "#6f7a86"
+ },
+ "incarnate:Ena": {
+  "k": "",
+  "st": 2,
+  "h": "#ecd27c",
+  "c": "#1f7f85",
+  "a": "#e9e6df",
+  "f": "casual",
+  "x": [],
+  "sk": 0,
+  "e": "#3b78c9"
+ },
+ "incarnate:Calypso": {
+  "k": "siren",
+  "st": 6,
+  "h": "#f0ede6",
+  "c": "#b5303a",
+  "a": "#e9e6df",
+  "f": "uniform",
+  "x": [],
+  "sk": 1,
+  "e": "#ff4f6a"
+ },
+ "incarnate:Rui": {
+  "k": "",
+  "st": 9,
+  "h": "#c8ccd6",
+  "c": "#3c3c46",
+  "a": "#d4702a",
+  "f": "hoodie",
+  "x": [
+   "scar"
+  ],
+  "sk": 1,
+  "e": "#e0402a"
+ },
+ "incarnate:Esme": {
+  "k": "",
+  "st": 3,
+  "h": "#3a2719",
+  "c": "#60379a",
+  "a": "#d4a11e",
+  "f": "cardigan",
+  "x": [],
+  "sk": 2,
+  "e": "#5e3b22"
+ },
+ "incarnate:Pia": {
+  "k": "",
+  "st": 9,
+  "h": "#4b2e1b",
+  "c": "#6b6d78",
+  "a": "#8a1c24",
+  "f": "longcoat",
+  "x": [
+   "gaunt"
+  ],
+  "sk": 0,
+  "e": [
+   "#5e3b22",
+   "#8a1c24"
+  ]
+ },
+ "incarnate:War": {
+  "k": "",
+  "st": 5,
+  "h": "#a3142c",
+  "c": "#6e1f33",
+  "a": "#e3b04b",
+  "f": "casual",
+  "x": [
+   "bandage"
+  ],
+  "sk": 2,
+  "e": "#ff8a2e"
+ },
+ "incarnate:Famine": {
+  "k": "",
+  "st": 16,
+  "h": "#e9e6df",
+  "c": "#e4d8bc",
+  "a": "#1d1c22",
+  "f": "smart",
+  "x": [
+   "tooth",
+   "gaunt"
+  ],
+  "sk": 0,
+  "e": "#a8c4dc"
+ },
+ "incarnate:Conquest": {
+  "k": "",
+  "st": 2,
+  "h": "#e684b4",
+  "c": "#2c2438",
+  "a": "#e684b4",
+  "f": "leather",
+  "x": [
+   "earrings"
+  ],
+  "sk": 0,
+  "e": "#e684b4"
+ },
+ "incarnate:Death": {
+  "k": "",
+  "st": 9,
+  "h": "#17151a",
+  "c": "#55565e",
+  "a": "#1d1c22",
+  "f": "longcoat",
+  "x": [],
+  "sk": 4,
+  "e": "#8a8d99"
+ },
+ "incarnate:Eri": {
+  "k": "demon",
+  "st": 13,
+  "h": "#2f9c9c",
+  "c": "#1d1c22",
+  "a": "#1f7f85",
+  "f": "leather",
+  "x": [
+   "eyepatch"
+  ],
+  "sk": 0,
+  "e": "#3b78c9"
+ },
+ "incarnate:Dolly": {
+  "k": "",
+  "st": 18,
+  "h": "#f2b6c8",
+  "c": "#f3c4d6",
+  "a": "#d6406a",
+  "f": "gown",
+  "x": [
+   "bow"
+  ],
+  "sk": 0,
+  "e": "#d6406a"
+ },
+ "incarnate:Ivy": {
+  "k": "",
+  "st": 2,
+  "h": "#17151a",
+  "c": "#2f7a56",
+  "a": "#1d1c22",
+  "f": "smart",
+  "x": [],
+  "sk": 0,
+  "e": "#111116"
+ },
+ "incarnate:Juno": {
+  "k": "",
+  "st": 2,
+  "h": "#6e3a1e",
+  "c": "#c9a86a",
+  "a": "#6a4528",
+  "f": "cardigan",
+  "x": [],
+  "sk": 1,
+  "e": "#5e3b22"
+ },
+ "incarnate:David": {
+  "k": "",
+  "o": 1,
+  "st": 14,
+  "h": "#92949e",
+  "c": "#6a4528",
+  "a": "#a98558",
+  "f": "casual",
+  "x": [
+   "beard"
+  ],
+  "sk": 2,
+  "e": "#5e3b22"
+ },
+ "incarnate:Brad": {
+  "k": "",
+  "st": 5,
+  "h": "#c9a35a",
+  "c": "#b5303a",
+  "a": "#e9e6df",
+  "f": "bomber",
+  "x": [],
+  "sk": 1,
+  "e": "#3b78c9"
+ },
+ "backrooms:Mae": {
+  "k": "",
+  "st": 17,
+  "h": "#3a2719",
+  "c": "#5b4a3a",
+  "a": "#8f7f5e",
+  "f": "patch",
+  "x": [
+   "gasmask",
+   "bandolier"
+  ],
+  "sk": 1,
+  "e": "#5e6c7c"
+ },
+ "backrooms:Kevin": {
+  "k": "",
+  "st": 1,
+  "h": "#5e3b22",
+  "c": "#2c5aa8",
+  "a": "#ffd36b",
+  "f": "tee",
+  "x": [],
+  "sk": 1,
+  "e": "#5e3b22"
+ },
+ "backrooms:Leo": {
+  "k": "",
+  "st": 17,
+  "h": "#3a2719",
+  "c": "#27496b",
+  "a": "#7fe3ff",
+  "f": "tee",
+  "x": [],
+  "sk": 1,
+  "e": "#4aa8ff"
+ },
+ "backrooms:Hays": {
+  "k": "",
+  "o": 1,
+  "st": 14,
+  "h": "#92949e",
+  "c": "#4a4a3e",
+  "a": "#b9b5a0",
+  "f": "patch",
+  "x": [
+   "eyepatch"
+  ],
+  "sk": 2,
+  "e": "#4b3a2e"
+ },
+ "kitsune:Ozma": {
+  "k": "",
+  "st": 2,
+  "h": "#2a1f1a",
+  "c": "#f6f3ec",
+  "a": "#d4a11e",
+  "f": "gown",
+  "x": [
+   "circlet"
+  ],
+  "sk": 0,
+  "e": "#3f8a6c",
+  "sp": ""
+ },
+ "kitsune:Madison": {
+  "k": "",
+  "st": 6,
+  "h": "#a8703a",
+  "c": "#b5303a",
+  "a": "#f4d6d6",
+  "f": "gown",
+  "x": [
+   "sunglasses"
+  ],
+  "sk": 0,
+  "e": "#3b78c9",
+  "sp": ""
+ },
+ "kitsune:Glinda": {
+  "k": "",
+  "st": 2,
+  "h": "#c9622a",
+  "c": "#f6f3ec",
+  "a": "#c2282e",
+  "f": "gown",
+  "x": [
+   "circlet"
+  ],
+  "sk": 0,
+  "e": "#3b78c9",
+  "sp": ""
+ },
+ "kitsune:Wizard": {
+  "k": "",
+  "o": 1,
+  "st": 19,
+  "h": "#b9b6b0",
+  "c": "#2f7a56",
+  "a": "#d4a11e",
+  "f": "smart",
+  "x": [
+   "round"
+  ],
+  "sk": 1,
+  "e": "#5e3b22",
+  "sp": ""
+ },
+ "kitsune:The Wizard": {
+  "k": "",
+  "o": 1,
+  "st": 19,
+  "h": "#b9b6b0",
+  "c": "#2f7a56",
+  "a": "#d4a11e",
+  "f": "smart",
+  "x": [
+   "round"
+  ],
+  "sk": 1,
+  "e": "#5e3b22",
+  "sp": ""
+ },
+ "kitsune:Hesper": {
+  "k": "",
+  "o": 1,
+  "st": 16,
+  "h": "#d8d5ce",
+  "c": "#6a4528",
+  "a": "#d4a11e",
+  "f": "apron",
+  "x": [
+   "glasses"
+  ],
+  "sk": 2,
+  "e": "#4b3a2e",
+  "sp": ""
+ },
+ "kitsune:Bungle": {
+  "sp": "cat",
+  "k": "glasscat",
+  "fur": "#cfe9f2",
+  "c": "#cfe9f2",
+  "a": "#e8476a",
+  "x": [],
+  "f": "casual",
+  "e": "#1fa866"
+ },
+ "kitsune:Scraps": {
+  "sp": "",
+  "k": "patchwork",
+  "st": 6,
+  "h": "#7a4a28",
+  "c": "#3f7fd0",
+  "a": "#f2c030",
+  "f": "patch",
+  "x": [],
+  "sk": 0,
+  "e": "#1b1a22"
+ },
+ "kitsune:Kitsu": {
+  "sp": "fox",
+  "c": "#6a4528",
+  "a": "#c8283a",
+  "f": "casual",
+  "x": [
+   "scarf",
+   "satchel"
+  ],
+  "e": "#d4a11e"
+ },
+ "kitsune:Grandmother": {
+  "sp": "fox",
+  "fur": "#a4a2a0",
+  "c": "#5a5c66",
+  "a": "#c8283a",
+  "f": "cardigan",
+  "x": [
+   "scarf",
+   "glasses"
+  ],
+  "e": "#d4a11e"
+ },
+ "kitsune:Ponzu": {
+  "sp": "tanuki",
+  "c": "#6a6250",
+  "a": "#e8dcc0",
+  "f": "apron",
+  "x": [],
+  "e": "#3a2a20"
+ },
+ "kitsune:Fennick": {
+  "sp": "stoat",
+  "c": "#27375f",
+  "a": "#b5303a",
+  "f": "smart",
+  "x": [
+   "satchel"
+  ],
+  "e": "#1b1a22"
+ },
+ "kitsune:Tamba": {
+  "sp": "badger",
+  "c": "#4a4a54",
+  "a": "#c79a2e",
+  "f": "cardigan",
+  "x": [],
+  "e": "#1b1a22"
+ },
+ "kitsune:Oyuki": {
+  "sp": "crane",
+  "fur": "#b9bcc4",
+  "c": "#6b6d78",
+  "a": "#c79a2e",
+  "f": "cardigan",
+  "x": [],
+  "e": "#1b1a22"
+ },
+ "kitsune:Tobin": {
+  "sp": "badger",
+  "c": "#e8e0cc",
+  "a": "#27375f",
+  "f": "apron",
+  "x": [
+   "glasses"
+  ],
+  "e": "#1b1a22"
+ },
+ "kitsune:The librarian": {
+  "sp": "carp",
+  "c": "#27375f",
+  "a": "#c79a2e",
+  "f": "smart",
+  "x": [
+   "round"
+  ],
+  "e": "#1b1a22"
+ },
+ "kitsune:Albert": {
+  "sp": "badger",
+  "c": "#6b4a30",
+  "a": "#d4b06a",
+  "f": "cardigan",
+  "x": [],
+  "e": "#1b1a22"
+ },
+ "kitsune:Tam": {
+  "k": "",
+  "st": 5,
+  "h": "#2c2224",
+  "c": "#b5303a",
+  "a": "#f2efe8",
+  "f": "apron",
+  "x": [
+   "freckles"
+  ],
+  "sk": 2,
+  "e": "#5e3b22",
+  "sp": ""
+ },
+ "kitsune:Bessamy": {
+  "k": "",
+  "st": 16,
+  "h": "#6b4426",
+  "c": "#2c5aa8",
+  "a": "#7fb0ff",
+  "f": "apron",
+  "x": [
+   "bow"
+  ],
+  "sk": 1,
+  "e": "#3b78c9",
+  "sp": ""
+ },
+ "kitsune:Jack": {
+  "sp": "",
+  "k": "pumpkin",
+  "st": 19,
+  "h": "#6a4528",
+  "c": "#c9462a",
+  "a": "#2f7a56",
+  "f": "casual",
+  "x": [],
+  "sk": 2,
+  "e": "#1b1a22"
+ },
+ "kitsune:Scarecrow": {
+  "sp": "scarecrow",
+  "k": "",
+  "c": "#6a7a3a",
+  "a": "#c9a227",
+  "f": "patch",
+  "x": [],
+  "e": "#1b1a22"
+ },
+ "kitsune:Wren Tallowmere": {
+  "sp": "",
+  "k": "",
+  "st": 3,
+  "h": "#c9b070",
+  "c": "#2c5aa8",
+  "a": "#c79a2e",
+  "f": "coat",
+  "x": [
+   "freckles"
+  ],
+  "sk": 0,
+  "e": "#3b78c9"
+ },
+ "kitsune:The Sallow Man": {
+  "sp": "",
+  "k": "",
+  "o": 1,
+  "st": 19,
+  "h": "#c9c1a6",
+  "c": "#a89f86",
+  "a": "#7d6f52",
+  "f": "robe",
+  "x": [
+   "gaunt"
+  ],
+  "sk": 0,
+  "e": "#d8d5c8",
+  "wax": 1
+ },
+ "kitsune:Cephalotus": {
+  "sp": "",
+  "k": "pitcher",
+  "st": 19,
+  "h": "#6e1f33",
+  "c": "#8a1c2c",
+  "a": "#3f7a3a",
+  "f": "casual",
+  "x": [],
+  "sk": 0,
+  "e": "#1b1a22"
+ },
+ "kitsune:Billina": {
+  "sp": "duck",
+  "fur": "#e8c64e",
+  "c": "#e8c64e",
+  "a": "#d8a02a",
+  "f": "casual",
+  "x": [],
+  "e": "#17151a",
+  "bare": 1
+ },
+ "kitsune:Pennick": {
+  "sp": "",
+  "k": "",
+  "o": 1,
+  "st": 19,
+  "h": "#d8d5ce",
+  "c": "#2c5aa8",
+  "a": "#7fb0ff",
+  "f": "smart",
+  "x": [
+   "round"
+  ],
+  "sk": 1,
+  "e": "#3b78c9"
+ }
+}

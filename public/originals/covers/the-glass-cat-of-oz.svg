@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="600" height="900"><rect width="600" height="900" fill="#1e5a3a"/><rect width="600" height="900" fill="#3fa36b" opacity=".25"/>
+    <path d="M 50 700 L 50 440 L 80 400 L 110 440 L 110 700 Z" fill="#2fa36b" stroke="#1d6b45" stroke-width="3"/><path d="M 115 700 L 115 360 L 150 320 L 185 360 L 185 700 Z" fill="#2fa36b" stroke="#1d6b45" stroke-width="3"/><path d="M 425 700 L 425 380 L 460 340 L 495 380 L 495 700 Z" fill="#2fa36b" stroke="#1d6b45" stroke-width="3"/><path d="M 500 700 L 500 450 L 530 410 L 560 450 L 560 700 Z" fill="#2fa36b" stroke="#1d6b45" stroke-width="3"/>
+    <rect x="160" y="520" width="280" height="40" rx="8" fill="#7a2a4a"/>
+    <ellipse cx="300" cy="460" rx="110" ry="80" fill="#dff4ff" opacity=".35" stroke="#ffffff" stroke-width="4"/>
+    <circle cx="300" cy="340" r="62" fill="#dff4ff" opacity=".35" stroke="#ffffff" stroke-width="4"/>
+    <path d="M 250 300 L 258 250 L 280 290 Z M 350 300 L 342 250 L 320 290 Z" fill="#dff4ff" opacity=".45" stroke="#fff" stroke-width="3"/>
+    <ellipse cx="300" cy="322" rx="30" ry="18" fill="#f5a8c8" opacity=".85"/>
+    <circle cx="280" cy="350" r="8" fill="#2fd07a"/><circle cx="320" cy="350" r="8" fill="#2fd07a"/>
+    <path d="M 400 460 q 70 -20 60 -100" stroke="#fff" stroke-width="8" fill="none" opacity=".5"/>
+    <path d="M 240 400 l 30 30 l -10 40 l 40 20 l 30 -10 l 20 30 M 270 430 l 40 -10 M 300 480 l -20 20" stroke="#f2c230" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <circle cx="300" cy="460" r="12" fill="#d0203a"/><path d="M 292 456 l 16 8" stroke="#f2c230" stroke-width="3"/>
+    <rect x="30" y="640" width="540" height="200" fill="#fff6e6" stroke="#1b1d33" stroke-width="6"/>
+    <text x="50" y="715" font-size="48" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="900" fill="#1b1d33"><tspan x="50" dy="0">The Glass Cat of</tspan><tspan x="50" dy="48">Oz</tspan></text>
+    <text x="50" y="815" font-size="22" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" fill="#c8283a" font-weight="700">A KITSUNE ORIGINAL · OZ STORY</text></svg>

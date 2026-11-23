@@ -1,0 +1,13 @@
+1
+00:00:01,000 --> 00:00:04,000
+The half-moon train pulls in
+with nobody aboard.
+
+2
+00:00:05,500 --> 00:00:08,000
+It always comes back empty.
+That's how you know it's working.
+
+3
+00:00:09,750 --> 00:00:12,200
+<i>Passengers, please mind the lantern.</i>

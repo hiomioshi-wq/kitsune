@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="600" height="900">
+    <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a120a"/><stop offset=".6" stop-color="#170a12"/><stop offset="1" stop-color="#050406"/></linearGradient></defs>
+    <rect width="600" height="900" fill="url(#g)"/><path d="M 0 900 L 0 440 L 90 470 L 150 560 L 170 700 L 230 760 L 370 760 L 430 700 L 450 560 L 510 470 L 600 440 L 600 900 Z" fill="#8a3a22"/>
+    <path d="M 0 900 L 0 520 L 70 560 L 120 660 L 150 780 L 450 780 L 480 660 L 530 560 L 600 520 L 600 900 Z" fill="#6a2a18"/>
+    <ellipse cx="300" cy="780" rx="140" ry="26" fill="#0a0a0c"/><ellipse cx="300" cy="776" rx="120" ry="14" fill="#2a2a34" opacity=".8"/>
+    <path d="M 300 770 V 708" stroke="#e8d8c0" stroke-width="5"/><circle cx="300" cy="700" r="9" fill="#e8d8c0"/>
+    <path d="M 432 760 V 690 C 432 676 446 676 446 690" stroke="#1a1a20" stroke-width="4" fill="none"/>
+    <path d="M 390 690 Q 432 640 474 690 Z" fill="#1a1a20"/><circle cx="398" cy="700" r="3" fill="#6a8ab0" opacity=".8"/><circle cx="416" cy="714" r="3" fill="#6a8ab0" opacity=".8"/><circle cx="432" cy="700" r="3" fill="#6a8ab0" opacity=".8"/><circle cx="448" cy="714" r="3" fill="#6a8ab0" opacity=".8"/><circle cx="466" cy="700" r="3" fill="#6a8ab0" opacity=".8"/>
+    <text x="300" y="120" text-anchor="middle" font-size="26" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="800" fill="#e8d9c4" letter-spacing="10">INCARNATE</text>
+    <text x="300" y="150" text-anchor="middle" font-size="16" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" fill="#e8a070" letter-spacing="8">THE CORRUPTION SAGA</text>
+    <text x="300" y="300" text-anchor="middle" font-size="20" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="700" fill="#e8a070" letter-spacing="5">A SPINOFF</text>
+    <text x="300" y="360" text-anchor="middle" font-size="54" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="900" fill="#f5ece0"><tspan x="300" dy="0">Hunger</tspan></text>
+  </svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="600" height="900">
+    <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2e30"/><stop offset=".6" stop-color="#170a12"/><stop offset="1" stop-color="#050406"/></linearGradient></defs>
+    <rect width="600" height="900" fill="url(#g)"/><circle cx="300" cy="680" r="150" fill="#5a6064" stroke="#d8c890" stroke-width="5"/>
+    <circle cx="300" cy="680" r="110" fill="#4a5054" stroke="#8a8a80" stroke-width="3"/>
+    <path d="M 300 680 L 380 680" stroke="#d8c890" stroke-width="7" stroke-linecap="round"/><path d="M 300 680 L 340.00213972392294 749.2807968885156" stroke="#d8c890" stroke-width="7" stroke-linecap="round"/><path d="M 300 680 L 260.0042795623063 749.2845029329781" stroke="#d8c890" stroke-width="7" stroke-linecap="round"/><path d="M 300 680 L 220.0000003433875 680.0074122871729" stroke="#d8c890" stroke-width="7" stroke-linecap="round"/><path d="M 300 680 L 259.9914413332537 610.722909750701" stroke="#d8c890" stroke-width="7" stroke-linecap="round"/><path d="M 300 680 L 339.98930080811374 610.7117916173452" stroke="#d8c890" stroke-width="7" stroke-linecap="round"/>
+    <circle cx="300" cy="680" r="18" fill="#d8c890"/>
+    <circle cx="470" cy="520" r="26" fill="#f0d040"/><path d="M 470 546 Q 476 600 466 640" stroke="#ccc" stroke-width="2" fill="none"/>
+    <path d="M 458 516 a 3 3 0 1 0 0.1 0 M 482 516 a 3 3 0 1 0 0.1 0 M 458 528 Q 470 540 482 528" stroke="#222" stroke-width="2.5" fill="none"/>
+    <text x="300" y="120" text-anchor="middle" font-size="26" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="800" fill="#e8d9c4" letter-spacing="10">BACKROOMS</text>
+    <text x="300" y="150" text-anchor="middle" font-size="16" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" fill="#d8c890" letter-spacing="8">NO WIND RESISTANCE</text>
+    <text x="300" y="300" text-anchor="middle" font-size="20" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="700" fill="#d8c890" letter-spacing="5">A SPINOFF</text>
+    <text x="300" y="360" text-anchor="middle" font-size="54" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="900" fill="#f5ece0"><tspan x="300" dy="0">Base Beta</tspan></text>
+  </svg>

@@ -1,0 +1,8 @@
+{
+  "name": "kitsune",
+  "version": "1.0.0",
+  "description": "Kitsune: a manga reader for manga you own, plus public-domain books",
+  "type": "module",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" }
+}

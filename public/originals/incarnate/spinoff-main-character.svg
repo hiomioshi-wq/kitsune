@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="600" height="900">
+    <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a2a3a"/><stop offset=".6" stop-color="#170a12"/><stop offset="1" stop-color="#050406"/></linearGradient></defs>
+    <rect width="600" height="900" fill="url(#g)"/><rect y="760" width="600" height="140" fill="#123040"/>
+    <path d="M 60 760 q 14 -40 0 -80" stroke="#5ad8ff" stroke-width="3" fill="none" opacity="0.25"/><path d="M 120 760 q 14 -40 0 -80" stroke="#5ad8ff" stroke-width="3" fill="none" opacity="0.45"/><path d="M 180 760 q 14 -40 0 -80" stroke="#5ad8ff" stroke-width="3" fill="none" opacity="0.65"/><path d="M 240 760 q 14 -40 0 -80" stroke="#5ad8ff" stroke-width="3" fill="none" opacity="0.25"/><path d="M 300 760 q 14 -40 0 -80" stroke="#5ad8ff" stroke-width="3" fill="none" opacity="0.45"/><path d="M 360 760 q 14 -40 0 -80" stroke="#5ad8ff" stroke-width="3" fill="none" opacity="0.65"/><path d="M 420 760 q 14 -40 0 -80" stroke="#5ad8ff" stroke-width="3" fill="none" opacity="0.25"/><path d="M 480 760 q 14 -40 0 -80" stroke="#5ad8ff" stroke-width="3" fill="none" opacity="0.45"/><path d="M 540 760 q 14 -40 0 -80" stroke="#5ad8ff" stroke-width="3" fill="none" opacity="0.65"/>
+    <circle cx="300" cy="610" r="70" fill="#0d1d28" stroke="#5ad8ff" stroke-width="4"/>
+    <path d="M 262 600 Q 300 680 338 600 Q 300 630 262 600 Z" fill="#5ad8ff"/>
+    <path d="M 270 612 l 4 12 l 4 -12" fill="#e8f8ff"/><path d="M 280 612 l 4 12 l 4 -12" fill="#e8f8ff"/><path d="M 290 612 l 4 12 l 4 -12" fill="#e8f8ff"/><path d="M 300 612 l 4 12 l 4 -12" fill="#e8f8ff"/><path d="M 310 612 l 4 12 l 4 -12" fill="#e8f8ff"/><path d="M 320 612 l 4 12 l 4 -12" fill="#e8f8ff"/><path d="M 330 612 l 4 12 l 4 -12" fill="#e8f8ff"/>
+    <path d="M 240 560 Q 300 520 360 560" stroke="#ff8ac8" stroke-width="10" fill="none" stroke-linecap="round"/>
+    <text x="300" y="120" text-anchor="middle" font-size="26" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="800" fill="#e8d9c4" letter-spacing="10">INCARNATE</text>
+    <text x="300" y="150" text-anchor="middle" font-size="16" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" fill="#5ad8ff" letter-spacing="8">THE CORRUPTION SAGA</text>
+    <text x="300" y="272" text-anchor="middle" font-size="20" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="700" fill="#5ad8ff" letter-spacing="5">A SPINOFF</text>
+    <text x="300" y="332" text-anchor="middle" font-size="54" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="900" fill="#f5ece0"><tspan x="300" dy="0">Main</tspan><tspan x="300" dy="60">Character</tspan></text>
+  </svg>

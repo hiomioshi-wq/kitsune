@@ -1,0 +1,10 @@
+<!doctype html><!-- tests that text shaping survives: ZWJ families, flag pairs, skin-tone modifiers, RTL marks, combining diacritics -->
+<html><head><meta charset="utf-8"><title>Emoji and shaping test</title></head><body>
+<h1>Text the pipeline must never mangle</h1>
+<p>ZWJ family: 👨‍👩‍👧‍👦 and a kiss: 👩‍❤️‍👨 — the sequences must stay joined.</p>
+<p>Flag pairs: 🇯🇵 🇬🇧 🇺🇳 — each flag is two regional indicators.</p>
+<p>Skin tones: 👋🏽 ✊🏿 👩🏻‍💻 — the modifiers must stay attached to their glyphs.</p>
+<p dir="rtl">המחיר: 15&rlm; שקלים בלבד — הספרה נשארת בצד הנכון בזכות סימן ה-RTL.</p>
+<p>Combining marks: cafe&#x301;, nai&#x308;ve, o&#323; — the accents stack on their letters instead of floating or turning into boxes.</p>
+<p>東京タワーは赤い。今日も良い天気になりそうだ。</p>
+</body></html>

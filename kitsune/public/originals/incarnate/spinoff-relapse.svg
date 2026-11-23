@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="600" height="900">
+    <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a0a0e"/><stop offset=".6" stop-color="#170a12"/><stop offset="1" stop-color="#050406"/></linearGradient></defs>
+    <rect width="600" height="900" fill="url(#g)"/><rect x="210" y="600" width="180" height="120" rx="14" fill="#c8323e" stroke="#ff4a5a" stroke-width="3"/>
+    <rect x="210" y="600" width="180" height="34" rx="10" fill="#e8e8ec"/>
+    <path d="M 250 658 l 9 12 l -9 12 l -9 -12 Z" fill="#0a0a0e" stroke="#ff4a5a" stroke-width="1.5"/><path d="M 290 678 l 9 12 l -9 12 l -9 -12 Z" fill="#0a0a0e" stroke="#ff4a5a" stroke-width="1.5"/><path d="M 330 650 l 9 12 l -9 12 l -9 -12 Z" fill="#0a0a0e" stroke="#ff4a5a" stroke-width="1.5"/><path d="M 270 688 l 9 12 l -9 12 l -9 -12 Z" fill="#0a0a0e" stroke="#ff4a5a" stroke-width="1.5"/><path d="M 350 684 l 9 12 l -9 12 l -9 -12 Z" fill="#0a0a0e" stroke="#ff4a5a" stroke-width="1.5"/>
+    <path d="M 440 760 q 20 -40 50 -20 q -10 30 -50 20 Z M 470 742 l 6 -16 l 6 16" fill="#e07a2a"/>
+    <text x="300" y="800" text-anchor="middle" font-family="monospace" font-size="26" fill="#ff4a5a" opacity=".8">DAY 41</text>
+    <path d="M 254 788 L 346 806" stroke="#ff4a5a" stroke-width="3"/>
+    <text x="300" y="120" text-anchor="middle" font-size="26" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="800" fill="#e8d9c4" letter-spacing="10">INCARNATE</text>
+    <text x="300" y="150" text-anchor="middle" font-size="16" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" fill="#ff4a5a" letter-spacing="8">THE CORRUPTION SAGA</text>
+    <text x="300" y="300" text-anchor="middle" font-size="20" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="700" fill="#ff4a5a" letter-spacing="5">A SPINOFF</text>
+    <text x="300" y="360" text-anchor="middle" font-size="54" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="900" fill="#f5ece0"><tspan x="300" dy="0">Relapse</tspan></text>
+  </svg>

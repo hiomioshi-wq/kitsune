@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="600" height="900">
+    <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a1020"/><stop offset=".6" stop-color="#170a12"/><stop offset="1" stop-color="#050406"/></linearGradient></defs>
+    <rect width="600" height="900" fill="url(#g)"/><path d="M 240 520 h 120 v 40 q 40 30 40 120 v 80 q 0 30 -30 30 h -140 q -30 0 -30 -30 v -80 q 0 -90 40 -120 Z" fill="#e0b0ff" opacity=".12" stroke="#e0b0ff" stroke-width="3"/>
+    <circle cx="280" cy="640" r="9" fill="#fff4e0" opacity="0.55"/><circle cx="320" cy="680" r="12" fill="#fff4e0" opacity="0.63"/><circle cx="300" cy="720" r="15" fill="#fff4e0" opacity="0.7100000000000001"/><circle cx="270" cy="700" r="9" fill="#fff4e0" opacity="0.79"/><circle cx="330" cy="630" r="12" fill="#fff4e0" opacity="0.8700000000000001"/>
+    <text x="300" y="590" text-anchor="middle" font-family="monospace" font-size="30" fill="#e0b0ff">Nº 9</text>
+    <path d="M 290 480 l 10 -26 l 10 26 Z" fill="#1a0a14" stroke="#e0b0ff" stroke-width="2"/><path d="M 300 454 L 300 430" stroke="#e0b0ff" stroke-width="2"/>
+    <text x="300" y="120" text-anchor="middle" font-size="26" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="800" fill="#e8d9c4" letter-spacing="10">INCARNATE</text>
+    <text x="300" y="150" text-anchor="middle" font-size="16" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" fill="#e0b0ff" letter-spacing="8">THE CORRUPTION SAGA</text>
+    <text x="300" y="300" text-anchor="middle" font-size="20" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="700" fill="#e0b0ff" letter-spacing="5">A SPINOFF</text>
+    <text x="300" y="360" text-anchor="middle" font-size="54" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="900" fill="#f5ece0"><tspan x="300" dy="0">Experiment</tspan></text>
+  </svg>

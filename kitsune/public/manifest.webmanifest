@@ -1,0 +1,41 @@
+{
+  "name": "Kitsune",
+  "short_name": "Kitsune",
+  "description": "Read the manga you own, track your series, and read or listen to public-domain books.",
+  "id": "/",
+  "start_url": "/#home",
+  "display": "standalone",
+  "background_color": "#11132a",
+  "theme_color": "#11132a",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ],
+  "file_handlers": [
+    {
+      "action": "/#home",
+      "accept": {
+        "application/vnd.comicbook+zip": [".cbz"],
+        "application/zip": [".zip"],
+        "application/epub+zip": [".epub"],
+        "application/pdf": [".pdf"],
+        "text/plain": [".txt"]
+      }
+    }
+  ],
+  "share_target": {
+    "action": "/share-target",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [{ "name": "files", "accept": [".cbz", ".zip", ".epub", ".pdf", ".txt", "image/*", "application/epub+zip", "application/pdf", "application/zip"] }]
+    }
+  },
+  "shortcuts": [
+    { "name": "Continue reading", "url": "/#home" },
+    { "name": "Library", "url": "/#library" },
+    { "name": "Add manga", "url": "/#link" }
+  ]
+}

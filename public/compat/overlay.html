@@ -1,0 +1,12 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Consent wall test</title>
+<style>body{font:16px/1.5 system-ui;margin:20px;max-width:40em}
+#wall{position:fixed;inset:0;z-index:9999;background:#111c;color:#fff;display:flex;align-items:center;justify-content:center}
+#news{position:fixed;left:0;top:0;width:100%;height:100%;background:#0008;z-index:500}</style></head>
+<body style="overflow:hidden">
+<p>This paragraph is the page. If you can read it, the wall is gone.</p>
+<p id="wall" class="cookie-consent-banner">We use cookies! <button>Accept all 1,204 partners</button></p>
+<div id="onetrust-consent-sdk"><div class="onetrust-banner">OneTrust SDK mount point</div></div>
+<div id="news" class="newsletter-modal"><div class="newsletter-modal-inner">Subscribe to our newsletter!</div></div>
+<div class="exit-intent-popup" style="position:fixed;left:0;top:0;width:100vw;height:100vh;background:#1234;z-index:900">Wait! Don't go!</div>
+<p class="fade-in-up" style="opacity:0;visibility:hidden">Reveal-on-scroll paragraph that a script never got to run.</p>
+</body></html>

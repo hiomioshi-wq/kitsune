@@ -1,0 +1,16 @@
+{
+ "lib:f2bf9ea948c4": {
+  "pos": 1,
+  "total": 4,
+  "title": "Vol 01 - How to Read",
+  "updated": 1792953515
+ },
+ "book:84": {
+  "pos": 0,
+  "total": 1000,
+  "title": "Frankenstein; or, The modern Prometheus",
+  "author": "Mary Wollstonecraft Shelley",
+  "cover": "https://www.gutenberg.org/cache/epub/84/pg84.cover.medium.jpg",
+  "updated": 1792953545
+ }
+}

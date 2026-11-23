@@ -1,0 +1,13 @@
+<!doctype html><!-- tests legacy tables: cellpadding that must still pad, fixed layout that clips, a nested table, th in tbody, caption and summary -->
+<html><head><meta charset="utf-8"><title>Legacy table test</title></head><body>
+<h1>Tables the old web left behind</h1>
+<table border="1" cellpadding="8" summary="A guestbook: one row per visitor">
+<caption>The Guestbook, padded by cellpadding</caption>
+<tr><th>Name</th><th>Comment</th></tr>
+<tr><td>Kitsu</td><td>First!</td></tr>
+<tr><td>Ponzu</td><td>The tea is late again.</td></tr>
+</table>
+<table style="table-layout:fixed;width:180px"><tr><td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis">This cell's long sentence is clipped by the fixed layout, ellipsis and all</td><td>ok</td></tr></table>
+<table border="1"><tr><td>Outer cell, and nested:<table border="1"><tr><td>Inner cell</td><td>Deeper</td></tr></table></td><td>Side</td></tr></table>
+<table><tbody><tr><td>plain</td><th>a th sitting in tbody</th></tr></tbody></table>
+</body></html>

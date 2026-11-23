@@ -1,0 +1,6 @@
+<!doctype html><!-- tests that the page view keeps a declarative shadow root (template shadowrootmode) pre-rendered, styles and all -->
+<html><head><meta charset="utf-8"><title>Declarative shadow DOM test</title></head><body>
+<h1>A component that ships pre-rendered</h1>
+<shadow-card><template shadowrootmode="open"><style>:host{display:block;border:2px solid #b3541e;border-radius:10px;padding:10px;margin:10px 0;background:#fff8f2}.t{color:#b3541e;font-weight:bold}</style><p class="t">Rendered from the declarative shadow root</p><slot></slot></template><p>This fallback paragraph shows through the slot; the styled box around it proves the shadow tree was kept, not swapped for the raw fallback.</p></shadow-card>
+<p>Browsers that never attach the shadow root show only the fallback paragraph above. Kitsune's page view keeps web components pre-rendered, so the box appears with its own scoped styles and colour.</p>
+</body></html>

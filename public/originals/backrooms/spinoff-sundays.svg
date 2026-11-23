@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="600" height="900">
+    <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a1e14"/><stop offset=".6" stop-color="#170a12"/><stop offset="1" stop-color="#050406"/></linearGradient></defs>
+    <rect width="600" height="900" fill="url(#g)"/><rect x="140" y="700" width="320" height="100" rx="22" fill="#5a3a2a"/><rect x="120" y="660" width="70" height="140" rx="20" fill="#6a4a36"/><rect x="410" y="660" width="70" height="140" rx="20" fill="#6a4a36"/>
+    <path d="M 250 520 q 50 -40 100 0 q 20 60 -10 120 q -40 20 -80 0 q -30 -60 -10 -120 Z" fill="#e8c8a8" stroke="#8a6a50" stroke-width="3"/>
+    <path d="M 272 570 h 18 M 312 570 h 18" stroke="#2a1e14" stroke-width="4" stroke-linecap="round"/>
+    <path d="M 266 606 Q 300 640 334 606" stroke="#8a1a1a" stroke-width="4" fill="none"/>
+    <path d="M 340 524 l 30 -18 l 4 36 Z" fill="#c8a888" opacity=".8"/>
+    <rect x="390" y="610" width="34" height="70" rx="8" fill="#5ad84a" opacity=".85"/>
+    <text x="300" y="120" text-anchor="middle" font-size="26" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="800" fill="#e8d9c4" letter-spacing="10">BACKROOMS</text>
+    <text x="300" y="150" text-anchor="middle" font-size="16" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" fill="#ffd84a" letter-spacing="8">NO WIND RESISTANCE</text>
+    <text x="300" y="300" text-anchor="middle" font-size="20" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="700" fill="#ffd84a" letter-spacing="5">A SPINOFF</text>
+    <text x="300" y="360" text-anchor="middle" font-size="54" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="900" fill="#f5ece0"><tspan x="300" dy="0">Sundays</tspan></text>
+  </svg>

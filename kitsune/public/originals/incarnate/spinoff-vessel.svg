@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="600" height="900">
+    <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a2a2a"/><stop offset=".6" stop-color="#170a12"/><stop offset="1" stop-color="#050406"/></linearGradient></defs>
+    <rect width="600" height="900" fill="url(#g)"/><path d="M 300 480 C 230 480 210 560 220 640 C 230 720 260 800 300 800 C 340 800 370 720 380 640 C 390 560 370 480 300 480 Z" fill="#2a6a64" stroke="#4ad8c8" stroke-width="3"/>
+    <circle cx="272" cy="600" r="14" fill="#9af8f0"/><circle cx="328" cy="600" r="14" fill="#9af8f0"/>
+    <path d="M 240 520 Q 300 470 360 520 L 360 500 Q 300 450 240 500 Z" fill="#eef"/>
+    <path d="M 230 680 l 12 6 l -4 10 l -10 -4 Z" fill="#0a2a2a" stroke="#4ad8c8" stroke-width="1.5"/><path d="M 370 650 l 12 6 l -4 10 l -10 -4 Z" fill="#0a2a2a" stroke="#4ad8c8" stroke-width="1.5"/><path d="M 250 740 l 12 6 l -4 10 l -10 -4 Z" fill="#0a2a2a" stroke="#4ad8c8" stroke-width="1.5"/><path d="M 350 730 l 12 6 l -4 10 l -10 -4 Z" fill="#0a2a2a" stroke="#4ad8c8" stroke-width="1.5"/>
+    <path d="M 290 680 Q 300 690 310 680" stroke="#0a2a2a" stroke-width="3" fill="none"/>
+    <text x="300" y="120" text-anchor="middle" font-size="26" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="800" fill="#e8d9c4" letter-spacing="10">INCARNATE</text>
+    <text x="300" y="150" text-anchor="middle" font-size="16" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" fill="#4ad8c8" letter-spacing="8">THE CORRUPTION SAGA</text>
+    <text x="300" y="300" text-anchor="middle" font-size="20" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="700" fill="#4ad8c8" letter-spacing="5">A SPINOFF</text>
+    <text x="300" y="360" text-anchor="middle" font-size="54" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="900" fill="#f5ece0"><tspan x="300" dy="0">Vessel</tspan></text>
+  </svg>

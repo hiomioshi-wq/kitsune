@@ -1,0 +1,11 @@
+<!doctype html><!-- tests link resolution: %20 in queries, unicode paths, parentheses, a query holding another URL, a unicode fragment -->
+<html><head><meta charset="utf-8"><title>Weird URL test</title></head><body>
+<h1>Links that stress resolution</h1>
+<p><a href="rem.html?q=two%20words">A link with %20 spaces in its query</a></p>
+<p><a href="https://example.org/wiki/東京都_(23区)">A unicode path with parentheses</a></p>
+<p><a href="picture.html?img=000_(large).svg">Parentheses in a query value</a></p>
+<p><a href="https://example.com/redir?u=https%3A%2F%2Fexample.org%2Fx%3Fa%3D1%26b%3D2">A URL whose query holds another, properly encoded URL</a></p>
+<p><a href="https://example.com/redir?u=https://example.org/x?a=1&amp;b=2">The same trick left unencoded</a></p>
+<p><a href="#注目">Jump to the unicode fragment target</a></p>
+<h2 id="注目">The unicode fragment target</h2>
+</body></html>

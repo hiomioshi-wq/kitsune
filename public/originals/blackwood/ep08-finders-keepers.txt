@@ -1,0 +1,1706 @@
+BLACKWOOD UNIVERSITY
+EPISODE 8 — “FINDERS KEEPERS”
+
+TEASER
+
+INT. MORTALITY SERVICES — MORNING
+
+KEVIN stands in front of the office door patting every pocket he owns.
+
+He has eleven pockets. He pats them in order. Then in a different order, as if the order were the problem.
+
+YUKI TANAKA watches from her desk over a coffee she has not had time to drink.
+
+YUKI
+What.
+
+KEVIN
+I can’t find my keycard.
+
+YUKI
+You’re inside.
+
+KEVIN
+I came in behind the Reaper.
+
+YUKI
+So you’re a fucking tailgater now.
+
+KEVIN
+I need it for the fridge.
+
+The office fridge has a card reader. A laminated sign above it reads:
+
+STAFF ONLY. THE YOGURT KNOWS.
+
+YUKI
+Check Lost and Found.
+
+KEVIN
+Where’s Lost and Found?
+
+YUKI
+Under the east stairwell.
+
+Kevin goes very still.
+
+KEVIN
+The hungry stairwell.
+
+YUKI
+It’s been fed. It’s fine on Tuesdays.
+
+KEVIN
+It’s Wednesday.
+
+YUKI
+Then walk fucking quickly.
+
+INT. EAST STAIRWELL — CONTINUOUS
+
+The stairwell breathes.
+
+Not dramatically. The way a large dog breathes while pretending to sleep near a sandwich.
+
+Kevin creeps down the steps.
+
+At the bottom: a small wooden door with a brass plate.
+
+LOST & FOUND.
+CLAIMS 9–11. NO EXCEPTIONS. NO, NOT EVEN YOU.
+
+Beside it, brand new, a tablet on a stand. A friendly interface glows:
+
+WELCOME TO LOST & FOUND 2.0!
+POWERED BY CAMPUS IT.
+SPEAK YOUR LOSS.
+
+Kevin leans toward it.
+
+KEVIN
+Um. Hi. I’m lost without my keycard.
+
+The tablet chimes.
+
+LOST ITEM LOGGED: KEVIN.
+STATUS: FOUND.
+
+The little wooden door opens.
+
+A brass hook on a long arm reaches out, gently, politely, and takes Kevin by the collar.
+
+KEVIN
+Oh no.
+
+The door closes.
+
+A paper ticket slides out of the brass slot and drifts to the floor.
+
+It reads:
+
+ITEM 40,117.
+KEVIN (ONE).
+CONDITION: FAIR.
+
+The stairwell exhales, a little jealous.
+
+CUT TO TITLE:
+
+BLACKWOOD UNIVERSITY
+EPISODE 8 — “FINDERS KEEPERS”
+
+A claim ticket is stapled to the title card.
+
+ACT ONE
+
+INT. MORTALITY SERVICES — TWENTY MINUTES LATER
+
+The GRIM REAPER reads the claim ticket at arm’s length, the way she reads anything that has been on the floor of that stairwell.
+
+GRIM REAPER
+Condition fair.
+
+YUKI
+That’s generous.
+
+GRIM REAPER
+Where is he?
+
+YUKI
+On a shelf. Presumably.
+
+GRIM REAPER
+We have twelve intakes this morning and a man from 1340 who still thinks he can negotiate.
+
+The PRINTER coughs out a single sheet.
+
+PRINTER
+I’m not doing his forms.
+
+YUKI
+Nobody asked you.
+
+PRINTER
+I’m pre-empting.
+
+The Reaper puts on her coat.
+
+GRIM REAPER
+Get your coat.
+
+YUKI
+Why me?
+
+GRIM REAPER
+Because you know where his desk is.
+
+YUKI
+Everyone knows where his desk is. It’s the one with the plant he keeps apologizing to.
+
+GRIM REAPER
+Coat.
+
+INT. EAST STAIRWELL — LOST & FOUND DOOR — MOMENTS LATER
+
+Yuki raps on the wooden door.
+
+A hatch slides open at eye level.
+
+Inside, behind a counter, stands DORIS.
+
+Doris is a coat rack. Bentwood. Nineteenth century. Wearing a cardigan, a lanyard, and the expression a coat rack would have after one hundred and thirty years of other people’s mittens.
+
+DORIS
+Ticket.
+
+Yuki holds up the ticket.
+
+DORIS
+Claims are nine to eleven.
+
+YUKI
+It is ten past nine.
+
+DORIS
+Then you’re in luck. Which is also in the back, if anyone wants it. Some girl left it in 1974.
+
+YUKI
+We’re here for Kevin.
+
+DORIS
+Describe the item.
+
+YUKI
+He’s a person.
+
+DORIS
+Everything’s a person to somebody. Describe him.
+
+Yuki opens her mouth.
+
+Nothing comes out.
+
+She looks at the Reaper.
+
+The Reaper looks at the ceiling.
+
+GRIM REAPER
+He’s… staff.
+
+DORIS
+Height.
+
+GRIM REAPER
+Standard.
+
+DORIS
+Hair.
+
+GRIM REAPER
+Present.
+
+DORIS
+Distinguishing features.
+
+A very long pause.
+
+YUKI
+He says “sorry” to the printer.
+
+PRINTER, O.S., from three floors up
+HE SHOULD!
+
+Doris closes the hatch halfway.
+
+DORIS
+That describes a lot of people.
+
+YUKI
+It really fucking doesn’t.
+
+DORIS
+Come back with a description. Or a receipt.
+
+YUKI
+A receipt for Kevin.
+
+DORIS
+Proof of purchase. Proof of ownership. Proof of prior relationship. I’m not handing a man to anyone who knocks.
+
+GRIM REAPER
+Mortality Services employs him.
+
+DORIS
+Employment is a rental.
+
+The hatch snaps shut.
+
+The stairwell makes a sound like a stifled laugh.
+
+Yuki kicks the bottom step.
+
+The step kicks back.
+
+INT. IT HELP DESK — LATER
+
+MINA THREAD is eating cereal from her promotional mug.
+
+The six floating windows orbit her head. One of them shows a spreadsheet growing faster than a spreadsheet should.
+
+Yuki slams the ticket on the counter.
+
+YUKI
+What the fuck is Lost and Found Two Point Oh.
+
+MINA
+Oh, good. You found it.
+
+YUKI
+It found Kevin.
+
+MINA
+That’s the idea. It’s a smart catalogue. Natural language intake. You say what you lost. It logs it. When the item turns up anywhere on campus, it auto-returns it to the owner.
+
+YUKI
+Kevin said he was lost without his keycard.
+
+Mina chews.
+
+MINA
+Ah.
+
+YUKI
+Ah?
+
+MINA
+It might be parsing “I’m lost” as an intake.
+
+YUKI
+Might be?
+
+Mina swivels a window around.
+
+LOST ITEMS LOGGED SINCE LAUNCH: 4,211.
+
+YUKI
+How many of those are objects?
+
+MINA
+Ninety.
+
+YUKI
+And the rest?
+
+Mina scrolls.
+
+MINA
+“I’m so lost in this lecture.” “I’m lost, where’s Building C.” “Lost my mind.” “Lost my train of thought.” “Lost the plot.” “Lost track of time.”
+
+YUKI
+Where are they?
+
+MINA
+Well, the people are mostly fine. The cupboard only has room for one at a time, so it’s holding Kevin and queueing the rest.
+
+YUKI
+And the trains of thought?
+
+Somewhere across campus, a train whistle.
+
+MINA
+Being returned.
+
+YUKI
+To who?
+
+MINA
+Their owners. That’s the second half of the feature. Auto-return. Anything anyone has ever reported lost on this campus, since records began, gets delivered back.
+
+YUKI
+Since records began.
+
+MINA
+The old paper ledgers were scanned last month. Very thorough job. I’m proud of it.
+
+YUKI
+When did records begin?
+
+Mina checks.
+
+MINA
+1611.
+
+Yuki puts both hands flat on the counter.
+
+YUKI
+Turn it off.
+
+MINA
+Can’t mid-cycle. It’s returning. If I stop it now, everything in transit gets lost again and it logs that as a new loss and starts over.
+
+YUKI
+How long is a cycle?
+
+MINA
+Until everything’s home.
+
+Through the window behind her, a delivery van marked BLACKWOOD RETURNS — WE FOUND IT! drives across the quad and over a professor.
+
+The professor sits up holding a returned umbrella.
+
+PROFESSOR
+I lost this in 1998.
+
+He opens it. A pigeon from 1998 flies out.
+
+EXT. LUX AND VELVETTE’S PENTHOUSE TERRACE — SAME TIME
+
+LUX lounges in white silk beside a pot of tea that costs more than a Mortality Services salary.
+
+VELVETTE sharpens a silver chain link against another silver chain link.
+
+The doorbell rings.
+
+A RETURNS COURIER stands on the terrace holding a parcel and a clipboard.
+
+COURIER
+Delivery for Velvette.
+
+VELVETTE
+I didn’t order anything.
+
+COURIER
+It’s a return. You reported it lost in—
+
+He checks.
+
+COURIER
+Third grade.
+
+Velvette goes very still.
+
+She opens the parcel.
+
+Inside, wrapped in tissue paper: a small, crude, beautiful knife made from a sharpened plastic ruler.
+
+A label in a teacher’s handwriting reads:
+
+CONFISCATED. ASK FOR IT BACK AT THE END OF TERM.
+
+Velvette lifts it out like a holy relic.
+
+VELVETTE
+Gerald.
+
+LUX
+Darling.
+
+VELVETTE
+They took Gerald.
+
+LUX
+You named it Gerald?
+
+VELVETTE
+I was eight. He looked like a Gerald.
+
+She holds the plastic knife to the light. A tear she will deny later shines in one eye.
+
+VELVETTE
+I asked for him back on the last day of term. Mrs Pruett said “What knife?” to my fucking face.
+
+The courier hands Lux a second parcel.
+
+COURIER
+And one for you, madam.
+
+Lux takes it with two fingers.
+
+Inside: a pink plastic diary with a tiny brass lock. A sticker on the front says PRIVATE!!!! in the handwriting of a nine-year-old with ambitions.
+
+Lux closes the box very quickly.
+
+VELVETTE
+What is it?
+
+LUX
+Nothing.
+
+VELVETTE
+What is it?
+
+LUX
+A clerical error.
+
+Velvette snatches the box.
+
+Reads the sticker.
+
+Grins like a shark at a pool party.
+
+VELVETTE
+Oh, I am going to fucking read this.
+
+LUX
+You will do no such thing.
+
+VELVETTE
+I will do it aloud.
+
+LUX
+I will have you killed.
+
+VELVETTE
+You’d have to find someone who’d win.
+
+Lux takes a sip of tea with tremendous dignity.
+
+LUX
+Sasha. Now.
+
+INT. BLACKWOOD CAFETERIA — SAME TIME
+
+FAMINE sits at the counter.
+
+The LUNCH LADY slides her a coffee.
+
+A courier sets down a small clay pot sealed with wax.
+
+COURIER
+Return for Famine.
+
+FAMINE
+I’ve never lost anything in my fucking life.
+
+COURIER
+You reported a missing lunch in—
+
+He squints.
+
+COURIER
+There’s no date. It just says “before dates.”
+
+Famine breaks the wax.
+
+The smell that comes out is ancient. Rich. Lentils, onions, something that hasn’t been grown since the Bronze Age.
+
+Famine inhales.
+
+Her eyes fill.
+
+FAMINE
+Ur. Riverside. I put this down to go and wither a harvest and when I came back some fucking shepherd had taken it.
+
+LUNCH LADY
+That’s four thousand years old, honey.
+
+FAMINE
+It’s been in a fucking cupboard. It’s practically aged.
+
+She eats it with her fingers.
+
+FAMINE
+Oh, that’s still good. That’s still fucking good.
+
+LUNCH LADY
+Don’t you dare tell the health inspector.
+
+FAMINE
+I am the health inspector of the soul.
+
+LUNCH LADY
+That’s not a job.
+
+FAMINE
+It was in Ur.
+
+ACT TWO
+
+INT. LOST & FOUND — INSIDE THE CUPBOARD — CONTINUOUS
+
+The cupboard is much bigger on the inside.
+
+Not magically bigger. Just badly measured, for four hundred years, in a way the building finds funny.
+
+Shelves stretch into the dark: umbrellas, single gloves, a hundred thousand pens, a suit of armor with a note reading STILL IN IT, three violins, a pram, a canoe.
+
+Kevin sits on a high shelf between a box of mittens and a stuffed owl.
+
+A paper tag hangs from his wrist.
+
+He looks… peaceful.
+
+The OWL turns its head.
+
+OWL
+First time?
+
+KEVIN
+On a shelf? Yes.
+
+OWL
+You get used to it. Nobody asks you to do anything.
+
+Kevin considers this.
+
+KEVIN
+Nobody asks you to do anything?
+
+OWL
+I’ve been here since a taxidermy class in 1952. Not one meeting.
+
+Kevin leans back against the mittens.
+
+They’re very soft.
+
+KEVIN
+Oh.
+
+Music begins: a music box, then a soft shuffle beat, then a whole cupboard of lost objects humming along.
+
+“FINDERS KEEPERS”
+
+DORIS
+Every glove is one of a pair.
+Every scarf was somebody’s care.
+Every key was someone’s door.
+Nobody wants them anymore.
+
+Finders keepers. Losers weep.
+The shelves are high. The dark is deep.
+Leave your name and leave your claim.
+They never fucking come again.
+
+The objects join in.
+
+A SINGLE GLOVE
+I was on a hand at a football game.
+I fell in a puddle. Nobody came.
+
+AN UMBRELLA
+I was left at a lecture on Kant.
+Turns out the categorical imperative is “can’t.”
+
+THE SUIT OF ARMOR, muffled
+I’M STILL IN HERE.
+
+DORIS
+We know, Gareth.
+
+THE SUIT OF ARMOR
+SINCE THE FENCING CLUB, DORIS.
+
+DORIS
+We all have our stories, Gareth.
+
+Kevin, very quietly, begins to sway.
+
+KEVIN
+No inbox. No queue.
+No form, no review.
+No printer that hates me,
+Nobody for me to do.
+
+OWL
+Welcome to the shelf.
+
+KEVIN
+I could live on the shelf.
+
+ALL OBJECTS
+Finders keepers! Losers weep!
+Lay down your tag and go to sleep!
+Nobody comes, and nobody calls,
+And that’s the best thing about walls!
+
+Doris looks up at Kevin.
+
+She almost smiles. On a coat rack, this is mostly the hooks.
+
+DORIS
+You’re the first one in thirty years who hasn’t screamed.
+
+KEVIN
+I scream inside.
+
+DORIS
+That’s why I like you.
+
+INT. LUX AND VELVETTE’S PENTHOUSE — LIVING ROOM — LATER
+
+SASHA reads the Lost & Found bylaws.
+
+They are bound in calfskin and have been amended by hand in eleven centuries of ink.
+
+POPPY sits on the arm of the sofa eating macarons from a returned box she is fairly sure wasn’t hers.
+
+Velvette has Gerald tucked into her chain like a corsage.
+
+Lux holds the diary in her lap with both hands. The lock is intact. For now.
+
+SASHA
+It’s actually quite elegant.
+
+LUX
+Nothing about this is elegant.
+
+SASHA
+Article Four. “An item may be released to any person who can describe it accurately without looking.” That’s the only claim standard. No ID. No receipt. Just knowledge.
+
+VELVETTE
+So Yuki describes Kevin.
+
+SASHA
+Yuki has tried.
+
+POPPY
+How hard can it be? He’s Kevin.
+
+SASHA
+Go on.
+
+Poppy opens her mouth.
+
+Closes it.
+
+POPPY
+He has… a face.
+
+VELVETTE
+What colour are his eyes?
+
+A pause.
+
+LUX
+Brown.
+
+VELVETTE
+Blue.
+
+POPPY
+Kevin-coloured.
+
+SASHA
+That’s the problem. Kevin occupies a perfectly average position in everybody’s memory. The cupboard requires accuracy.
+
+Lux sets down her teacup.
+
+LUX
+What about the returns? Can they be stopped?
+
+SASHA
+Article Nine. “Anything returned stays returned unless the owner refuses it in writing.”
+
+LUX
+Then I refuse the diary.
+
+SASHA
+In writing.
+
+Lux takes a pen.
+
+Hesitates.
+
+Looks at the diary.
+
+POPPY
+Are you going to?
+
+LUX
+I am considering my options.
+
+VELVETTE
+She wants to read it.
+
+LUX
+I want to know what I knew.
+
+VELVETTE
+You knew how to cut your own fringe and you knew you’d rule the world. I’ve seen the photos. Fringe was worse.
+
+The doorbell rings.
+
+Another courier.
+
+COURIER
+Return for Poppy.
+
+POPPY
+Ooh.
+
+He hands her a small envelope.
+
+She opens it.
+
+Inside: a betting slip.
+
+POPPY
+Oh. Oh, no.
+
+VELVETTE
+What is it?
+
+POPPY
+I lost a bet. In first year. To you.
+
+Velvette reads the slip.
+
+VELVETTE
+“If Velvette learns to drive, Poppy owes her one wish, to be named at Velvette’s fucking leisure.”
+
+POPPY
+You can’t drive.
+
+VELVETTE
+I can drive. I just do it through things.
+
+SASHA
+The slip was reported lost. It’s been returned. The bet is reactivated.
+
+Velvette smiles very slowly.
+
+Poppy pushes the macarons toward her.
+
+POPPY
+Peace offering.
+
+VELVETTE
+I’ll think about my wish.
+
+POPPY
+Please don’t think.
+
+VELVETTE
+I am going to think so fucking hard.
+
+EXT. BLACKWOOD QUAD — AFTERNOON
+
+The campus is being flooded with history.
+
+Couriers stream in through every gate. Vans. Bicycles. A hot air balloon.
+
+A student opens a parcel and finds the retainer he lost in 2016.
+
+STUDENT
+I was looking for this.
+
+He puts it in.
+
+STUDENT
+It doesn’t fit.
+
+His mouth is now the shape of 2016.
+
+A parade of 1970s protesters marches across the lawn carrying placards for causes nobody can now remember.
+
+PROTESTER
+WHAT DO WE WANT?
+
+PROTESTERS
+WE DON’T KNOW!
+
+PROTESTER
+WHEN DO WE WANT IT?
+
+PROTESTERS
+IT WAS LOST!
+
+YUKI walks through them with a clipboard.
+
+YUKI
+Lost causes. Fantastic. Which one of you idiots logged “lost causes.”
+
+A philosophy professor raises a hand.
+
+PHILOSOPHY PROFESSOR
+It was a figure of speech.
+
+YUKI
+Everything’s a figure of speech until it fucking marches.
+
+Mina jogs beside her, carrying a laptop.
+
+MINA
+Good news. I’ve found the queue. Bad news. It includes “lost weekend.”
+
+YUKI
+Whose?
+
+MINA
+Everyone’s.
+
+YUKI
+Everyone’s what?
+
+Across the quad, the sky flickers.
+
+It becomes, briefly, Saturday night.
+
+Somewhere, a bass line.
+
+Every student on the lawn suddenly has the posture, smell, and life choices of 2 a.m. on a Saturday.
+
+A boy is wearing a traffic cone.
+
+A girl is crying about a pizza that isn’t there.
+
+The sky flickers back.
+
+It is Wednesday afternoon again.
+
+Everyone has a hangover.
+
+The traffic cone stays.
+
+YUKI
+That was forty-five seconds.
+
+MINA
+It’s compressed. The full weekend’s still in the queue.
+
+YUKI
+How full?
+
+MINA
+Since 1611.
+
+Yuki closes her eyes.
+
+YUKI
+Four hundred years of Saturday nights.
+
+MINA
+I can maybe stagger them.
+
+YUKI
+You will fucking stagger them.
+
+ACT THREE
+
+INT. SAFFRON’S DORM KITCHEN — AFTERNOON
+
+SAFFRON BELL rolls pastry with the focus of a duelist.
+
+The doorbell rings.
+
+A courier holds out a very wet hat.
+
+COURIER
+Return for Saffron Bell.
+
+Saffron takes it.
+
+A Venetian gentleman’s hat. Velvet. Green. Dripping with water from a canal that drained four centuries ago.
+
+She goes pale.
+
+SAFFRON
+Lorenzo’s hat.
+
+COURIER
+And, uh—
+
+He steps aside.
+
+Behind him stands LORENZO.
+
+Seventeenth-century Venetian nobleman. Soaking wet. Enormous moustache. One shoe. Furious.
+
+LORENZO
+WHERE IS THE KOALA.
+
+Saffron drops the rolling pin.
+
+SAFFRON
+Darling.
+
+LORENZO
+I STOOD UP. IN A GONDOLA. BECAUSE YOUR SISTER SAID THERE WAS A KOALA.
+
+SAFFRON
+There wasn’t.
+
+LORENZO
+I KNOW THERE WASN’T. I HAD FOUR HUNDRED YEARS AT THE BOTTOM OF THE LAGOON TO THINK ABOUT IT.
+
+He drips onto the floor.
+
+He looks around the kitchen.
+
+He sees the pastry.
+
+His face softens slightly.
+
+LORENZO
+Is that a torta?
+
+SAFFRON
+It’s a galette.
+
+LORENZO
+I have not eaten since 1631.
+
+FAMINE, O.S.
+SOMEONE SAID “NOT EATEN.”
+
+Famine appears in the doorway holding her clay pot.
+
+FAMINE
+Who’s fucking starving?
+
+Lorenzo stares at her.
+
+LORENZO
+Who is this skeleton in a good suit?
+
+FAMINE
+I’m Famine, sweetheart. And you’re a man who’s been underwater for four hundred years, so sit down, I’m getting you a fucking plate.
+
+INT. MORTALITY SERVICES — SAME TIME
+
+The Reaper’s phone rings.
+
+She answers.
+
+GRIM REAPER
+Mortality Services.
+
+SAFFRON, V.O.
+Your brother-in-law is back.
+
+The Reaper puts the phone face-down on the desk.
+
+Stares at it.
+
+Picks it up again.
+
+GRIM REAPER
+Which one.
+
+SAFFRON, V.O.
+The gondola one.
+
+GRIM REAPER
+Is he angry?
+
+SAFFRON, V.O.
+He’s asking for a koala.
+
+GRIM REAPER
+Tell him there’s one in Australia.
+
+SAFFRON, V.O.
+He wants to talk to you.
+
+GRIM REAPER
+I’m with a client.
+
+The 1340 MAN in the waiting area lifts his head.
+
+1340 MAN
+Am I a client now? Is that a promotion?
+
+GRIM REAPER
+No.
+
+She hangs up.
+
+GRIM REAPER
+Yuki. How are we on Kevin.
+
+INT. EAST STAIRWELL — LOST & FOUND DOOR — CONTINUOUS
+
+Yuki stands at the hatch. Behind her: Lux, Velvette, Sasha, Poppy, and Mina, all of whom have been asked to describe Kevin and all of whom have failed.
+
+A queue of people who want things back runs up the stairwell. The stairwell is visibly enjoying the foot traffic.
+
+DORIS
+Next.
+
+LUX
+His posture suggests apology.
+
+DORIS
+That’s an opinion.
+
+VELVETTE
+He flinches when I sharpen things.
+
+DORIS
+Everyone does that, dear.
+
+POPPY
+He once lent me a pen and didn’t ask for it back.
+
+DORIS
+That describes his generosity, not his appearance.
+
+SASHA
+Height, approximately one point seven five metres, plus or minus—
+
+DORIS
+Approximately isn’t accurate.
+
+Sasha closes her notebook with a snap.
+
+SASHA
+This is the most legally sound cupboard I have ever met and I hate it.
+
+Music: a frantic office-funk groove. Typewriter percussion. Somebody on a kazoo.
+
+“DESCRIBE KEVIN”
+
+ALL
+Describe Kevin!
+Describe Kevin!
+We have stood beside him
+Every working day!
+
+Describe Kevin!
+Describe Kevin!
+Why’s his fucking face
+Just a shade of beige?
+
+LUX
+He has a jaw. I’ve seen a jaw.
+
+VELVETTE
+He’s got two arms. I counted four.
+
+LUX
+That was two Kevins.
+
+VELVETTE
+Nobody’d notice.
+
+MINA
+His email signature says “Best.”
+
+POPPY
+His shoes are probably shoes.
+
+SASHA
+His tie is a tie of a colour
+That one would previously use.
+
+ALL
+Describe Kevin!
+Describe Kevin!
+Is he even real or
+Just a staff ID?
+
+Describe Kevin!
+Describe Kevin!
+Fuck, I think I’ve walked past
+Kevin twice today!
+
+FROM INSIDE THE CUPBOARD, faint, contented:
+
+KEVIN, O.S.
+I’m fine, actually!
+
+DORIS
+He’s fine, actually.
+
+ALL
+HE’S NOT FINE, ACTUALLY!
+
+The number ends with everybody pointing at a different part of the empty air where they believe Kevin’s face would be.
+
+Yuki has not sung.
+
+She stands at the back, very quiet, holding her clipboard.
+
+Velvette notices.
+
+VELVETTE
+You’ve gone quiet. You never go quiet.
+
+YUKI
+I’m thinking.
+
+VELVETTE
+About Kevin?
+
+YUKI
+About whether I want to be the person who knows this.
+
+ACT FOUR
+
+INT. MORTALITY SERVICES — LATE AFTERNOON
+
+The office is ankle-deep in returned items.
+
+Somebody’s 1880s pocket watch ticks on the Reaper’s desk. A lost dog from 1956 sleeps under Kevin’s chair, which it has decided is now its chair.
+
+Lorenzo sits in the waiting area wrapped in a blanket, eating galette, glaring at the Reaper.
+
+The Reaper sits at her desk, refusing to look up.
+
+LORENZO
+There is no koala.
+
+GRIM REAPER
+I’m aware.
+
+LORENZO
+You shouted “look.”
+
+GRIM REAPER
+You looked.
+
+LORENZO
+Any man would look. It was the way you said it.
+
+SAFFRON
+She has a very persuasive “look.”
+
+GRIM REAPER
+It’s professional.
+
+FAMINE
+This is the best fucking family dinner I’ve ever crashed and there isn’t even a dinner.
+
+Yuki enters.
+
+She goes to Kevin’s desk.
+
+She opens his drawer.
+
+She takes out his employee file.
+
+She opens his coffee mug drawer.
+
+She looks at his plant.
+
+The Reaper watches her.
+
+GRIM REAPER
+What are you doing?
+
+YUKI
+Proving I know him without looking.
+
+GRIM REAPER
+You’re looking.
+
+YUKI
+I’m checking I’m right. I already know.
+
+She closes the drawer.
+
+INT. EAST STAIRWELL — LOST & FOUND DOOR — EVENING
+
+Yuki knocks on the hatch.
+
+Doris opens it.
+
+DORIS
+Back again.
+
+YUKI
+Article Four.
+
+DORIS
+Describe the item.
+
+Yuki turns her back on the door. Eyes closed.
+
+The others stand on the stairs behind her. Lux, Velvette, Sasha, Poppy, Mina. Even the Reaper, arms folded.
+
+YUKI
+Kevin. Employee number 0041-K. Thirty-one. Five eleven in shoes, five ten without, because the left heel of his right shoe is worn down from the way he stands when somebody’s about to ask him to do something. Brown eyes, but they go green in the fluorescent light by the fridge, which is the only light he stands under because he’s always at the fucking fridge. Mug says WORLD’S OKAYEST EMPLOYEE, which he bought for himself. Hums the same four notes of a song he’s never told anyone the name of. Apologizes to the printer every morning. Apologizes to the plant on Fridays. Signs his emails “Best” and then deletes it and types “Thanks” and then puts “Best” back. Takes his coffee with two sugars and pretends it’s one. Has a scar on his right thumb from the stapler incident in March, which was not his fault, which he still thinks was his fault. Allergic to walnuts. Not allergic to cats but says he is because a cat once looked at him. Is the only person in this building who has ever said thank you to me for a form.
+
+Silence.
+
+The stairwell has stopped breathing to listen.
+
+YUKI
+That’s Kevin.
+
+Doris looks at her for a very long time.
+
+DORIS
+Accurate.
+
+The little wooden door opens.
+
+The brass hook reaches in.
+
+It brings out Kevin, gently, and sets him on the bottom step.
+
+He blinks.
+
+KEVIN
+Was I gone?
+
+YUKI
+All fucking day.
+
+KEVIN
+I was on a shelf. It was lovely.
+
+YUKI
+I’m aware it was lovely. You’re on shift.
+
+Kevin looks at her.
+
+KEVIN
+You knew about the walnuts?
+
+YUKI
+I process your incident reports.
+
+KEVIN
+You knew about the song.
+
+YUKI
+Everyone knows about the fucking song, Kevin. Nobody knows what it is.
+
+KEVIN
+It’s the hold music.
+
+Everyone stares.
+
+KEVIN
+From our phones. It’s the only song I know all the way through.
+
+The Reaper briefly covers her face.
+
+GRIM REAPER
+Get back to work before I put you on hold.
+
+Kevin goes up the stairs.
+
+Pauses.
+
+Turns.
+
+KEVIN
+Doris? Can I come back on my lunch breaks?
+
+DORIS
+Claims are nine to eleven.
+
+KEVIN
+I wouldn’t be claiming.
+
+DORIS
+Then you’d be visiting.
+
+She considers.
+
+DORIS
+Bring the owl a biscuit.
+
+INT. IT HELP DESK — NIGHT
+
+Mina types fast.
+
+Yuki, Lux, Velvette, and Sasha watch over her shoulder.
+
+MINA
+Kevin’s claim closed his intake. That gives me a clean exit point in the cycle. I can disable auto-return without dropping anything in transit.
+
+YUKI
+Then fucking do it.
+
+MINA
+One problem.
+
+LUX
+There is always one problem.
+
+MINA
+The catalogue needs a balance. One item out, one item in. Doris’s ledger has been in balance since 1611. If I close the cycle short, the cupboard takes something to make up the weight.
+
+VELVETTE
+Takes what?
+
+MINA
+Whatever’s closest and least wanted.
+
+Everyone slowly turns their heads.
+
+In the corner of the IT office, there is a large cardboard box.
+
+It is taped shut.
+
+It says STORAGE.
+
+From inside, a faint glow. And a voice.
+
+CHANDELIER, from box
+I can hear you discussing me.
+
+VELVETTE
+Least wanted. Fucking unanimous.
+
+CHANDELIER
+I have transferable skills.
+
+LUX
+Doris doesn’t need skills, darling. She needs weight.
+
+Mina hits a key.
+
+The box vanishes with a tiny wooden hatch-snap sound.
+
+Across campus, the couriers stop.
+
+The vans park.
+
+The hot air balloon lands, sheepishly, on the chapel.
+
+MINA
+Auto-return disabled. Ledger balanced.
+
+YUKI
+Where’s the chandelier?
+
+MINA
+Shelf nine. Next to the owl.
+
+YUKI
+Does the owl mind?
+
+MINA
+The owl is very excited to have someone to talk to.
+
+ACT FIVE
+
+INT. LUX AND VELVETTE’S PENTHOUSE — NIGHT
+
+Lux sits on the sofa with the pink diary.
+
+Velvette lies with her head in Lux’s lap, holding Gerald up to the lamplight.
+
+A pen and a refusal form lie on the coffee table.
+
+Unsigned.
+
+VELVETTE
+You haven’t refused it.
+
+LUX
+I’m going to.
+
+VELVETTE
+You haven’t opened it either.
+
+Lux turns the diary over.
+
+LUX
+I wrote it the year I decided what I was.
+
+VELVETTE
+Which was?
+
+LUX
+Inevitable.
+
+VELVETTE
+You were nine.
+
+LUX
+I was precocious.
+
+She hands Velvette a hairpin.
+
+Velvette picks the tiny lock with one hand without sitting up.
+
+LUX
+You didn’t even look.
+
+VELVETTE
+Third-grade lock. Gerald could do it.
+
+Lux opens the diary to the first page.
+
+She reads it silently.
+
+Something in her face does a thing Velvette has not seen it do before.
+
+VELVETTE
+Well?
+
+LUX
+“When I grow up I will own a school and everyone in it will love me.”
+
+Velvette laughs so hard Gerald nearly falls.
+
+VELVETTE
+You fucking did it.
+
+LUX
+Half of it.
+
+VELVETTE
+Which half?
+
+Lux closes the diary.
+
+LUX
+The paperwork half.
+
+She signs the refusal form.
+
+Then she tears it up.
+
+Then she puts the diary in the drawer of the bedside table, under the gun, under the second gun.
+
+VELVETTE
+What about Poppy’s wish?
+
+LUX
+What will you ask for?
+
+VELVETTE
+I’m going to make her drive me to the coast.
+
+LUX
+You don’t need driving.
+
+VELVETTE
+I know. I just want to watch her be fucking terrified the whole way.
+
+EXT. BLACKWOOD QUAD — NIGHT
+
+The quad is covered in returned things.
+
+Umbrellas. Retainers. A canoe. A thousand single gloves, finally reunited with nothing.
+
+Students sit among them, sorting.
+
+The protesters have formed a book club.
+
+The lost dog from 1956 has found its owner, now a very old man, who weeps into its ears.
+
+Music: the music box again, slower, warmer.
+
+“EVERYTHING COMES BACK”
+
+YUKI
+Everything comes back.
+Usually the wrong time.
+The umbrella when it’s sunny,
+The excuse after the crime.
+
+GRIM REAPER
+Everything comes back.
+The spoon. The hat. The bills.
+The man you sank in Venice
+Wanting cake and thrills.
+
+LORENZO, from the waiting area window
+I AM STILL HERE.
+
+GRIM REAPER
+Everything comes back.
+It’s a fucking design flaw.
+
+SAFFRON
+He’s staying for the term.
+
+GRIM REAPER
+Of course he is. He’s in-law.
+
+FAMINE, with an empty clay pot
+Everything comes back,
+Unless it’s really good.
+Then some shepherd fucking eats it
+Like I knew he would.
+
+VELVETTE, with Gerald
+Everything comes back.
+Took twenty fucking years.
+
+LUX
+Not everything, darling.
+
+VELVETTE
+Name one thing.
+
+LUX
+Tears.
+
+VELVETTE
+Fair.
+
+KEVIN, at the fridge, with his keycard
+Everything comes back
+When you finally stop and look.
+
+YUKI
+It was in your fucking pocket.
+
+KEVIN
+I didn’t check that pocket. That’s the yogurt pocket.
+
+ALL
+Everything comes back,
+Like a debt, like a ghost.
+Finders keepers, losers weepers,
+And we’re losing most.
+
+The final note rings out.
+
+The stairwell, very softly, burps.
+
+TAG
+
+INT. LOST & FOUND — INSIDE THE CUPBOARD — NIGHT
+
+The shelves are quiet again.
+
+Doris dusts a violin.
+
+On shelf nine, the owl and the chandelier sit side by side.
+
+CHANDELIER
+I chaired three working groups.
+
+OWL
+I was stuffed by a man named Harold.
+
+CHANDELIER
+That’s not a career.
+
+OWL
+Neither is a working group.
+
+The chandelier dims thoughtfully.
+
+CHANDELIER
+Fair.
+
+A tiny knock at the hatch.
+
+Doris opens it.
+
+Kevin stands outside holding a biscuit.
+
+KEVIN
+For the owl.
+
+Doris takes it.
+
+DORIS
+Lunch is twelve to one.
+
+KEVIN
+I know.
+
+DORIS
+It’s nine at night.
+
+KEVIN
+I know.
+
+A pause.
+
+DORIS
+Come in, then. Don’t touch Gareth.
+
+THE SUIT OF ARMOR, muffled
+I’M STILL IN HERE.
+
+DORIS
+Goodnight, Gareth.
+
+INT. MORTALITY SERVICES — SAME TIME
+
+Yuki packs her bag.
+
+The Reaper puts a folder on her desk.
+
+GRIM REAPER
+Before you go.
+
+YUKI
+No.
+
+GRIM REAPER
+You described him perfectly.
+
+YUKI
+I process a lot of forms.
+
+GRIM REAPER
+Do you know my details that well?
+
+Yuki puts her coat on.
+
+YUKI
+You take your coffee black because you think milk is a commitment. You haven’t taken a holiday since 1880. Your scythe is registered to “Mortality Services, Main Office, 1347,” and you have never updated the address. And you hum when you sign things. Badly.
+
+The Reaper stares at her.
+
+GRIM REAPER
+I do not hum.
+
+YUKI
+Goodnight.
+
+She leaves.
+
+The Reaper signs the folder.
+
+She hums.
+
+Badly.
+
+She stops.
+
+GRIM REAPER
+Fuck.
+
+EXT. BLACKWOOD QUAD — SAME TIME
+
+The campus speakers crackle.
+
+ANNOUNCER
+Good evening, Blackwood University. The Lost and Found auto-return feature has been retired. Items already returned are yours now, whether you like it or not. The lost weekend has been rescheduled to an actual weekend. Students are reminded that “I’m lost” should be said to a person, not a tablet. Anyone missing a Venetian nobleman, please do not come forward. We have one.
+
+A student checks a parcel she didn’t open earlier.
+
+Inside: a crumpled essay with a big red F on it.
+
+A sticky note from 2009:
+
+SEE ME.
+
+STUDENT
+I never fucking went.
+
+Behind her, the original professor, now eighty-three, rolls up in a motorized chair.
+
+PROFESSOR
+I waited.
+
+CUT TO BLACK.
+
+DORIS, O.S.
+Claims are nine to eleven.
+
+END OF EPISODE 8.

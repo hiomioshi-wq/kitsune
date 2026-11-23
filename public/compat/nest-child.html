@@ -1,0 +1,2 @@
+<!doctype html><html><head><title>child</title></head><body><p>Inner frame</p>
+<script>fetch("icons.svg").then((r) => r.text()).then((t) => parent.postMessage({ kbtest: "child-" + (t.includes("symbol") ? "ok" : "bad") }, "*")).catch((e) => parent.postMessage({ kbtest: "child-err " + e.message }, "*"));</script></body></html>

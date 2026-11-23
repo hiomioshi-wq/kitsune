@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="600" height="900">
+    <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a1a22"/><stop offset=".6" stop-color="#170a12"/><stop offset="1" stop-color="#050406"/></linearGradient></defs>
+    <rect width="600" height="900" fill="url(#g)"/><circle cx="190" cy="500" r="46" fill="#e8eef8" opacity=".85"/><circle cx="300" cy="470" r="62" fill="#f4f8ff" opacity=".95"/><circle cx="420" cy="505" r="40" fill="#dce6f4" opacity=".8"/>
+    <rect x="0" y="760" width="600" height="140" fill="#5a5a60" opacity=".55"/>
+    <path d="M 120 760 L 132 690 M 132 690 L 104 660 M 132 690 L 160 668 L 176 672" stroke="#121216" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <path d="M 330 780 l 10 -30 h 120 l 20 30 Z" fill="#6a2a22"/><rect x="320" y="778" width="170" height="26" rx="6" fill="#7a3428"/><circle cx="350" cy="806" r="12" fill="#121216"/><circle cx="462" cy="806" r="12" fill="#121216"/>
+    <path d="M 280 560 L 280 760 M 316 560 L 316 760" stroke="#8ad8ff" stroke-width="3" opacity=".9"/>
+    <path d="M 280 580 H 316" stroke="#8ad8ff" stroke-width="3" opacity="0.9"/><path d="M 280 604 H 316" stroke="#8ad8ff" stroke-width="3" opacity="0.8200000000000001"/><path d="M 280 628 H 316" stroke="#8ad8ff" stroke-width="3" opacity="0.74"/><path d="M 280 652 H 316" stroke="#8ad8ff" stroke-width="3" opacity="0.66"/><path d="M 280 676 H 316" stroke="#8ad8ff" stroke-width="3" opacity="0.5800000000000001"/><path d="M 280 700 H 316" stroke="#8ad8ff" stroke-width="3" opacity="0.5"/><path d="M 280 724 H 316" stroke="#8ad8ff" stroke-width="3" opacity="0.42000000000000004"/><path d="M 280 748 H 316" stroke="#8ad8ff" stroke-width="3" opacity="0.33999999999999997"/>
+    <text x="300" y="120" text-anchor="middle" font-size="26" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="800" fill="#e8d9c4" letter-spacing="10">BACKROOMS</text>
+    <text x="300" y="150" text-anchor="middle" font-size="16" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" fill="#8ad8ff" letter-spacing="8">NO WIND RESISTANCE</text>
+    <text x="300" y="300" text-anchor="middle" font-size="20" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="700" fill="#8ad8ff" letter-spacing="5">NEXT EPISODE</text>
+    <text x="300" y="360" text-anchor="middle" font-size="54" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="900" fill="#f5ece0"><tspan x="300" dy="0">Corbenic</tspan></text>
+  </svg>

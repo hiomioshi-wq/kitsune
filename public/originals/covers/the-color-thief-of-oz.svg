@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="600" height="900"><rect width="600" height="900" fill="#6fa3d8"/><rect width="600" height="420" fill="#cfe4f5"/>
+    <path d="M 0 420 Q 150 330 300 400 T 600 380 L 600 900 L 0 900 Z" fill="#2f63a8"/><path d="M 0 500 Q 200 430 400 490 T 600 470 L 600 900 L 0 900 Z" fill="#3d7bc4"/>
+    <path d="M 0 360 Q 120 300 260 350 L 260 900 L 0 900 Z" fill="#8a8a8a" opacity=".85"/><path d="M 0 470 Q 100 430 200 470 L 200 900 L 0 900 Z" fill="#9a9a9a" opacity=".85"/>
+    <path d="M 330 900 L 270 900 Q 300 640 420 470 L 450 470 Q 350 660 330 900 Z" fill="#f0c93a" stroke="#b8901c" stroke-width="3"/>
+    <circle cx="470" cy="150" r="70" fill="#7fc97f" opacity=".35"/><path d="M 455 170 L 470 90 L 485 170 Z M 440 170 h 60 v 30 h -60 Z" fill="#3a9d5d"/>
+    <path d="M 120 640 L 220 330" stroke="#6b4a2b" stroke-width="7" stroke-linecap="round"/><circle cx="220" cy="360" r="50" fill="#9fd0ff" opacity=".45"/><rect x="200" y="338" width="40" height="52" rx="16" fill="#4a90e2" stroke="#1b1d33" stroke-width="4"/>
+    <rect x="30" y="640" width="540" height="200" fill="#fff6e6" stroke="#1b1d33" stroke-width="6"/>
+    <text x="50" y="715" font-size="48" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="900" fill="#1b1d33"><tspan x="50" dy="0">The Color Thief of</tspan><tspan x="50" dy="48">Oz</tspan></text>
+    <text x="50" y="815" font-size="22" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" fill="#c8283a" font-weight="700">A KITSUNE ORIGINAL · OZ STORY</text></svg>

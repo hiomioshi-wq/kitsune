@@ -1,0 +1,81 @@
+{
+  "id": "the-midwinter-parcel",
+  "title": "The Midwinter Parcel",
+  "byline": "A Winterfest story game",
+  "blurb": "It's Midwinter Eve, the sleigh has broken down, and one present is still undelivered. It's ticking. You have until the bells ring at dawn.",
+  "minutes": 7,
+  "licence": "A Kitsune Original. Text released under Creative Commons Attribution 4.0.",
+  "emptyBag": "Carrying only the parcel",
+  "items": { "cocoa": "A flask of hot cocoa", "skates": "A pair of ice skates", "robin": "A robin's friendship", "opened": "A torn wrapping", "wound": "A wound-up clockwork" },
+  "start": "start",
+  "nodes": {
+    "start": {
+      "text": ["The Midwinter sleigh has lost a runner at the bottom of Fir Hill, and Bracken the reindeer is sitting in a snowdrift looking philosophical about it.", "Every present has gone out but one. It's the size of a loaf, wrapped in blue paper, and addressed to Number Nine, Frozen Lake Row. When you hold it to your ear, it ticks.", "“Dawn bells in five hours,” says Bracken. “After that it isn't a Midwinter present. It's just a late parcel. Take something from the sleigh. One thing. The rest of it's on fire, a bit.”"],
+      "choices": [{ "t": "Take the flask of cocoa", "to": "road", "set": ["cocoa"] }, { "t": "Take the ice skates", "to": "road", "set": ["skates"] }, { "t": "Take nothing and run", "to": "road" }]
+    },
+    "road": {
+      "text": ["The road to Frozen Lake forks at a signpost so thick with snow it could be saying anything.", "To the left, the long way, through Hush Wood. To the right, straight across the lake itself, which looks solid and is making a noise you'd rather it didn't.", "The parcel ticks a little faster."],
+      "choices": [{ "t": "Go through Hush Wood", "to": "wood" }, { "t": "Cross the lake on your skates", "to": "lake", "need": ["skates"] }, { "t": "Cross the lake on foot", "to": "crack", "not": ["skates"] }, { "t": "Sit down and open the parcel, just to check", "to": "peek", "not": ["opened"], "set": ["opened"] }]
+    },
+    "peek": {
+      "text": ["You peel back one corner of the paper. You are a professional, and you feel terrible.", "Inside is a clockwork robin, brass and red enamel, no bigger than your paw. It's the ticking. Its key has nearly run down, and when the ticking stops, you suspect, so will whatever it's for.", "There's a tag on its foot: For Agnes, who says she doesn't want anything."],
+      "choices": [{ "t": "Wind it up a little", "to": "road2", "set": ["wound"] }, { "t": "Wrap it back up and leave it alone", "to": "road2" }]
+    },
+    "road2": {
+      "text": ["You smooth the paper down as best you can. It doesn't fool anybody. The signpost waits."],
+      "choices": [{ "t": "Go through Hush Wood", "to": "wood" }, { "t": "Cross the lake on your skates", "to": "lake", "need": ["skates"] }, { "t": "Cross the lake on foot", "to": "crack", "not": ["skates"] }]
+    },
+    "crack": {
+      "text": ["You get about halfway.", "The ice doesn't break so much as change its mind. One leg goes through, then the other, and for a moment you're holding the parcel over your head in black water, thinking clearly about your choices.", "You haul yourself out. The parcel's dry. You are not. Your teeth have started a small percussion section."],
+      "choices": [{ "t": "Drink the cocoa", "to": "door", "need": ["cocoa"] }, { "t": "Keep going, freezing", "to": "cold", "not": ["cocoa"] }]
+    },
+    "cold": {
+      "text": ["You make it to the far shore, and then to the first house on the Row, and then you can't feel your feet and sit down on somebody's step for just a minute.", "You wake up three hours later beside a stranger's stove, wrapped in six blankets. The dawn bells are ringing. The parcel is on the mantelpiece, silent, its key run down.", "The stranger brings you soup and asks what it was. You tell them you never found out. You deliver it in the morning, late, with an apology, and it's a very nice present, and it isn't the same."],
+      "end": { "id": "late", "title": "Just a Late Parcel", "kind": "Bittersweet" }
+    },
+    "lake": {
+      "text": ["It turns out you're quite good at this.", "You go across Frozen Lake in long, whooping curves with the parcel under one arm and the moon going along beside you. It is, you will maintain for the rest of your life, the best twenty minutes you've ever spent at work.", "You arrive at the Row with four hours to spare and a nosebleed from grinning."],
+      "choices": [{ "t": "Knock at Number Nine", "to": "door" }]
+    },
+    "wood": {
+      "text": ["Hush Wood is called that for a reason. The snow eats every sound, including, you notice, your footsteps.", "Halfway through you find a robin on a low branch, puffed up to twice her size, with one wing held wrong. She looks at you as though this is somehow your fault."],
+      "choices": [{ "t": "Share your cocoa and warm her up", "to": "robin", "need": ["cocoa"], "set": ["robin"], "clear": ["cocoa"] }, { "t": "Tuck her inside your coat", "to": "robin", "set": ["robin"] }, { "t": "You haven't got time. Keep walking", "to": "lost" }]
+    },
+    "robin": {
+      "text": ["She complains the entire time, and then she stops complaining, and then you feel a very small heartbeat against your ribs.", "When she's warm she climbs out onto your shoulder and looks at the trees and points her whole head left. You'd have gone right. You go left. She's correct, which she seems to have expected."],
+      "choices": [{ "t": "Follow her to the Row", "to": "door" }]
+    },
+    "lost": {
+      "text": ["You keep walking. The trees all begin to look like the same tree, and then you find your own footprints, and then you find them again.", "By the time you stumble out of Hush Wood the sky's gone pale and the bells are starting, a long way behind you, on the wrong side of the hill.", "You sit down on a log. The parcel ticks, and ticks, and slows, and stops. Somewhere in the wood a bird is complaining. You think about that for a long time."],
+      "end": { "id": "hush", "title": "Hush Wood", "kind": "Sad" }
+    },
+    "door": {
+      "text": ["Number Nine, Frozen Lake Row, is the only house on the street with no lights up. There's no wreath, no candle. There's a note on the door in firm handwriting: NO CAROLS. NO CHARITY. I DON'T WANT ANYTHING.", "You knock. After a very long time, an old hare opens the door four inches and looks at you, and at the parcel, as if you've brought her a bill.", "“I said I don't want anything,” says Agnes."],
+      "choices": [{ "t": "“It's got your name on it.” Hold it out", "to": "give" }, { "t": "“Then I'll leave it on the step,” and go", "to": "step" }, { "t": "“I opened it. It's a robin. Somebody made you a robin”", "to": "truth", "need": ["opened"] }, { "t": "Say nothing, and let the real robin hop onto your paw", "to": "bird", "need": ["robin"] }]
+    },
+    "step": {
+      "text": ["You set it down and walk away, because you've delivered it, technically, and that's the job.", "At the corner you look back. The door's shut. The parcel's on the step with the snow beginning to settle on it.", "A week later it's still there. You know, because you walk past on purpose. On the eighth day it's gone, and you never learn whether she took it in or the snow did."],
+      "end": { "id": "step", "title": "Delivered, Technically", "kind": "Quiet" }
+    },
+    "give": {
+      "text": ["She takes it to make you go away. She opens it to prove a point. And then the paper's on the floor and she's holding a clockwork robin and she's stopped being able to prove anything.", "“He made these,” she says. “My Arthur. He had one half finished when he died, it'd be eleven years. I thought they'd thrown it out.” She turns it over. The tag's in the handwriting of the neighbour's boy, who'd been learning to mend clocks, and had kept it, and finished it, and been too shy to knock."],
+      "choices": [{ "t": "Wind the key", "to": "sing", "need": ["wound"] }, { "t": "Wind the key", "to": "sing", "not": ["wound"] }]
+    },
+    "truth": {
+      "text": ["Her ears go flat. “You opened my post.”", "“I did,” you say. “I'm sorry. It was ticking. There's a tag, it's for you, and I don't think it can wait for you to be cross with me.”", "There's a long pause. Nobody's been honest at her in quite some time, and you can see her deciding she might enjoy it. The door opens the rest of the way."],
+      "choices": [{ "t": "Hand it over", "to": "give" }]
+    },
+    "bird": {
+      "text": ["The robin looks at Agnes. Agnes looks at the robin. The robin hops off your paw, across the doorstep and into the house as though she's been paying rent.", "“Well, you can't leave that in here,” says Agnes, in the voice of someone who's already looking for a saucer. By the time she turns back you've put the parcel in her hands.", "She opens it. A clockwork robin, brass and red, and on its foot a tag. She looks from one bird to the other and sits down quite suddenly on the stairs."],
+      "choices": [{ "t": "Wind the little key together", "to": "both" }]
+    },
+    "sing": {
+      "text": ["It sings. Six notes, a bit tinny, slightly flat. Agnes knows them. She hums the seventh, which the clockwork never gets to.", "Up and down Frozen Lake Row the dawn bells begin. She doesn't take the note off the door. But she does put a candle in the window, and she does say, as if it costs her money, “I suppose you'd better come in. There's cake. It's not a good cake.”", "It's not. You have three slices."],
+      "end": { "id": "seventh", "title": "The Seventh Note", "kind": "Happy" }
+    },
+    "both": {
+      "text": ["It sings, six tinny notes, and the real robin puts her head on one side, listens to them with deep professional contempt, and sings them back properly, and then adds a seventh.", "Agnes laughs. It comes out rusty. It's clearly the first in years and it startles all three of you.", "The dawn bells start. By noon the note's gone from the door. By next Midwinter there's a wreath on it, and a bird table, and the neighbour's boy comes round on Sundays to learn what Arthur knew from the only person left who watched him do it. And every year, on Midwinter Eve, there's a slice of not-very-good cake left out on the step, with your name on it."],
+      "end": { "id": "true", "title": "Two Robins", "kind": "True ending" }
+    }
+  }
+}

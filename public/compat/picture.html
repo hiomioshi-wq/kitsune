@@ -1,0 +1,8 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Picture test</title></head><body>
+<h1>Every way a picture can arrive</h1>
+<picture><source srcset="/sample/000.svg 1x, /sample/001.svg 2x" media="(min-width: 500px)"><source srcset="/sample/002.svg"><img src="/sample/003.svg" alt="Falls back last" width="120" height="120"></picture>
+<figure><img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="A lazy placeholder that should be replaced"><figcaption>Fig. 1 — the placeholder trap</figcaption></figure>
+<object data="/icon.svg" type="image/svg+xml" width="80" height="80"><p>Fallback text inside the object</p></object>
+<img src="/missing-404.png" alt="A picture that will never load; its alt text is the page's only description">
+<img data-src="/sample/000.svg" alt="Loaded from data-src">
+</body></html>

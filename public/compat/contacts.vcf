@@ -1,0 +1,18 @@
+BEGIN:VCARD
+VERSION:3.0
+FN:Ponzu
+TITLE:Tea-steeper
+ORG:The Tea Shop at the End of the Line
+EMAIL;CHARSET=UTF-8:ponzu@teashop.example
+TEL:+1-555-0103
+URL:https://teashop.example
+ADR:;;The end of the line;Hollow Pine;;;52.0,-3.1
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+FN:Wren
+TITLE:Night broadcaster
+ORG:Moth Radio
+EMAIL:wren@mothradio.example
+TEL:+1-555-0142
+END:VCARD

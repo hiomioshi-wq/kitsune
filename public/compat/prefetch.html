@@ -1,0 +1,16 @@
+<!doctype html><!-- tests resource hints: preload as image/font/fetch, prefetch, modulepreload — safely droppable — and a print stylesheet that must not apply on screen -->
+<html><head><meta charset="utf-8"><title>Prefetch test</title>
+<link rel="preload" href="late.css" as="style">
+<link rel="preload" href="/sample/000.svg" as="image">
+<link rel="preload" href="/fonts/serif.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="readme.md" as="fetch">
+<link rel="prefetch" href="/sample/001.svg">
+<link rel="modulepreload" href="meta.js">
+<link rel="stylesheet" href="print-swap.css" media="print">
+<style media="print">body{display:none}</style>
+</head><body>
+<h1>Hint soup, none of it needed to read the page</h1>
+<p>The page must show this text. The image, font and fetch preloads, the prefetch and the modulepreload are all hints the engine can drop; the print stylesheet must never dress the screen copy, so nothing here may vanish.</p>
+<p class="ps">This paragraph stays uncoloured: print-swap.css is print-only here, so its rgb(1, 100, 1) must not apply.</p>
+<p>The heading above may pick up late.css, since a preload as=style is just a stylesheet that arrived early.</p>
+</body></html>

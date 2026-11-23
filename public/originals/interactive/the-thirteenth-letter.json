@@ -1,0 +1,209 @@
+{
+  "id": "the-thirteenth-letter",
+  "title": "The Thirteenth Letter",
+  "byline": "A Kitsu Delivers story game",
+  "blurb": "You are Kitsu, fox courier. One letter is left in your bag, a storm is coming, and it must reach Lantern Island by dawn. Every choice changes who it reaches, and how.",
+  "minutes": 10,
+  "licence": "A Kitsune Original. Text released under Creative Commons Attribution 4.0.",
+  "items": { "lantern": "Tamba's lantern", "bread": "A loaf of warm bread", "map": "An old survey map", "moth": "A moth's friendship", "frog": "A frog's good word", "owed": "A favour owed to Osk", "opened": "A broken seal", "soaked": "A soaked letter" },
+  "start": "start",
+  "nodes": {
+    "start": {
+      "text": ["The post office at Upper Pass closes at sundown, and you are the only one still in it. Twelve letters went out today. The thirteenth is still in your bag.", "It has a black wax seal and no return address. On the front, in handwriting gone brown with age: To whoever is still awake on Lantern Island. Deliver by dawn.", "Tamba the badger, who runs the office and disapproves of weather, looks out at the piling clouds. “You'll not go tonight.”", "You buckle your satchel.", "Tamba sighs through his whole body. “Then take something. One thing. I'm not made of supplies.”"],
+      "choices": [
+        { "t": "Take the storm lantern", "to": "fork", "set": ["lantern"] },
+        { "t": "Take the loaf cooling on the stove", "to": "fork", "set": ["bread"] },
+        { "t": "Take the old survey map off the wall", "to": "fork", "set": ["map"] }
+      ]
+    },
+    "fork": {
+      "text": ["Outside the wind has teeth. Two ways lead down to the coast.", "The Marsh Road is long and low and goes wherever the water lets it. The Old Tunnel cuts straight through the mountain, and nobody has maintained it since the miners left.", "The letter sits against your ribs. It weighs almost nothing. You keep noticing it anyway."],
+      "choices": [
+        { "t": "Take the Marsh Road", "to": "marsh" },
+        { "t": "Take the Old Tunnel", "to": "tunnel" },
+        { "t": "Stop under the eaves and look at the letter", "to": "peek", "not": ["opened", "resisted"] }
+      ]
+    },
+    "peek": {
+      "text": ["You turn it over. The wax has cracked a little with age. One claw under the edge and it would lift without a sound.", "Couriers do not open letters. It is the first rule, and the second, and most of the third.", "But nobody has written to Lantern Island in your lifetime. Nobody you know has even been there."],
+      "choices": [
+        { "t": "Lift the seal, just to see", "to": "opened", "set": ["opened"] },
+        { "t": "Put it away. It isn't yours", "to": "fork", "set": ["resisted"] }
+      ]
+    },
+    "opened": {
+      "text": ["The wax gives with a tiny snap that you feel in your teeth.", "You read only the first line. Mirren. I should have written this forty years ago.", "Then the shame arrives, late and enormous, and you fold it shut. The seal will not stick. It sits on the paper like a scab.", "Well. It's done. The storm doesn't care."],
+      "choices": [{ "t": "Get moving", "to": "fork" }]
+    },
+    "tunnel": {
+      "text": ["The Old Tunnel swallows the wind whole. Ten steps in, the storm is a rumour. Twenty steps in, you cannot see your own paws.", "The air smells of cold iron and very old dust. Somewhere ahead, water is dripping with enormous patience."],
+      "choices": [
+        { "t": "Light Tamba's lantern", "to": "tunnel_lit", "need": ["lantern"] },
+        { "t": "Unfold the map and find the surveyors' passage", "to": "tunnel_short", "need": ["map"] },
+        { "t": "Put a paw on the wall and feel your way", "to": "tunnel_dark", "not": ["lantern"] }
+      ]
+    },
+    "tunnel_lit": {
+      "text": ["The lantern blooms gold, and the whole ceiling moves.", "Moths. Thousands of them, roosting in the rock, stirring at the light. They drift around you without touching you, like slow brown snow.", "Near the floor, one enormous old moth is caught in a web, beating one wing. The spider is nowhere. The moth has clearly been at this for hours.", "You are late already."],
+      "choices": [
+        { "t": "Stop and free the moth", "to": "tunnel_free", "set": ["moth"] },
+        { "t": "Keep walking. Dawn won't wait", "to": "tunnel_exit" }
+      ]
+    },
+    "tunnel_free": {
+      "text": ["It takes a whole minute and a great deal of care. When the last thread comes away, the moth sits on your wrist, trembling, and looks at you with its feathery, unreadable face.", "Then it lifts off and settles on the strap of your satchel, as if it had booked the seat."],
+      "choices": [{ "t": "Walk on, with your passenger", "to": "tunnel_exit" }]
+    },
+    "tunnel_exit": {
+      "text": ["The tunnel ends in a slot of grey and the roar of the sea. You come out on the far side of the mountain with the rain in your face and the whole dark coast below you."],
+      "choices": [{ "t": "Go down to the jetty", "to": "jetty" }]
+    },
+    "tunnel_short": {
+      "text": ["The map is older than Tamba, and it knows things. Behind a rockfall, exactly where a faded pencil cross says it should be, there is a crawlway the surveyors cut.", "You go through it on your belly with the satchel in your teeth, and you come out on a ledge above the sea a full hour ahead of where you had any right to be."],
+      "choices": [{ "t": "Climb down to the jetty", "to": "jetty" }]
+    },
+    "tunnel_dark": {
+      "text": ["The wall is wet and rough and goes on for a long time. Then it stops going on. Your paw finds nothing, then a corner, then two openings, breathing cold air at you.", "From the left comes a faint, steady draught. From the right, very quietly, comes the sound of running water."],
+      "choices": [
+        { "t": "Follow the draught to the left", "to": "end_lost" },
+        { "t": "Follow the sound of water", "to": "tunnel_water" }
+      ]
+    },
+    "tunnel_water": {
+      "text": ["Water always knows the way out. It is the only thing in a mountain that is trying to leave.", "You follow the stream on your hands and knees, soaked to the shoulder, until the dark turns grey and the stream falls laughing off the cliff beside a rusted ladder."],
+      "choices": [{ "t": "Climb down to the jetty", "to": "jetty" }]
+    },
+    "marsh": {
+      "text": ["The Marsh Road is mostly a suggestion tonight. You go from tussock to tussock with the rain coming sideways.", "Halfway across you hear crying. A very small frog is sitting in a very small boat that has been blown into the reeds. Its paper lamp has gone out and it does not know which way is home.", "“Are you the post?” it says, with terrible hope."],
+      "choices": [
+        { "t": "Share your bread and sit with it until it stops shaking", "to": "marsh_bread", "need": ["bread"], "set": ["frog"], "clear": ["bread"] },
+        { "t": "Relight its lamp from your lantern", "to": "marsh_lamp", "need": ["lantern"], "set": ["frog"] },
+        { "t": "Check the map and show it the way home", "to": "marsh_map", "need": ["map"], "set": ["frog"] },
+        { "t": "Tell it you're sorry, and hurry on", "to": "marsh_on" }
+      ]
+    },
+    "marsh_bread": {
+      "text": ["It eats the whole loaf, a thing you would not have thought physically possible. Warmed through, it remembers that home is past the two dead willows, and it poles off into the rain, waving.", "“My uncle's on the jetty,” it calls. “I'll tell him you're all right!”"],
+      "choices": [{ "t": "Press on to the coast", "to": "jetty" }]
+    },
+    "marsh_lamp": {
+      "text": ["The paper lamp catches, small and orange. By its light the frog recognises the two dead willows and lets out a shriek of joy.", "“My uncle's on the jetty,” it calls, already poling away. “I'll tell him you're all right!”"],
+      "choices": [{ "t": "Press on to the coast", "to": "jetty" }]
+    },
+    "marsh_map": {
+      "text": ["You find the marsh channels on the old paper and trace one with a claw. Past the two dead willows. Left at the sunken gate.", "The frog repeats it four times, very seriously, then poles away. “My uncle's on the jetty,” it calls. “I'll tell him you're all right!”"],
+      "choices": [{ "t": "Press on to the coast", "to": "jetty" }]
+    },
+    "marsh_on": {
+      "text": ["You tell it someone will come. You don't know if that's true. You look back once, and the little dark shape in the reeds has not moved.", "You carry that the rest of the way, along with the letter."],
+      "choices": [{ "t": "Press on to the coast", "to": "jetty" }]
+    },
+    "jetty": {
+      "text": ["At the end of the jetty, under a tin roof, a tall grey heron stands on one leg beside a long black boat. This is Osk, who has run the Lantern Island ferry for longer than anyone has been counting.", "Across the strait, far out and very small, a single light turns.", "“Nobody crosses tonight,” says Osk. Then, after a while: “Unless they pay. One thing you're carrying. I don't take money. Money doesn't mean anything out there.”"],
+      "choices": [
+        { "t": "“The frog from the marsh says I'm all right.”", "to": "crossing_free", "need": ["frog"] },
+        { "t": "Pay with the bread", "to": "crossing", "need": ["bread"], "clear": ["bread"] },
+        { "t": "Pay with the map", "to": "crossing", "need": ["map"], "clear": ["map"] },
+        { "t": "Pay with Tamba's lantern", "to": "crossing", "need": ["lantern"], "clear": ["lantern"] },
+        { "t": "“I'll owe you a favour.”", "to": "crossing_owed", "set": ["owed"] },
+        { "t": "Swim for it", "to": "swim", "set": ["soaked"] },
+        { "t": "Look at the water, and go home", "to": "end_turned" }
+      ]
+    },
+    "crossing_free": {
+      "text": ["Osk's yellow eye rests on you for some time.", "“My nephew,” says the heron, “has never once been quiet about anything. He came through here ten minutes ago and has told me about you at length.” A long bony foot unhitches the rope. “Get in. No charge.”"],
+      "choices": [{ "t": "Climb aboard", "to": "crossing" }]
+    },
+    "crossing_owed": {
+      "text": ["“A favour,” says Osk, as if tasting it. “Those are the expensive ones.” The rope comes off the post. “I'll collect. Get in.”"],
+      "choices": [{ "t": "Climb aboard", "to": "crossing" }]
+    },
+    "crossing": {
+      "text": ["The strait picks up the boat and considers it. Osk poles without hurry, as though the waves were somebody else's problem.", "Halfway over, the distant light goes out.", "It simply stops. There is no horizon now, no island, nothing but black water going up and down. Even Osk has paused. “Hm,” says the heron, which is the most frightening thing you have heard all night."],
+      "choices": [
+        { "t": "The moth has lifted off your strap. Follow it", "to": "moth_guide", "need": ["moth"] },
+        { "t": "“Row for where it was. Now.”", "to": "reef", "set": ["soaked"] },
+        { "t": "“Wait. Hold the boat still and wait.”", "to": "wait" }
+      ]
+    },
+    "moth_guide": {
+      "text": ["It flutters out ahead of the bow, pale in the dark, and it does not wander at all. Moths know exactly where a lamp has been. They spend their whole lives knowing.", "Osk watches it, then turns the boat to follow without a word. The rocks go by on either side, close enough to touch, and do not touch you."],
+      "choices": [{ "t": "Land on the island", "to": "island" }]
+    },
+    "reef": {
+      "text": ["Osk does as you ask, and the boat finds the reef in the dark with a noise like a dropped piano. A wave comes over the side and goes straight through your satchel.", "You get the letter out and hold it above your head for the rest of the way. It is too late. You can feel the paper gone soft as cloth."],
+      "choices": [{ "t": "Limp ashore", "to": "island" }]
+    },
+    "wait": {
+      "text": ["It is the hardest thing you have done all night. You sit with your paws clenched and do nothing while the boat rises and falls.", "One minute. Three. Seven.", "Then, far off and to the left of where you'd have sworn it was, the light stutters back. Weak now. But there. Somebody has got it going again with their own two hands."],
+      "choices": [{ "t": "Land on the island", "to": "island" }]
+    },
+    "swim": {
+      "text": ["Osk watches you walk off the end of the jetty with the expression of someone observing a very slow accident.", "You will not remember most of the next hour. You will remember the cold, and the light turning, and the moment your paws finally hit stones. You crawl up the beach and open your satchel with shaking claws.", "The letter comes out dripping."],
+      "choices": [{ "t": "Get up. Walk to the light", "to": "island" }]
+    },
+    "island": {
+      "text": ["Lantern Island is a rock with a lighthouse on it. There are one hundred and nine stairs. At the top, in a round room that smells of lamp oil, a tortoise older than anyone you have ever met is pouring the last of a can into the great lamp with trembling arms.", "Her eyes are white with age. She turns her head toward the sound of you.", "“Well,” says Mirren. “Forty years, and somebody's finally come up those stairs. What have you got?”"],
+      "choices": [
+        { "t": "Hand her the letter, seal unbroken", "to": "sealed", "not": ["opened", "soaked"] },
+        { "t": "Hand her the sodden letter", "to": "end_rain", "need": ["soaked"] },
+        { "t": "“It was open when I got it.”", "to": "end_lie", "need": ["opened"], "not": ["soaked"] },
+        { "t": "“I opened it. I'm sorry. It's the first time I ever have.”", "to": "confess", "need": ["opened"], "not": ["soaked"] }
+      ]
+    },
+    "confess": {
+      "text": ["There is a long silence, and then a dry wheezing noise, and you realise the ancient tortoise is laughing.", "“Everybody peeks,” says Mirren. “I was a postmistress before I was this. Sit down. My eyes went twenty years ago, so you'd better read me the rest, since you've started.”"],
+      "choices": [{ "t": "Read it aloud", "to": "letter" }]
+    },
+    "sealed": {
+      "text": ["She takes it in both hands. Her thumb finds the wax and stays there a long time, feeling the shape of the seal.", "“That's Ione's ring,” she says, in a voice with nothing holding it up. “My sister. She sailed on the Evening Star, forty years ago this winter, and I told her I'd keep the light on till she came home.”", "She holds it out to you. “My eyes went twenty years back. You'll have to do it.”"],
+      "choices": [{ "t": "Break the seal, and read it aloud", "to": "letter" }]
+    },
+    "letter": {
+      "text": ["Mirren. I should have written this forty years ago.", "We came ashore safe, in the south. The ship was sold. I married a very silly otter and I have been stupidly happy, and every year I meant to write and every year it got harder to explain why I hadn't.", "They tell me you are still lighting that lamp. Of course you are.", "I am not coming back, my darling. I was never in any danger. You can stop now. Go to bed, you stubborn old thing.", "All my love, always. Ione.", "The rain ticks on the glass. Mirren doesn't move. The lamp beside her is burning very low; that was the last of the oil."],
+      "choices": [
+        { "t": "Say nothing. Take the lamp's place with Tamba's lantern", "to": "end_true", "need": ["lantern"], "not": ["opened"] },
+        { "t": "Set Tamba's lantern in the window for her", "to": "end_window", "need": ["lantern", "opened"] },
+        { "t": "Footsteps on the stairs: Osk has come to collect", "to": "end_owed", "need": ["owed"] },
+        { "t": "Sit down beside her until morning", "to": "end_dawn" },
+        { "t": "Touch your cap and go. The job is done", "to": "end_delivered" }
+      ]
+    },
+    "end_lost": {
+      "text": ["The draught leads you down, and then further down, and you keep thinking the next turn will be the one.", "You come out three days later, on the wrong side of the mountain, thin as a rake, with the letter still dry against your ribs. Dawn has been and gone three times.", "You deliver it anyway, the following week. Nobody answers the lighthouse door, but the lamp is still turning. You push the letter under and walk home, and you never do find out.", "Tamba doesn't say I told you so. He makes you soup, which is worse."],
+      "end": { "id": "lost", "title": "A Long Way Round", "kind": "Bittersweet" }
+    },
+    "end_turned": {
+      "text": ["There is no shame in it. Anyone would say so. Tamba says so, when you come in dripping and put the letter on his desk.", "It goes in the drawer for undeliverable post, with the other ones.", "Some nights after that, from the top of the pass, on a very clear night, you can see a tiny light turning far out on the water. You find you look for it. You find you always know exactly which drawer."],
+      "end": { "id": "turned", "title": "The Drawer", "kind": "Sad" }
+    },
+    "end_lie": {
+      "text": ["“Did you,” says Mirren, and her thumb goes over the broken wax, slowly, once.", "She doesn't say anything else. She has you read it to her, and she thanks you, in the voice people use for strangers, and you go down the hundred and nine stairs with the fee in your paw.", "It is a clean delivery. It goes in the book as a clean delivery. You will be a very good courier for many more years, and you will never quite like the taste of that night."],
+      "end": { "id": "lie", "title": "A Clean Delivery", "kind": "Sad" }
+    },
+    "end_rain": {
+      "text": ["She unfolds it on her knees and you both look at it, or you look and she feels. Forty-year-old ink has met the sea, and the sea has won. It has all run together into one soft grey cloud.", "You hold it to the lamp and pick out what you can. safe. And further down, happy. And at the very bottom, in the one dry corner: Go to bed, you stubborn old thing. All my love.", "Mirren is quiet for a long while. “That's Ione,” she says. “That's all of it, really. The rest would only have been apologising.”", "She blows out the lamp herself."],
+      "end": { "id": "rain", "title": "What the Rain Left", "kind": "Bittersweet" }
+    },
+    "end_delivered": {
+      "text": ["You touch your cap. She doesn't hear you go.", "On the way down you stop on the ninetieth stair, because the light on the wall has changed. Above you the great lamp is going out, and this time nobody is getting it going again.", "You stand there for a moment in the dark. Then you go on down. It is, after all, the job, and you did it, and by dawn you are on the water with the rain easing. It's a good, clean feeling. It lasts nearly all the way home."],
+      "end": { "id": "delivered", "title": "Signed For", "kind": "Quiet" }
+    },
+    "end_dawn": {
+      "text": ["You sit down on the floor next to her. Neither of you says anything. The lamp sinks and gutters, and at some point, without any fuss, it goes out, for the first time in forty years.", "It isn't dark for long. The storm has blown itself away east and a thin pink line has opened along the bottom of the sky.", "“Describe it to me,” says Mirren.", "So you do. You are not good at it. You do it anyway, for as long as it takes, until the sun is all the way up and you notice she has fallen asleep against your shoulder, snoring like a kettle."],
+      "end": { "id": "dawn", "title": "Describe It to Me", "kind": "Warm" }
+    },
+    "end_owed": {
+      "text": ["Osk has to fold nearly in half to get through the door. The heron looks at the sinking lamp, and at the old tortoise, and at the letter, and takes all of it in with one yellow eye.", "“I've carried her oil over for forty years,” says Osk. “I knew about the otter. Ione wrote to me first. I've been wondering how to tell her since before you were born.” A long pause. “That favour you owe me.”", "“Yes?”", "“Come out on Thursdays. Somebody ought to read her the post.”", "You come out on Thursdays. You come out on Thursdays for years."],
+      "end": { "id": "owed", "title": "Thursdays", "kind": "Warm" }
+    },
+    "end_window": {
+      "text": ["You set Tamba's lantern on the sill, where a window faces south. It's a small light. It wouldn't guide a rowing boat. But she can feel its warmth on the side of her face, and she turns toward it.", "“You read very badly,” says Mirren. “You'd have made a terrible postmistress.”", "“I opened a letter,” you say.", "“Yes. And then you climbed all those stairs and said so.” She pats your paw with a hand like old bark. “Go on home. Leave the lamp.”", "You have never told Tamba where his lantern went. He has never once asked."],
+      "end": { "id": "window", "title": "A Small Light", "kind": "Warm" }
+    },
+    "end_true": {
+      "text": ["You don't ask. You climb up on the iron stand, take Tamba's lantern, and set it inside the great glass lens, and the lens does what it was built to do. One small flame becomes a beam a mile long. It swings out across the water, steady as anything.", "“There,” you say. “I've got it. It's my watch.”", "Mirren turns her white eyes toward the warmth going round and round. Something forty years old goes out of her shoulders. “Is that so,” she says. And she lies down on the old cot under the window, and for the first time since before you were born, she goes to bed.", "You keep the light all night. Near dawn, far out, a fishing boat that had lost its way in the storm turns toward it and comes safely in. They never know who to thank.", "When she wakes, the sun is up, and there is a warm loaf of something on the step that a heron left, and a very old tortoise is laughing at a very silly letter, reading it with her thumbs.", "In the post office ledger at Upper Pass, in Tamba's square hand, the thirteenth letter is marked: Delivered."],
+      "end": { "id": "true", "title": "My Watch", "kind": "True ending" }
+    }
+  }
+}

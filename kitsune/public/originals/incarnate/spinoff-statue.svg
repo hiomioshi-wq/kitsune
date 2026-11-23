@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="600" height="900">
+    <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1e1c1a"/><stop offset=".6" stop-color="#170a12"/><stop offset="1" stop-color="#050406"/></linearGradient></defs>
+    <rect width="600" height="900" fill="url(#g)"/><rect x="170" y="760" width="260" height="60" fill="#6a665e"/><rect x="150" y="820" width="300" height="24" fill="#5a564e"/>
+    <path d="M 230 760 L 238 600 Q 240 560 262 556 Q 284 560 286 600 L 292 760 Z" fill="#9a968c"/><circle cx="262" cy="535" r="24" fill="#9a968c"/>
+    <path d="M 330 760 L 334 610 Q 336 576 354 572 Q 372 576 374 610 L 380 760 Z" fill="#8a867c"/><circle cx="354" cy="552" r="21" fill="#8a867c"/><rect x="340" y="532" width="28" height="7" rx="3" fill="#f0d060"/>
+    <path d="M 284 630 L 330 640" stroke="#9a968c" stroke-width="12" stroke-linecap="round"/>
+    <path d="M 330 640 L 352 646" stroke="#c8c8d0" stroke-width="5"/>
+    <text x="300" y="880" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="24" fill="#1a1a1a" transform="rotate(-3 300 880)">BULLSHIT <tspan font-size="20">:)</tspan></text>
+    <path d="M 215 868 L 390 860" stroke="#1a1a1a" stroke-width="0"/>
+    <text x="300" y="120" text-anchor="middle" font-size="26" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="800" fill="#e8d9c4" letter-spacing="10">INCARNATE</text>
+    <text x="300" y="150" text-anchor="middle" font-size="16" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" fill="#e8d8b0" letter-spacing="8">THE CORRUPTION SAGA</text>
+    <text x="300" y="300" text-anchor="middle" font-size="20" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="700" fill="#e8d8b0" letter-spacing="5">A SPINOFF</text>
+    <text x="300" y="360" text-anchor="middle" font-size="54" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="900" fill="#f5ece0"><tspan x="300" dy="0">Statue</tspan></text>
+  </svg>

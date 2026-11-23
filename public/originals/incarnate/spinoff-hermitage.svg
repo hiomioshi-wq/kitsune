@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="600" height="900">
+    <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3630"/><stop offset=".6" stop-color="#170a12"/><stop offset="1" stop-color="#050406"/></linearGradient></defs>
+    <rect width="600" height="900" fill="url(#g)"/><path d="M 0 900 L 0 760 Q 300 600 600 760 L 600 900 Z" fill="#6a6658"/>
+    <rect x="250" y="620" width="100" height="80" fill="#9a9488" stroke="#3a3630" stroke-width="4"/><path d="M 236 624 L 300 570 L 364 624 Z" fill="#5a5448" stroke="#3a3630" stroke-width="4"/>
+    <rect x="288" y="650" width="26" height="50" fill="#3a3630"/><rect x="262" y="636" width="16" height="16" fill="#ffd27a"/><circle cx="270" cy="644" r="20" fill="#ffd27a" opacity=".15"/>
+    <path d="M 340 572 v -24 h 12 v 24" fill="#5a5448" stroke="#3a3630" stroke-width="3"/><circle cx="346" cy="534" r="5" fill="#d8d0c0" opacity="0.4"/><circle cx="352" cy="518" r="7" fill="#d8d0c0" opacity="0.30000000000000004"/><circle cx="358" cy="502" r="9" fill="#d8d0c0" opacity="0.2"/>
+    <path d="M 150 860 L 300 840 L 450 860 L 450 880 L 300 862 L 150 880 Z" fill="#f0e8d4" stroke="#3a3630" stroke-width="3"/><path d="M 300 840 V 862" stroke="#3a3630" stroke-width="2"/>
+    <path d="M 170 862 " /><path d="M 170 862 " /><path d="M 170 862 " />
+    <path d="M 420 846 L 470 760 C 480 740 504 734 510 712 C 494 730 474 736 462 760 Z" fill="#2a2620" stroke="#3a3630" stroke-width="2"/>
+    <text x="300" y="120" text-anchor="middle" font-size="26" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="800" fill="#e8d9c4" letter-spacing="10">INCARNATE</text>
+    <text x="300" y="150" text-anchor="middle" font-size="16" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" fill="#e8d8b0" letter-spacing="8">THE CORRUPTION SAGA</text>
+    <text x="300" y="300" text-anchor="middle" font-size="20" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="700" fill="#e8d8b0" letter-spacing="5">A SPINOFF</text>
+    <text x="300" y="360" text-anchor="middle" font-size="54" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="900" fill="#f5ece0"><tspan x="300" dy="0">Hermitage</tspan></text>
+  </svg>

@@ -1,0 +1,5 @@
+<!doctype html><html><head><title>Async CSS test</title>
+<link rel="preload" href="late.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="print-swap.css" media="print" onload="this.media='all'">
+</head><body><h1>Heading should be rgb(9, 8, 7)</h1><p class="ps">Paragraph should be rgb(1, 100, 1)</p>
+<details><summary>More</summary><p class="hid">Hidden details text</p></details><div class="collapse"><p>Collapsed panel</p></div><style>.collapse:not(.show){display:none}</style></body></html>
