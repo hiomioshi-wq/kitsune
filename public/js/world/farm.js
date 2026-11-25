@@ -14,7 +14,7 @@ export function createFarm(api) {
   const adv = (p, now) => { if (!p.c || ripe(p)) return; if (f.sprink) p.wet = true; if (!p.wet) { p.at = now; return; } let dt = Math.max(0, now - (p.at || now)); p.at = now; const len = stageLen(p); while (dt > 0 && p.stage < 3 && (p.wet || f.sprink)) { const need = len - p.prog, use = Math.min(dt, need); p.prog += use; dt -= use; if (p.prog >= len - .5) { p.prog = 0; p.stage++; if (!f.sprink) p.wet = false; } } };
   const tick = (now = Date.now()) => { for (const p of Object.values(f.plots)) adv(p, now); };
   const inPlot = (x, y) => x >= PLOT.x0 && y >= PLOT.y0 && x < PLOT.x0 + PLOT.w && y < PLOT.y0 + PLOT.h, here = () => [Math.floor(s.x / T), Math.floor((s.y + 8) / T)];
-  const water = (x, y) => { const now = Date.now(), list = f.can ? [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1]] : [[0, 0]]; let n = 0; for (const [a, b] of list) { const p = f.plots[key(x + a, y + b)]; if (p?.c && !ripe(p) && !p.wet) { p.wet = true; p.at = now; n++; } } return n; };
+  const water = (x, y) => { const now = Date.now(), list = f.can >= 2 ? [[-1,-1],[0,-1],[1,-1],[-1,0],[0,0],[1,0],[-1,1],[0,1],[1,1]] : f.can ? [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1]] : [[0, 0]]; let n = 0; for (const [a, b] of list) { const p = f.plots[key(x + a, y + b)]; if (p?.c && !ripe(p) && !p.wet) { p.wet = true; p.at = now; n++; } } return n; };
   function target() {
     if (Math.hypot(STAND.x * T - s.x, (STAND.y + .9) * T - s.y) < 46) return { label: "Open the Farm Stand", go: () => stand() };
     const [x, y] = here(); if (!inPlot(x, y)) return null; tick(); const k = key(x, y), p = f.plots[k];

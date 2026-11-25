@@ -27,6 +27,7 @@ export const BUILDINGS = [
   ["tea", 17, 64, 6, 4, "tea", "The Tea Shop"], ["radio", 34, 61, 3, 5, "tower", "Moth Radio"], ["post", 57, 8, 5, 4, "post", "The High Post Office"], ["clock", 19, 37, 5, 7, "clock", "The Great Clock"],
   ["umbrella", 66, 69, 5, 4, "umbrella", "Tamba's Umbrellas"], ["bindery", 52, 69, 5, 4, "bindery", "The Bookbinder"], ["station", 92, 73, 8, 4, "station", "Platform Zero"], ["observatory", 38, 11, 4, 5, "observatory", "The Weather Office"],
   ["studio", 76, 54, 4, 4, "studio", "Haru's Studio"], ["palace", 101, 32, 10, 8, "palace", "The Emerald Palace"], ["glass", 95, 53, 5, 4, "glass", "The Wizard's Glasshouse"], ["sunken", 22, 18, 5, 4, "sunken", "The Library Under the Lake"],
+  ["melodybank", 96, 44, 6, 4, "bank", "The Melody Bank"], ["colorsmith", 104, 44, 5, 4, "studio", "Master Indigo's Colorsmith Shop"], ["courthouse", 111, 44, 6, 5, "court", "The Courthouse of Oz"], ["weatheroffice", 119, 44, 5, 4, "observatory", "The Royal Weather Office"], ["attic", 104, 56, 5, 5, "post", "The Nine Windows"], ["meadowpost", 118, 56, 3, 3, "post", "The Meadow Signpost"],
   ...FAR_BUILDINGS,
 ];
 export const door = (b) => [b[1] + Math.floor(b[3] / 2), b[2] + b[4]];

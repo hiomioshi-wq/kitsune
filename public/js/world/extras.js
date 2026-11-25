@@ -83,7 +83,7 @@ export function createExtras(api) {
   const after = () => { checkAch(); save(); hud(); };
   const favOf = (id) => HOME_ITEMS[hash(id) % HOME_ITEMS.length], favName = (id) => favOf(id)[1];
   function gift(p, back) {
-    const list = Object.entries(x.bag).filter(([, n]) => n > 0).map(([id]) => item(id)).filter(Boolean).slice(0, 8);
+    const list = Object.entries(x.bag).filter(([, n]) => n > 0).map(([id]) => item(id)).filter(Boolean);
     if (!list.length) return say(p, "That's kind, but your paws are empty. Bring me something you found.", back ? [["Back", back]] : []);
     say(p, "For me? What have you got?", list.map((q) => [q[1], () => { x.bag[q[0]]--; x.gifted[p.id] = 1; const love = q[0] === favOf(p.id)[0] || MEALS.includes(q), before = x.hearts[p.id] || 0, now = Math.min(5, before + (love ? 2 : 1)); x.hearts[p.id] = now; bump("gift"); if (before < 5 && now >= 5) s.mon += 100; after(); ping("done"); burst(p, 14); say(p, `${love ? "Oh, this is my favourite!" : "Thank you. I'll find a place for it."} (${"♥".repeat(now)}${"♡".repeat(5 - now)}${before < 5 && now >= 5 ? ", and 100 mon as thanks" : ""})`); }, "gift"]));
   }

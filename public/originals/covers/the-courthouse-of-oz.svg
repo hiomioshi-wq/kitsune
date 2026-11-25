@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="600" height="900"><rect width="600" height="900" fill="#14231a"/><circle cx="108" cy="92" r="30" fill="#fff6e6" opacity=".9"/><circle cx="96" cy="84" r="26" fill="#14231a" opacity=".14"/><circle cx="566" cy="66" r="2.4" fill="#fff" opacity="0.8"/><circle cx="452" cy="132" r="2.1" fill="#fff" opacity="0.6"/><circle cx="520" cy="44" r="1.6" fill="#fff" opacity="0.7"/><circle cx="42" cy="176" r="2.2" fill="#fff" opacity="0.5"/><circle cx="178" cy="52" r="1.5" fill="#fff" opacity="0.66"/><circle cx="232" cy="150" r="1.8" fill="#fff" opacity="0.45"/><circle cx="540" cy="188" r="1.4" fill="#fff" opacity="0.5"/><circle cx="64" cy="260" r="1.7" fill="#fff" opacity="0.4"/><circle cx="552" cy="286" r="2.5" fill="#fff" opacity="0.55"/><circle cx="140" cy="210" r="1.2" fill="#fff" opacity="0.5"/><circle cx="500" cy="240" r="1.9" fill="#fff" opacity="0.42"/><circle cx="308" cy="70" r="1.3" fill="#fff" opacity="0.6"/><circle cx="380" cy="96" r="2.2" fill="#fff" opacity="0.5"/>
+    <path d="M 0 545 Q 300 505 600 545 L 600 900 L 0 900 Z" fill="#1c3a29"/>
+    <path d="M 0 585 Q 300 548 600 585" stroke="#274b33" stroke-width="6" fill="none"/>
+    <rect x="150" y="380" width="300" height="150" fill="#1d4a33"/>
+    <path d="M 118 380 L 482 380 L 300 258 Z" fill="#2fa36b" stroke="#11251a" stroke-width="5"/>
+    <path d="M 158 374 L 442 374 L 300 282 Z" fill="#3ccf8a" opacity=".6"/>
+    <rect x="142" y="378" width="316" height="16" fill="#6fbf97" stroke="#11251a" stroke-width="4"/>
+    <rect x="162" y="394" width="18" height="136" fill="#bfe8cf" stroke="#11251a" stroke-width="3"/><rect x="236" y="394" width="18" height="136" fill="#bfe8cf" stroke="#11251a" stroke-width="3"/><rect x="346" y="394" width="18" height="136" fill="#bfe8cf" stroke="#11251a" stroke-width="3"/><rect x="420" y="394" width="18" height="136" fill="#bfe8cf" stroke="#11251a" stroke-width="3"/>
+    <rect x="134" y="530" width="332" height="12" fill="#579b78" stroke="#11251a" stroke-width="3"/><rect x="122" y="542" width="356" height="12" fill="#579b78" stroke="#11251a" stroke-width="3"/><rect x="110" y="554" width="380" height="12" fill="#579b78" stroke="#11251a" stroke-width="3"/>
+    <path d="M 260 420 m -22 0 a 22 22 0 1 1 44 0" fill="none" stroke="#f0c93a" stroke-width="3" opacity=".7" stroke-dasharray="9 8"/><path d="M 260 420 m -44 0 a 44 44 0 1 1 88 0" fill="none" stroke="#f0c93a" stroke-width="2.5" opacity=".5" stroke-dasharray="14 11"/>
+    <rect x="205" y="322" width="13" height="206" fill="#6b4a2b" stroke="#3a2a18" stroke-width="3"/>
+    <path d="M 218 336 h 56 v 15 h -56 Z" fill="#f0c93a" stroke="#b8901c" stroke-width="3"/>
+    <path d="M 205 368 h -62 v 15 h 62 Z" fill="#f0c93a" stroke="#b8901c" stroke-width="3"/>
+    <path d="M 218 400 h 30 a 15 15 0 0 1 15 15 v 22" fill="none" stroke="#f0c93a" stroke-width="14" stroke-linecap="butt"/>
+    <circle cx="263" cy="437" r="7" fill="#f0c93a" stroke="#b8901c" stroke-width="3"/>
+    <rect x="150" y="472" width="126" height="58" fill="#7a5230" stroke="#11251a" stroke-width="4"/><rect x="146" y="460" width="134" height="10" fill="#9a6b3d" stroke="#11251a" stroke-width="4"/>
+    <rect x="372" y="452" width="156" height="38" rx="14" fill="#3ccf8a" stroke="#11251a" stroke-width="4"/>
+    <rect x="372" y="410" width="156" height="48" rx="16" fill="#2fa36b" stroke="#11251a" stroke-width="4"/>
+    <rect x="360" y="434" width="22" height="56" rx="10" fill="#2fa36b" stroke="#11251a" stroke-width="4"/><rect x="518" y="434" width="22" height="56" rx="10" fill="#2fa36b" stroke="#11251a" stroke-width="4"/>
+    <rect x="384" y="486" width="10" height="16" fill="#6b4a2b"/><rect x="506" y="486" width="10" height="16" fill="#6b4a2b"/>
+    <path d="M 392 404 q 58 -16 116 0 l 12 46 h -140 Z" fill="#1b1d33"/>
+    <rect x="441" y="396" width="9" height="24" fill="#fff6e6" transform="rotate(14 445 408)"/><rect x="450" y="396" width="9" height="24" fill="#fff6e6" transform="rotate(-14 454 408)"/>
+    <rect x="30" y="640" width="540" height="200" fill="#fff6e6" stroke="#1b1d33" stroke-width="6"/>
+    <text x="50" y="715" font-size="48" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="900" fill="#1b1d33"><tspan x="50" dy="0">The Courthouse of</tspan><tspan x="50" dy="48">Oz</tspan></text>
+    <text x="50" y="815" font-size="22" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" fill="#c8283a" font-weight="700">A KITSUNE ORIGINAL · OZ STORY</text></svg>

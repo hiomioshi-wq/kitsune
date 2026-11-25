@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" role="img" aria-label="The Royal Weather of Oz cover">
+  <rect width="600" height="800" fill="#c9dbe8"/>
+  <rect x="60" y="470" width="480" height="240" fill="#7fa8c9"/>
+  <rect x="100" y="350" width="400" height="130" rx="8" fill="#e8e2d2"/>
+  <rect x="100" y="350" width="400" height="130" rx="8" fill="none" stroke="#123" stroke-width="3"/>
+  <path d="M92 350 Q300 270 508 350 Z" fill="#d8cfb4"/>
+  <rect x="270" y="410" width="60" height="70" rx="4" fill="#4a5a6e"/>
+  <path d="M150 470 q20 -10 40 0 M210 470 q20 -10 40 0 M270 470 q20 -10 40 0 M330 470 q20 -10 40 0 M390 470 q20 -10 40 0" stroke="#4a5a6e" stroke-width="3" fill="none"/>
+  <g>
+    <rect x="80" y="520" width="70" height="90" rx="8" fill="#9fb4c9"/>
+    <text x="115" y="572" font-family="Georgia,serif" font-size="13" text-anchor="middle" fill="#1d2a3a">DRIZZLE</text>
+    <rect x="170" y="540" width="60" height="70" rx="8" fill="#b9c9d9"/>
+    <text x="200" y="582" font-family="Georgia,serif" font-size="11" text-anchor="middle" fill="#1d2a3a">BREEZE</text>
+    <rect x="250" y="525" width="80" height="85" rx="8" fill="#8aa4bd"/>
+    <text x="290" y="574" font-family="Georgia,serif" font-size="11" text-anchor="middle" fill="#f4f8ff">FOG, POLITE</text>
+  </g>
+  <g>
+    <path d="M330 640 a60 60 0 0 1 60 -24 a46 46 0 0 1 88 -8 a40 40 0 0 1 26 32" fill="none" stroke="#e05a4a" stroke-width="10" stroke-linecap="round"/>
+    <path d="M348 660 a52 52 0 0 1 52 -20 a40 40 0 0 1 74 -6 a34 34 0 0 1 22 26" fill="none" stroke="#e6b422" stroke-width="10" stroke-linecap="round"/>
+    <path d="M366 678 a44 44 0 0 1 44 -16 a32 32 0 0 1 60 -4 a26 26 0 0 1 18 20" fill="none" stroke="#35a86a" stroke-width="10" stroke-linecap="round"/>
+    <path d="M384 694 a36 36 0 0 1 36 -12 a22 22 0 0 1 44 0 a18 18 0 0 1 12 14" fill="none" stroke="#3a6ea8" stroke-width="10" stroke-linecap="round"/>
+  </g>
+  <g fill="#4a5a6e" opacity=".8">
+    <ellipse cx="140" cy="200" rx="60" ry="22"/>
+    <ellipse cx="460" cy="160" rx="48" ry="18"/>
+    <g stroke="#3a5a78" stroke-width="3" stroke-linecap="round">
+      <path d="M120 250 l-6 14 M136 250 l-4 14 M152 250 l-8 14"/>
+      <path d="M448 198 l-6 12 M462 198 l-4 12 M476 198 l-8 12"/>
+    </g>
+  </g>
+  <rect x="70" y="100" width="460" height="120" rx="10" fill="#f4f0e2"/>
+  <rect x="70" y="100" width="460" height="120" rx="10" fill="none" stroke="#123" stroke-width="3"/>
+  <text x="300" y="158" font-family="Georgia,serif" font-size="40" font-weight="700" text-anchor="middle" fill="#123">The Royal</text>
+  <text x="300" y="206" font-family="Georgia,serif" font-size="40" font-weight="700" text-anchor="middle" fill="#123">Weather of Oz</text>
+</svg>

@@ -1,11 +1,13 @@
 // The Skyward Isles: walkable floating archipelago reached by Starlight Airship.
 import { characterSvg } from "../vnchar.js";
 import { SW, SH, ST as T, STILE, SKY_ISLANDS, SKY_SPAWN, SKY_DOCK, SKY_BUILDINGS, SKY_NPCS, SKY_BELLS, SKY_FISH, CONSTELLATIONS, SKY_GOODS, ensureSky, buildSkyMap } from "./skycore.js";
+import { ensureSkyPlus, skyWingMult, kiteWorksPage, windWatchPage, sanctumPage, auroraPage } from "./skyplus.js";
 
 const esc = (x) => String(x).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
 export function mountSky(host, api) {
   const s = api.state, sk = ensureSky(s), map = buildSkyMap(), keys = new Set();
+  ensureSkyPlus(sk);
   host.innerHTML = `<canvas class="by-c"></canvas>
     <div class="by-hud sky-hud">
       <strong>✦ <span id="sky-sh">${sk.shards}</span> shards · 🔔 <span id="sky-bl">0</span>/${SKY_BELLS.length}</strong>
@@ -83,6 +85,7 @@ export function mountSky(host, api) {
     pageOff = bind?.(pageEl) || null;
     api.ping("open");
   }
+  const skyCtx = () => ({ sk, api, page, esc, sayToast, hud, triggerFireworks: () => { fireworks = 8; } });
 
   function say(npc, text, btns = []) {
     closePage();
@@ -116,7 +119,7 @@ export function mountSky(host, api) {
 
   function loomShop() {
     page("The Cloud Loom", `<p class="muted">Loomis weaves Star-Shards and mon into sky-born wares.</p><div class="by-list">${SKY_GOODS.map((it) => {
-      const own = it.kind === "hat" ? s.hats.includes(it.key) : it.kind === "tonic" ? sk.tonic : false;
+      const own = it.kind === "hat" ? s.hats.includes(it.key) : it.kind === "tonic" ? sk.tonic : it.kind === "furn" ? !!s.furn?.[it.key] : false;
       const can = sk.shards >= it.shards && api.mon() >= it.mon && !own;
       return `<div><i>${it.kind === "hat" ? "🎩" : it.kind === "furn" ? "🪑" : "✨"}</i><span><strong>${esc(it.name)}</strong><small>${esc(it.desc)} · ${it.shards} shards, ${it.mon} mon</small></span>${own ? "<em>Owned</em>" : `<button class="btn btn-accent" type="button" data-buy="${it.id}" ${can ? "" : "disabled"}>Weave</button>`}</div>`;
     }).join("")}</div>`, (e) => {
@@ -318,8 +321,10 @@ export function mountSky(host, api) {
         if (b.id === "loomhouse") return { label: "Enter The Cloud Loom", go: loomShop };
         if (b.id === "dome") return { label: "Use Starlight Telescope", go: () => telescope() };
         if (b.id === "spirearch") return { label: "Play Wind-Chime Trial", go: chimeTrial };
-        if (b.id === "kiteworks") return { label: "Read the workshop board", go: skyLog };
-        if (b.id === "windwatch") return { label: "Study the wind charts", go: skyLog };
+        if (b.id === "kiteworks") return { label: "Enter The Kite Works", go: () => kiteWorksPage(skyCtx()) };
+        if (b.id === "windwatch") return { label: "Enter Wind-Reader's Watch", go: () => windWatchPage(skyCtx()) };
+        if (b.id === "sanctum") return { label: "Enter Windmill Sanctum", go: () => sanctumPage(skyCtx()) };
+        if (b.id === "aurorapavilion") return { label: "Enter Aurora Pavilion", go: () => auroraPage(skyCtx()) };
         return { label: "Read Harbor Post", go: skyLog };
       }
     }
@@ -342,7 +347,7 @@ export function mountSky(host, api) {
     moving = !!(ax || ay);
     if (moving) {
       const m = Math.max(1, Math.hypot(ax, ay));
-      const v = (keys.has("shift") ? 280 : 185) * (sk.tonic ? 1.15 : 1) * dt;
+      const v = (keys.has("shift") ? 280 : 185) * (sk.tonic ? 1.15 : 1) * skyWingMult(sk) * dt;
       const nx = px + (ax / m) * v, ny = py + (ay / m) * v;
       if (!blocked(nx, py)) px = nx;
       if (!blocked(px, ny)) py = ny;
@@ -519,7 +524,6 @@ export function mountSky(host, api) {
     if (e.repeat) return;
     if (k === "e" || k === " " || k === "enter") { e.preventDefault(); act(); }
     else if (k === "j") skyLog();
-    else if (k === "f") leave();
   };
   const onUp = (e) => keys.delete(e.key.toLowerCase()), onBlur = () => keys.clear();
   window.addEventListener("keydown", onDown, true); window.addEventListener("keyup", onUp, true); window.addEventListener("blur", onBlur);

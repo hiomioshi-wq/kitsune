@@ -2064,3 +2064,45 @@ Live build: kitsune-v292. Game content below is generated directly from the app'
 - **Lookups**: "Is it an idiom?" senses from Wiktionary's Idiom sections on multi-word selections, and a full 118-element chemistry table — "Fe" now opens the Iron article instead of a disambiguation page
 - **Sound**: carnival (distant calliope over a crowd), meadow (crickets and breeze) and snowfall (wind and rare sleigh bells) soundscapes, plus ticket, spin, fortune and plush interface sounds
 - **Offline shell**: every realm module is precached again — Arena, Codex, Guild, Deep, Deepcore, Mines, Sky, Skycore, Calypso, Mindai, Powers and the five book realms had been dynamically imported without ever joining the install cache
+
+## 44. Expand-All-Worlds Wave (Moonwell, four delves, far frontier, two realm scenes)
+
+- **The Sunken Deep, a seventh zone**: The Moonwell Cavern — Selene the Moonkeeper, the Moonwell Shrine, the Moonwell Lantern (30 pearls), Moonwell Koi and Moonwell Wraith fish, the Moon Moth Lantern at the Pearl Exchange, and every lantern counter in the realm went dynamic
+- **Four new Delves** in the base country: The Overdue Stacks (The Overdue King, the Drowned Reservoir), The Second Cellar (The Second Thief, Brask), The Dead Letter Crypt (The Dead Letter Office, the High Post) and The Left-Luggage Line (The Last Porter, Platform Zero), each with a furniture trophy in the museum's Trophy Hall — 149 delves in all, and the delve doors now anchor through the region table
+- **Four new far regions**: The Hanging Icefall, The Driftwood Estuary, The Lantern Orchard and The Glass Desert, each with a building, resident, fish, forage and beacon — the frontier is 149 regions wide with zero bounding-box collisions
+- **The Spirit Express, an eighth car**: The Dead-Letter Car — the Dead-Letter Clerk, a parcel addressed to the never-punched conductor since 1892, and the never-punched ticket blank relic
+- **The Starlight Citadel, a seventh hall**: The Brass Lens Loft — Astronomer Odo polishing the great lens between the Warden's inspections, and the brass lens-cap relic
+- **Two Regional Trials**: Harbor Lantern Parry (Starlight Harbor) and Moonlit Shell Seals (Moonlit Shoals)
+- **Fixed in passing**: the World view could crash on load — the treasure-chest scatter spread the whole walkable-tile array (~100k tiles) into `open.push(...)`, exhausting the call stack; it now filters by zone without a spread. The Guild's World Mastery totals (beacons, delves, trials) now count live data instead of a stale hardcode
+
+## 45. The Daily Bug Contest
+
+- The Butterfly Conservatory runs a **Daily Bug Contest**: one catchable species is the day's contest bug, deterministic per day, always rarity Rare or below so it's always findable
+- Every contest bug caught adds a "Contest catch!" to your net swing, tracked on the Conservatory's new Contest tab
+- Four prize steps — 3, 5, 8 and 12 catches — pay 40/70/110/160 shells and 4/6/8/12 arcade tickets, each claimable once per day
+
+## 46. Six New Oz Originals
+
+Kitsune Originals grows by six new stories set in L. Frank Baum's public-domain Land of Oz, each with a hand-drawn cover and kept offline:
+
+- **The Melody Bank of Oz** — a bank that keeps melodies in drawers and pays interest in harmonies; a clockwork clerk who files a lullaby under Hush; and a seventh harmony that grew an ending into itself while it waited fifty years for its grandmother's voice
+- **The Fourteenth Color of Oz** — a colorsmith mixes a color that is not one of Oz's official thirteen, and it hums; the Dictionary sulks, the Official Namer is away naming mushrooms, and an apprentice with perfect pitch names the color after what it truly is
+- **The Royal Weather of Oz** — a wedding drizzle scheduled one hundred and forty years in advance arrives a century and a half early on the strawberry parade, and three clerks (a retired Rain Fairy, a retired thunder, a very literal Sandman) apologize in weather; the culprit is a hailstone paperweight, melting through the Schedule since the booking was made
+- **The Nine Windows of Oz** — nine attic windows blown from undeliverable letters, a jar of August millpond and six autumns' first-fire ash each look into somebody else's yesterday; when the ninth pane is sold, yesterday leaks into the village as old snow, an unlearned song and one very calm fish
+- **The Courthouse of Oz** — a signpost stands trial for pointing at itself, with an opinionated sofa for the defense, a brand-new gavel for the prosecution, and a verdict on whether being wrong on purpose can be a kindness
+- **The Migrating Meadow of Oz** — a Quadling meadow walks south at the speed of a thoughtful cow, and the Registry's eviction notice turns out to be an invitation printed on the back, which only the birdbath can read; the meadow's four-hundred-year path home is written in its clover
+
+All six are public-domain Oz only, released under Creative Commons Attribution 4.0 with the other Kitsune Originals, precached for offline reading, and every story ends quietly and glad.
+
+## 47. The Emerald City Understories
+
+The six new Oz originals walk off the page and into the World — six story locations around the Emerald Palace, each playable:
+
+- **The Melody Bank** (bank, new columned building style): deposit mon as a melody, filed under H for Honest by Hengist the clockwork clerk; it earns ten percent an hour in harmonies, up to eight hours, and pays out when you withdraw
+- **The Royal Weather Office**: a deterministic daily forecast in Mrs. Cumulus's voice, plus bookable personal weather — Drizzle, Breeze, Sun-shower or Snow-fitting — delivered tomorrow morning for 40 mon, with the Office's card under the counter glass: CHECK YOUR PAPERWEIGHTS
+- **The Courthouse of Oz** (new pillared building style): one case a day from a pool of seven, each a thing from the new stories on trial — the signpost, the birdbath, the Fourteenth Color, the wedding drizzle itself — with a kind verdict and a stern verdict, and the sofa comfortable either way
+- **Master Indigo's Colorsmith Shop**: a daily three-part commission from the thirteen official colors, mixed in any order; the rack's parliament watches you pour
+- **The Nine Windows**: one window a day, deterministic, and each glimpse is built from your own save — the count of lanterns you have lit, boxes you have dug, orbs you have found — paid at 12 mon a look
+- **The Migrating Meadow Signpost**: the meadow itself moves to a new Emerald City green each day (deterministic by date, seven wandering spots); find it where it stands and the birdbath pays 30 mon and reads you the small print
+
+Six new overworld buildings (171 total, no overlaps), two new building art styles (bank and courthouse), and every location voiced from its story.

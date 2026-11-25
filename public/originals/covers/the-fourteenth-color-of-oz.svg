@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" role="img" aria-label="The Fourteenth Color of Oz cover">
+  <rect width="600" height="800" fill="#efe7d2"/>
+  <rect x="80" y="520" width="440" height="200" fill="#d9c9a3"/>
+  <rect x="120" y="380" width="360" height="150" rx="8" fill="#a8623c"/>
+  <path d="M104 380 Q300 290 496 380 Z" fill="#c47a4e"/>
+  <rect x="255" y="440" width="90" height="90" rx="6" fill="#3a2418"/>
+  <rect x="60" y="590" width="480" height="10" fill="#b89a6e"/>
+  <g>
+    <circle cx="170" cy="560" r="26" fill="#e8b23a"/>
+    <circle cx="170" cy="560" r="26" fill="none" stroke="#123" stroke-width="3"/>
+    <circle cx="248" cy="560" r="26" fill="#3a6ea8"/>
+    <circle cx="248" cy="560" r="26" fill="none" stroke="#123" stroke-width="3"/>
+    <circle cx="326" cy="560" r="26" fill="#7fae4a"/>
+    <circle cx="326" cy="560" r="26" fill="none" stroke="#123" stroke-width="3"/>
+    <circle cx="404" cy="560" r="26" fill="#c05a6e"/>
+    <circle cx="404" cy="560" r="26" fill="none" stroke="#123" stroke-width="3"/>
+    <circle cx="300" cy="640" r="34" fill="#9f7fd8"/>
+    <circle cx="300" cy="640" r="34" fill="none" stroke="#123" stroke-width="4"/>
+    <circle cx="300" cy="640" r="52" fill="none" stroke="#9f7fd8" stroke-width="2" opacity=".55"/>
+    <circle cx="300" cy="640" r="70" fill="none" stroke="#9f7fd8" stroke-width="2" opacity=".3"/>
+    <path d="M300 640 q6 -14 12 0 q6 -14 12 0" transform="rotate(90 300 640)" stroke="#123" stroke-width="2" fill="none"/>
+    <path d="M270 660 l-8 26" stroke="#123" stroke-width="3" fill="none"/>
+    <path d="M330 660 l8 26" stroke="#123" stroke-width="3" fill="none"/>
+  </g>
+  <rect x="70" y="100" width="460" height="120" rx="10" fill="#f9f4e4"/>
+  <rect x="70" y="100" width="460" height="120" rx="10" fill="none" stroke="#123" stroke-width="3"/>
+  <text x="300" y="158" font-family="Georgia,serif" font-size="38" font-weight="700" text-anchor="middle" fill="#123">The Fourteenth</text>
+  <text x="300" y="204" font-family="Georgia,serif" font-size="38" font-weight="700" text-anchor="middle" fill="#123">Color of Oz</text>
+  <rect x="70" y="248" width="460" height="10" fill="#9f7fd8"/>
+</svg>

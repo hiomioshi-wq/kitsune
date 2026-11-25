@@ -99,6 +99,10 @@ const hash = (t) => { let h = 2166136261; for (let i = 0; i < t.length; i++) h =
 
 export function ensureWild(b) { const w = (b.wild ||= {}); w.net ||= 0; w.bugs ||= {}; w.plush ||= {}; w.gifts ||= []; if (w.nid === undefined) w.nid = 1; const d = new Date().toDateString(); if (w.day?.d !== d) w.day = { d, done: {} }; return w; }
 export const featuredBug = (day) => { const r = rngFor("wild-feature" + day), pool = BUGS.filter((x) => x[4] >= 2); return pool[Math.floor(r() * pool.length)]; };
+export const CONTEST_STEPS = [3, 5, 8, 12];
+const CONTEST_PAY = [40, 70, 110, 160], CONTEST_TIX = [4, 6, 8, 12];
+export const contestTarget = (day) => { const r = rngFor("wild-contest" + day), pool = BUGS.filter((x) => x[4] <= 2); return pool[Math.floor(r() * pool.length)]; };
+const ensureContest = (w, day) => (w.day.contest ||= { hits: 0, claimed: {} });
 
 // ---- the bugs themselves (per-visit, not saved) ----
 let live = [], uid = 1, spawnT = 2, swingFx = null, lastSwing = 0;
@@ -156,9 +160,12 @@ export function swingNet(ctx, u) {
     const v = pay(b, BUG_VAL[d[4]]);
     const tix = BUG_TIX[d[4]];
     if (tix) { b.tickets = (b.tickets || 0) + tix; }
+    const target = contestTarget(w.day.d || new Date().toDateString());
+    let contestLine = "";
+    if (d[0] === target[0]) { const ct = ensureContest(w, w.day.d); ct.hits = (ct.hits || 0) + 1; contestLine = ` · Contest catch ${ct.hits}!`; }
     burst(u.x, u.y, isNew ? 22 : 10);
     ping("done");
-    say(`${isNew ? "New bug! " : ""}${d[1]} caught! +${v} shells${tix ? `, +${tix} ticket${tix > 1 ? "s" : ""}` : ""}`);
+    say(`${isNew ? "New bug! " : ""}${d[1]} caught! +${v} shells${tix ? `, +${tix} ticket${tix > 1 ? "s" : ""}` : ""}${contestLine}`);
     live = live.filter((q) => q !== u);
   } else {
     u.state = "flee"; u.t = 1.4; u.a = Math.atan2(u.y - ctx.py || 1, u.x - ctx.px || 1) + (Math.random() - .5) * .8;
@@ -196,14 +203,17 @@ export function drawWild(g, b, now, inView) {
 export function conservatoryPage(ctx, tab = "journal") {
   const { b, page, esc, say, ping, save, pay, checkGoals } = ctx, w = ensureWild(b), day = new Date().toDateString(), feat = featuredBug(day);
   const caught = Object.keys(w.bugs).length;
-  const tabs = (cur) => `<div class="dy-tabs">${[["journal", `Bug book (${caught})`], ["marigold", "Marigold"], ["net", "Nets"]].map(([k, l]) => `<button type="button" class="${k === cur ? "on" : ""}" data-t="${k}">${l}</button>`).join("")}</div>`;
+  const tabs = (cur) => `<div class="dy-tabs">${[["journal", `Bug book (${caught})`], ["marigold", "Marigold"], ["contest", "Contest"], ["net", "Nets"]].map(([k, l]) => `<button type="button" class="${k === cur ? "on" : ""}" data-t="${k}">${l}</button>`).join("")}</div>`;
   if (tab === "journal") {
     page("Butterfly Conservatory", `${tabs("journal")}<p class="muted">Marigold says the <strong style="color:${RAR_C[feat[4]]}">${esc(feat[1])}</strong> flutters somewhere in town today. ${b.t.caught || 0} bugs caught in all.</p><div class="by-dex">${BUGS.map((d) => `<div title="${esc(d[1])}" style="--r:${RAR_C[d[4]]}"><b>${d[2]}</b><small>${w.bugs[d[0]] ? esc(d[1]) : "???"}</small><small>${w.bugs[d[0]] ? `×${w.bugs[d[0]]} · ${RARITY[d[4]]}` : RARITY[d[4]]}</small></div>`).join("")}</div>`, (e) => e.querySelectorAll("[data-t]").forEach((x) => (x.onclick = () => conservatoryPage(ctx, x.dataset.t))));
+  } else if (tab === "contest") {
+    const target = contestTarget(day), ct = ensureContest(w, day);
+    page("Butterfly Conservatory", `${tabs("contest")}<p class="muted">Today's contest bug is the <strong style="color:${RAR_C[target[4]]}">${esc(target[1])}</strong> ${target[2]}. Every one you catch today counts toward Marigold's prize steps.</p><div class="by-list">${CONTEST_STEPS.map((n, i) => { const ok = (ct.hits || 0) >= n, claimed = ct.claimed?.[i]; return `<div class="${claimed ? "ok" : ""}"><i>${target[2]}</i><span><strong>${n} × ${esc(target[1])}</strong><small>${CONTEST_PAY[i]} shells · ${CONTEST_TIX[i]} tickets · ${claimed ? "Claimed" : `${Math.min(ct.hits || 0, n)}/${n} caught`}</small></span>${claimed ? "<em>Done</em>" : `<button class="btn btn-accent" type="button" data-ct="${i}" ${ok ? "" : "disabled"}>Claim</button>`}</div>`; }).join("")}</div>`, (e) => { e.querySelectorAll("[data-t]").forEach((x) => (x.onclick = () => conservatoryPage(ctx, x.dataset.t))); e.querySelectorAll("[data-ct]").forEach((x) => (x.onclick = () => { const i = +x.dataset.ct; ct.claimed ||= {}; if (ct.claimed[i] || (ct.hits || 0) < CONTEST_STEPS[i]) return; ct.claimed[i] = 1; const v = pay(b, CONTEST_PAY[i]); b.tickets = (b.tickets || 0) + CONTEST_TIX[i]; save(); ping("done"); say(`Contest step ${i + 1}! +${v} shells, +${CONTEST_TIX[i]} tickets`); checkGoals(); conservatoryPage(ctx, "contest"); })); });
   } else if (tab === "net") {
     page("Butterfly Conservatory", `${tabs("net")}<div class="by-list">${NETS.map((n, i) => { const own = w.net >= i, next = i === w.net + 1; return `<div class="${own ? "ok" : ""}"><i>🥅</i><span><strong>${esc(n[1])}</strong><small>${esc(n[3])} · catch ${Math.round((CATCH_BASE[2] + NET_BONUS[i]) * 100)}% on rare bugs</small></span>${own ? "<em>Yours</em>" : next ? `<button class="btn btn-accent" type="button" data-buy="${i}" ${b.shells >= n[2] ? "" : "disabled"}>${n[2]} shells</button>` : "<em>Later</em>"}</div>`; }).join("")}</div>`, (e) => { e.querySelectorAll("[data-t]").forEach((x) => (x.onclick = () => conservatoryPage(ctx, x.dataset.t))); e.querySelectorAll("[data-buy]").forEach((x) => (x.onclick = () => { const i = +x.dataset.buy, n = NETS[i]; if (b.shells < n[2] || i !== w.net + 1) return; b.shells -= n[2]; w.net = i; save(); ping("done"); say(`${n[1]} is yours.`); checkGoals(); conservatoryPage(ctx, "net"); })); });
   } else {
     const r = rngFor("wild-trade" + day), trades = [0, 1, 2].map((n) => { const want = BUGS.filter((x) => x[4] <= (n === 2 ? 2 : 1)), d = want[Math.floor(r() * want.length)], count = 1 + Math.floor(r() * 3); return { n, want: d, count, shells: BUG_VAL[d[4]] * count * 2 + 20, tix: 2 + d[4] * 2 }; });
-    page("Butterfly Conservatory", `${tabs("marigold")}<p class="muted">Marigold trades shells and arcade tickets for bugs from your book. Her asks change every day.</p><div class="by-list">${trades.map((t) => { const have = w.bugs[t.want[0]] || 0, done = w.day.done[t.n]; return `<div class="${done ? "ok" : ""}"><i>${t.want[2]}</i><span><strong>${esc(t.want[1])} ×${t.count}</strong><small>${have} in your book · ${t.shells} shells, ${t.tix} tickets</small></span>${done ? "<em>Done</em>" : `<button class="btn btn-accent" type="button" data-tr="${t.n}" ${have >= t.count ? "" : "disabled"}>Turn in</button>`}</div>`; }).join("")}</div>`, (e) => { e.querySelectorAll("[data-t]").forEach((x) => (x.onclick = () => conservatoryPage(ctx, x.dataset.t))); e.querySelectorAll("[data-tr]").forEach((x) => (x.onclick = () => { const t = trades[+x.dataset.tr]; if (w.day.done[t.n] || (w.bugs[t.want[0]] || 0) < t.count) return; w.bugs[t.want[0]] -= t.count; if (!w.bugs[t.want[0]]) delete w.bugs[t.want[0]]; w.day.done[t.n] = 1; const v = pay(b, t.shells); b.tickets = (b.tickets || 0) + t.tix; save(); ping("done"); say(`Marigold is delighted. +${v} shells, +${t.tix} tickets`); checkGoals(); conservatoryPage(ctx, "marigold"); })); });
+    page("Butterfly Conservatory", `${tabs("marigold")}<p class="muted">Marigold trades shells and arcade tickets for bugs from your book. Her asks change every day.</p><div class="by-list">${trades.map((t) => { const have = w.bugs[t.want[0]] || 0, done = w.day.done[t.n]; return `<div class="${done ? "ok" : ""}"><i>${t.want[2]}</i><span><strong>${esc(t.want[1])} ×${t.count}</strong><small>${have} in your book · ${t.shells} shells, ${t.tix} tickets</small></span>${done ? "<em>Done</em>" : `<button class="btn btn-accent" type="button" data-tr="${t.n}" ${have >= t.count ? "" : "disabled"}>Turn in</button>`}</div>`; }).join("")}</div>`, (e) => { e.querySelectorAll("[data-t]").forEach((x) => (x.onclick = () => conservatoryPage(ctx, x.dataset.t))); e.querySelectorAll("[data-tr]").forEach((x) => (x.onclick = () => { const t = trades[+x.dataset.tr]; if (w.day.done[t.n] || (w.bugs[t.want[0]] || 0) < t.count) return; w.bugs[t.want[0]] -= t.count; w.day.done[t.n] = 1; const v = pay(b, t.shells); b.tickets = (b.tickets || 0) + t.tix; save(); ping("done"); say(`Marigold is delighted. +${v} shells, +${t.tix} tickets`); checkGoals(); conservatoryPage(ctx, "marigold"); })); });
   }
 }
 

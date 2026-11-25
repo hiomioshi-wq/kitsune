@@ -110,7 +110,7 @@ export function mountDeep(host, api) {
 
   function pearlShop() {
     page("Flooded Stacks · Pearl Exchange", `<p class="muted">Coralia trades Sea Pearls and mon for abyssal gear.</p><div class="by-list">${DEEP_GOODS.map((it) => {
-      const own = it.kind === "hat" ? s.hats.includes(it.key) : it.kind === "tonic" ? dp.tonic : false;
+      const own = it.kind === "hat" ? s.hats.includes(it.key) : it.kind === "tonic" ? dp.tonic : it.kind === "furn" ? !!s.furn?.[it.key] : false;
       const can = dp.pearls >= it.pearls && api.mon() >= it.mon && !own;
       return `<div><i>${it.kind === "hat" ? "🤿" : it.kind === "furn" ? "🪑" : "🫧"}</i><span><strong>${esc(it.name)}</strong><small>${esc(it.desc)} · ${it.pearls} pearls, ${it.mon} mon</small></span>${own ? "<em>Owned</em>" : `<button class="btn btn-accent" type="button" data-buy="${it.id}" ${can ? "" : "disabled"}>Trade</button>`}</div>`;
     }).join("")}</div>`, (e) => {

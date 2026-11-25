@@ -24,10 +24,11 @@
     const [t] = get("theme") || [];
     if (t && t !== "system") document.documentElement.dataset.theme = t;
     // Custom theme and cursor, compiled earlier by themes.js
+    const addCss = (id, text) => { const el = document.createElement("style"); el.id = id; el.textContent = text; document.head.appendChild(el); };
     const css = get("themeCss"), mode = get("themeMode"), cur = get("cursorCss");
-    if (css) { document.documentElement.dataset.theme = mode || "dark"; document.write('<style id="kt-theme">' + css + "</style>"); }
-    if (cur) document.write('<style id="kt-cursor">' + cur + "</style>");
-    const dc = get("decorCss"); if (dc) document.write('<style id="kt-decor">' + dc + "</style>");
+    if (css) { document.documentElement.dataset.theme = mode || "dark"; addCss("kt-theme", css); }
+    if (cur) addCss("kt-cursor", cur);
+    const dc = get("decorCss"); if (dc) addCss("kt-decor", dc);
   } catch {}
 </script>
 <script src="/js/main.js" type="module"></script>

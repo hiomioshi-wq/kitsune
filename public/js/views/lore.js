@@ -7,7 +7,7 @@ import { isKids } from "../profiles.js";
 import { SERIES_LORE, CHARACTERS, CONCEPTS, TIMELINES } from "../lore-curated.js";
 
 const NOISE = new Set(["MAGIC PICTURE", "MISTMOTH", "MISTMOTHS", "REMEMBERERS", "SEAM", "DOCTOR", "TENANT", "BACKROOMS", "FRONTROOMS", "PARTYGOERS", "COAT CHECK", "PRINCIPAL", "FRESHMAN", "STUDENT", "STUDENT 1", "STUDENT 2", "STUDENT 3", "PROFESSOR", "GHOST", "WOMAN", "MAN", "GIRL", "BOY", "VOICE", "RADIO", "PHONE", "TV", "NURSE", "WAITER", "WAITRESS", "COP", "GUARD", "TWENTY", "HORSEMAN", "SOUND", "COURIER", "TITLE", "SCREEN"]);
-const NEWEST = ["bw-noncanon-want", "bw-ep22", "bw-ep21", "bw-sasha", "bw-lux-velvette", "bw-ep20", "bw-kevin-slides-4", "bw-kevin-slides-3", "bw-kevin-slides-2", "bw-kevin-slides-1", "bw-ep19"];
+const NEWEST = ["br-ep2", "inc-b2", "bw-noncanon-want", "bw-ep22", "bw-ep21", "bw-sasha", "bw-lux-velvette", "bw-ep20", "bw-kevin-slides-4", "bw-kevin-slides-3", "bw-kevin-slides-2", "bw-kevin-slides-1", "bw-ep19"];
 const SERIES_ORDER = ["kitsune", "blackwood", "incarnate", "backrooms"];
 let DATA = null;
 const slug = (s) => s.toLowerCase().normalize("NFKD").replace(/[^\w\s-]/g, "").trim().replace(/[\s_]+/g, "-").replace(/-+/g, "-").slice(0, 60);

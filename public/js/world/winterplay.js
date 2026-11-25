@@ -19,10 +19,10 @@ export function createWinterPlay(api) {
   }
   function update(dt) {
     cool -= dt; for (const b of balls) { b.x += b.vx * dt; b.y += b.vy * dt; b.life -= dt; const tx = Math.floor(b.x / T), ty = Math.floor((b.y + 10) / T); if (tx >= 0 && ty >= 0 && tx < W && map.solid[ty * W + tx] && ![TILE.water].includes(map.g[ty * W + tx])) { b.life = 0; burst({ x: b.x, y: b.y + 20 }, 5); continue; }
-      for (const p of people) if (Math.hypot(p.x - b.x, p.y - 18 - b.y) < 26) { b.life = 0; burst({ x: p.x, y: p.y }, 9); ping("blip"); say(p.x, p.y - 74, REPLY[Math.floor(Math.random() * REPLY.length)]); api.hit(p); if (Math.random() < .45) incoming.push({ x: p.x, y: p.y - 20, t: 0, from: p, delay: .55 }); break; }
+      for (const p of people) if (Math.hypot(p.x - b.x, p.y - 18 - b.y) < 26) { b.life = 0; burst({ x: p.x, y: p.y }, 9); ping("blip"); say(p.x, p.y - 74, REPLY[Math.floor(Math.random() * REPLY.length)]); api.hit(p); if (Math.random() < .45) incoming.push({ x: p.x, y: p.y - 20, tx: s.x, ty: s.y - 8, t: 0, from: p, delay: .55 }); break; }
       for (const m of s.snowmen) if (Math.hypot(m.x - b.x, m.y - 10 - b.y) < 22) { b.life = 0; burst({ x: m.x, y: m.y + 8 }, 7); m.wob = 1; break; } }
     balls = balls.filter((b) => b.life > 0); for (const m of s.snowmen) if (m.wob) m.wob = Math.max(0, m.wob - dt * 2);
-    for (const q of incoming) { if ((q.delay -= dt) > 0) continue; q.t += dt * 2.4; q.cx = q.x + (s.x - q.x) * Math.min(1, q.t); q.cy = q.y + (s.y - 8 - q.y) * Math.min(1, q.t) - Math.sin(Math.min(1, q.t) * 3.14) * 34; if (q.t >= 1) { q.done = 1; if (Math.hypot(q.x + (s.x - q.x) - s.x, 0) < 1) { burst({ x: s.x, y: s.y + 8 }, 10); ping("blip"); say(q.from.x, q.from.y - 74, HITBACK[Math.floor(Math.random() * HITBACK.length)]); } } }
+    for (const q of incoming) { if ((q.delay -= dt) > 0) continue; q.t += dt * 2.4; q.cx = q.x + (q.tx - q.x) * Math.min(1, q.t); q.cy = q.y + (q.ty - q.y) * Math.min(1, q.t) - Math.sin(Math.min(1, q.t) * 3.14) * 34; if (q.t >= 1) { q.done = 1; if (Math.hypot(q.tx - s.x, q.ty - (s.y - 8)) < 24) { burst({ x: s.x, y: s.y + 8 }, 10); ping("blip"); say(q.from.x, q.from.y - 74, HITBACK[Math.floor(Math.random() * HITBACK.length)]); } } }
     incoming = incoming.filter((q) => !q.done); for (const b of bubbles) b.life -= dt; bubbles = bubbles.filter((b) => b.life > 0);
   }
   function draw(g, things, camX, camY, vw, vh, now) {

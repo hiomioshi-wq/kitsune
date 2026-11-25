@@ -1,6 +1,9 @@
 // The Lantern Guild: Guild Ranks, Companion Expeditions, Guild Armory and World Mastery tracker.
 import { esc } from "../util.js";
 import { ITEMS } from "./extras.js";
+import { DELVE_SITES } from "./delve.js";
+import { TRIALS } from "./trials.js";
+import { FAR_QUESTS } from "./far.js";
 
 export const GUILD_RANKS = [
   [0, "Apprentice Bearer"],
@@ -61,7 +64,7 @@ export function createGuild(o) {
 
   const mastery = () => [
     ["Nine Lanterns", Object.keys(s.lit || {}).length + (s.final ? 1 : 0), 9],
-    ["Far Beacons", Object.keys(s.far?.lit || {}).length, 145],
+    ["Far Beacons", Object.keys(s.far?.lit || {}).length, FAR_QUESTS.length],
     ["Skyward Wind-Bells", Object.keys(s.sky?.bells || {}).length, 6],
     ["Sunken Deep Lanterns", Object.keys(s.deep?.lit || {}).length, 6],
     ["Blackwood Relics", Object.keys(s.realm?.blackwood?.found || {}).length, 45],
@@ -74,8 +77,8 @@ export function createGuild(o) {
     ["Clockworks Relics", Object.keys(s.realm?.clockworks?.found || {}).length, 5],
     ["Emerald Vault Relics", Object.keys(s.realm?.emeraldvault?.found || {}).length, 5],
     ["Arena Champions", Object.keys(s.arena?.beat || {}).length, 4],
-    ["Delves Cleared", Object.entries(s.realm || {}).filter(([k, v]) => k.startsWith("delve-") && k !== "delve-stair" && v?.beat).length, 145],
-    ["Regional Trials", Object.values(s.trials || {}).filter((v) => v?.medal).length, 145],
+    ["Delves Cleared", Object.entries(s.realm || {}).filter(([k, v]) => k.startsWith("delve-") && k !== "delve-stair" && v?.beat).length, DELVE_SITES.length],
+    ["Regional Trials", Object.values(s.trials || {}).filter((v) => v?.medal).length, TRIALS.length],
     ["Bounties Hunted", Object.keys(s.bounty?.done || {}).length, 149],
     ["Side Quests", Object.keys(s.sq?.done || {}).length, 164],
     ["Detective Cases", Object.keys(s.agency?.solved || {}).length, 20],
@@ -115,7 +118,7 @@ export function createGuild(o) {
         }).join("")}</div>`;
     } else if (tab === "armory") {
       body = `<p class="muted">Spend Guild Marks earned from expeditions.</p><div class="se-mkt">${GUILD_ARMORY.map((it) => {
-        const own = it.kind === "perk" ? !!g.perks[it.key] : it.kind === "hat" ? s.hats?.includes(it.key) : false;
+        const own = it.kind === "perk" ? !!g.perks[it.key] : it.kind === "hat" ? s.hats?.includes(it.key) : it.kind === "furn" ? !!s.furn?.[it.key] : false;
         const can = g.marks >= it.marks && !own;
         return `<div class="se-good"><span><strong>${esc(it.name)}</strong><small>${esc(it.desc)} · ${it.marks} marks</small></span>${own ? "<em>Owned</em>" : `<button class="btn btn-accent" type="button" data-buy="${it.id}" ${can ? "" : "disabled"}>Claim</button>`}</div>`;
       }).join("")}</div>`;

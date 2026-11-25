@@ -105,15 +105,15 @@ export function mountCarnival(host, api) {
     st.day.fortune++;
     const r = rngFor("carnival-fortune" + st.day.d);
     const seg = Math.floor(r() * 8), grand = r() < .06 && !s.hats.includes("carnivalhat");
-    let spin = 0, spinAt = 0, landed = false;
+    let spin = 0, spinAt = 0, landed = false, t0 = 0;
     page("Madam Fortuna's Wheel", `<p class="muted">Eight segments. The wheel decides; Fortuna only narrates.</p><div class="cv-wheel" id="fw"><b id="fw-p">🎡</b></div><button class="btn btn-accent" type="button" id="fw-go">Spin</button>`, (e) => {
       const wheel = e.querySelector("#fw");
       e.querySelector("#fw-go").onclick = () => {
         if (landed) return; landed = true; e.querySelector("#fw-go").disabled = true; api.ping("blip");
         spinAt = performance.now(); spin = 1440 + seg * 45;
-        const t0 = setInterval(() => { const p = Math.min(1, (performance.now() - spinAt) / 2600); wheel.style.transform = `rotate(${spin * (1 - Math.pow(1 - p, 3))}deg)`; if (p >= 1) { clearInterval(t0); settle(); } }, 40);
-        return () => clearInterval(t0);
+        t0 = setInterval(() => { const p = Math.min(1, (performance.now() - spinAt) / 2600); wheel.style.transform = `rotate(${spin * (1 - Math.pow(1 - p, 3))}deg)`; if (p >= 1) { clearInterval(t0); t0 = 0; settle(); } }, 40);
       };
+      return () => clearInterval(t0);
       const settle = () => {
         let value = "", line = "";
         if (grand) { api.giveHat("carnivalhat"); value = "The Ringmaster's Hat!"; api.ping("done"); }

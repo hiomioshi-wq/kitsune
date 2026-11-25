@@ -99,6 +99,7 @@ export function openRealm(host, id, ctx) {
     return btns;
   };
   function interact(e) {
+    if (e.giveWeapon && !rpg.r.owned.includes(e.giveWeapon)) { rpg.r.owned.push(e.giveWeapon); rpg.r.weapon = e.giveWeapon; save(); ctx.ping("done"); }
     if (e.relic) { if (st.found[e.relic.id]) return say(null, `You already found ${e.relic.name}.`, [["Keep it", closeTalk, 1], ...readBtn(e.relic.story)]); st.found[e.relic.id] = 1; ctx.reward(25); hud(); save(); ctx.ping("done"); return say(null, `You found ${e.relic.name}. ${e.relic.text}${Object.keys(st.found).length === relicTotal ? " That was the last relic here. (+200 mon)" : ""}`, [["Keep it", closeTalk, 1], ...readBtn(e.relic.story)]), void (Object.keys(st.found).length === relicTotal && ctx.reward(200)); }
     const q = quest();
     if (bestie && !(q && q.who === e.id) && bestie.interact(e)) return;

@@ -240,7 +240,7 @@ export function mountMine(host, api) {
       m.total += qty;
       floats.push({ x: nx, y: ny - 14, t: `+${qty} ${n.v.id}`, c: n.v.c, life: 1.2 });
       api.ping("done");
-      if (m.total >= 50 && !s.hats.includes("minerhat")) {
+      if (m.total >= 50 && !(s.hats || []).includes("minerhat")) {
         api.giveHat("minerhat");
         api.giveFurn("crystalcluster");
         sayToast("50 ores mined! Earned the Miner's Helmet & Crystal Cluster.");

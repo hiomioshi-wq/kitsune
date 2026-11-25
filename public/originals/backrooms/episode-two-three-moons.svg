@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="600" height="900">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#071226"/>
+      <stop offset=".55" stop-color="#14182e"/>
+      <stop offset="1" stop-color="#050408"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="900" fill="url(#g)"/>
+  <circle cx="170" cy="485" r="42" fill="#dce8ff" opacity=".85"/>
+  <circle cx="300" cy="455" r="58" fill="#f4f8ff" opacity=".95"/>
+  <circle cx="430" cy="490" r="38" fill="#c8dcff" opacity=".8"/>
+  <rect x="0" y="740" width="600" height="160" fill="#0d2240" opacity=".75"/>
+  <path d="M 60 760 H 540" stroke="#49d0ff" stroke-width="3" stroke-dasharray="18 12" opacity=".8"/>
+  <path d="M 210 735 l 14 -32 h 140 l 22 32 Z" fill="#5a382c" stroke="#49d0ff" stroke-width="2"/>
+  <rect x="198" y="733" width="190" height="28" rx="6" fill="#7a3428" stroke="#49d0ff" stroke-width="2"/>
+  <circle cx="235" cy="763" r="13" fill="#101216" stroke="#8ad8ff" stroke-width="2"/>
+  <circle cx="355" cy="763" r="13" fill="#101216" stroke="#8ad8ff" stroke-width="2"/>
+  <ellipse cx="295" cy="692" rx="34" ry="16" fill="#050508" stroke="#49d0ff" stroke-width="1.5"/>
+  <circle cx="283" cy="690" r="4" fill="#ffffff"/>
+  <circle cx="307" cy="690" r="4" fill="#ffffff"/>
+  <text x="300" y="845" text-anchor="middle" font-family="monospace" font-size="18" fill="#49d0ff" opacity=".85">kev, with a v</text>
+  <text x="300" y="120" text-anchor="middle" font-size="26" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="800" fill="#e8d9c4" letter-spacing="10">BACKROOMS</text>
+  <text x="300" y="150" text-anchor="middle" font-size="16" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" fill="#49d0ff" letter-spacing="8">NO WIND RESISTANCE</text>
+  <text x="300" y="290" text-anchor="middle" font-size="20" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="700" fill="#49d0ff" letter-spacing="5">EPISODE TWO</text>
+  <text x="300" y="350" text-anchor="middle" font-size="42" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="900" fill="#f5ece0"><tspan x="300" dy="0">The Three Moons</tspan><tspan x="300" dy="50">Initiative</tspan></text>
+</svg>

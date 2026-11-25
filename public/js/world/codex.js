@@ -84,7 +84,7 @@ export function createCodex(o) {
       }).join("")}</ol>`;
     }
 
-    panel("World Codex", `<p class="muted">Complete encyclopedia of Kitsune World's 7 realms, 25 regions, bosses, and arsenal.</p>
+    panel("World Codex", `<p class="muted">Complete encyclopedia of Kitsune World's 9 realms, ${Object.keys(REGIONS).length} regions, bosses, and arsenal.</p>
       <div class="dy-tabs">${tabs.map(([k, l]) => `<button type="button" class="${k === tab ? "on" : ""}" data-t="${k}">${l}</button>`).join("")}</div>${body}`, (e) => {
       e.querySelectorAll("[data-t]").forEach((b) => (b.onclick = () => open(b.dataset.t)));
     });
