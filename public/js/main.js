@@ -82,6 +82,7 @@ const routes = {
   constellations: () => import("./views/constellations.js"),
   mythic: () => import("./xmas/mythic.js"),
   thanksgiving: () => import("./views/thanksgiving.js"),
+  bingo: () => import("./views/bingo.js"),
 };
 
 const KIDS_HIDDEN = new Set(["discover", "manga", "ai", "feeds"]);
