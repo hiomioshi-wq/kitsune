@@ -213,7 +213,7 @@ export const SERIES = [
     id: "midnight-switchboard", title: "The Midnight Switchboard", author: "Kitsune Originals",
     blurb: "A graveyard-shift telephone operator answers a disconnected copper trunk line that rings from twenty minutes in the future.",
     cover: "/originals/the-midnight-switchboard/ep01-dead-line.svg",
-    parts: [
+    items: [
       { id: "ms-ep01", kind: "text", label: "Episode 1", title: "Dead Line", file: "/originals/the-midnight-switchboard/ep01-dead-line.txt", cover: "/originals/the-midnight-switchboard/ep01-dead-line.svg", blurb: "An operator on the graveyard shift answers a disconnected copper trunk line." },
       { id: "ms-ep02", kind: "text", label: "Episode 2", title: "Wrong Number", file: "/originals/the-midnight-switchboard/ep02-wrong-number.txt", cover: "/originals/the-midnight-switchboard/ep02-wrong-number.svg", blurb: "Trunk 19 dials backward, and the voice on the speaker is twenty minutes ahead." },
     ],

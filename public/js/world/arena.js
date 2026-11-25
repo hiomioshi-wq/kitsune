@@ -3,7 +3,7 @@ import { BOSSES, startBoss } from "./boss.js";
 import { drawFox } from "./art.js";
 import { esc } from "../util.js";
 
-export const ARENA_CHAMPS = ["paper_ronin", "tide_chimera", "meridian_mech", "nine_shadow", "glasswing"];
+export const ARENA_CHAMPS = ["paper_ronin", "tide_chimera", "meridian_mech", "nine_shadow", "glasswing", "kiln_wyrm", "tick_colossus"];
 export const BW_CHAMPS = ["gargoyleking", "quorumgoose", "firstwinter", "griefwarden", "thermalcore", "paperwork"];
 export const ALL_CHAMPS = [...ARENA_CHAMPS, ...BW_CHAMPS];
 
