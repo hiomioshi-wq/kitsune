@@ -7,7 +7,7 @@ const STOPS = ["station", "village", "market", "shore", "clock", "oz", "bamboo",
 export function createPlusWorld(o) {
   const { s, map, W, H, T, REGIONS, root, drawFox, fur, tails, toast, ping, save, hud, panel, closePanel, overlay, teleport } = o;
   const near = (cx, cy) => { let b = [cx, cy], d = 1e9; for (let y = Math.max(1, cy - 12); y < Math.min(H - 1, cy + 12); y++) for (let x = Math.max(1, cx - 12); x < Math.min(W - 1, cx + 12); x++) { const i = y * W + x; if (!map.reach[i] || map.solid[i]) continue; const q = (x - cx) ** 2 + (y - cy) ** 2; if (q < d) { d = q; b = [x, y]; } } return [(b[0] + .5) * T, (b[1] + .5) * T]; };
-  const museum = near(56, 53), train = near(REGIONS.station[1] + 4, REGIONS.station[2] + 5), season = seasonOf(), fest = FESTIVALS[season], stalls = season === "winter" ? [] : ["village", "market", "shore", "oz", "bamboo", "sakura", "dunes", "capital"].map((k) => { const [x, y] = near(REGIONS[k][1] - 4, REGIONS[k][2] + 4); return { k, x, y }; });
+  const museum = near(56, 53), train = near(REGIONS.station[1] + 4, REGIONS.station[2] + 5), season = seasonOf(), fest = FESTIVALS[season], stalls = season === "winter" ? [] : ["village", "market", "shore", "oz", "bamboo", "sakura", "dunes", "capital"].filter((k) => REGIONS[k]).map((k) => { const [x, y] = near(REGIONS[k][1] - 4, REGIONS[k][2] + 4); return { k, x, y }; });
   s.fest ||= { tok: {}, own: [], day: {} };
   const dayStalls = () => { if (s.fest.day.d !== today()) s.fest.day = { d: today(), got: {} }; return s.fest.day.got; };
   setTimeout(async () => { const n = await claimBank(s, { save, hud }).catch(() => null); if (n) toast(`Rewards from your reading: ${n}`); }, 1200);
