@@ -72,7 +72,7 @@ export async function render(view, _n, params = []) {
   setCrumbs([["Kitsune World", "world"]]);
   view.innerHTML = `<div class="world" id="wd" tabindex="0" aria-label="Kitsune World game. Move with W A S D or the arrow keys. Press E to interact."><canvas id="wd-c"></canvas>
     <div class="wd-hud"><div class="wd-stats"><span title="Mon"><b class="wd-coin"></b><strong id="wd-mon">0</strong></span><span title="Foxfire"><b class="wd-orb"></b><strong id="wd-orbs">0</strong></span><span title="Lanterns"><b class="wd-lamp"></b><strong id="wd-lit">0</strong>/9</span></div><p id="wd-obj"></p><p id="wd-sq" hidden></p></div>
-    <div class="wd-btns"><button type="button" data-p="journal">Journal <kbd>J</kbd></button><button type="button" data-p="map">Map <kbd>M</kbd></button><button type="button" id="wd-bag">Bag <kbd>B</kbd></button><button type="button" id="wd-ride">Ride <kbd>R</kbd></button><button type="button" id="wd-nexus">Nexus</button><button type="button" id="wd-play">Activities <kbd>K</kbd></button><button type="button" id="wd-time">Time</button><button type="button" id="wd-full" aria-label="Full screen">⛶</button></div>
+    <div class="wd-btns"><button type="button" data-p="journal">Journal <kbd>J</kbd></button><button type="button" data-p="map">Map <kbd>M</kbd></button><button type="button" id="wd-bag">Bag <kbd>B</kbd></button><button type="button" id="wd-ride">Ride <kbd>R</kbd></button><button type="button" id="wd-nexus">Nexus</button><button type="button" id="wd-thanks">Thanksgiving</button><button type="button" id="wd-play">Activities <kbd>K</kbd></button><button type="button" id="wd-time">Time</button><button type="button" id="wd-full" aria-label="Full screen">⛶</button></div>
     <canvas id="wd-mini" width="240" height="180" aria-hidden="true"></canvas><div class="wd-banner" id="wd-banner" hidden></div><button type="button" class="wd-prompt" id="wd-prompt" hidden></button>
     <div class="wd-pad" id="wd-pad" aria-hidden="true"><i></i></div><button type="button" class="wd-act" id="wd-act" aria-label="Interact">E</button>
     <div class="wd-talk" id="wd-talk" hidden role="dialog" aria-live="polite"></div><div class="wd-panel" id="wd-panel" hidden role="dialog"></div><div class="wd-load" id="wd-load">Lighting the lamps…</div></div>`;
@@ -387,6 +387,7 @@ export async function render(view, _n, params = []) {
   events = createEvents({ s, map, W, H, T, people, root, panel, closePanel, toast, ping, save, hud, burst, calm, esc, blocked, drawFox, addRenown: (n) => tale.addRenown(n), giveHat: (h) => { if (!s.hats.includes(h)) s.hats.push(h); s.hat = h; save(); } });
   $("#wd-play", root).onclick = () => tale.hub();
   $("#wd-nexus", root).onclick = () => enterNexus();
+  $("#wd-thanks", root).onclick = () => { location.hash = "thanksgiving"; };
   const onKey = (e) => {
     if (realm || photoOn) return;
     if (!root.isConnected || e.metaKey || e.ctrlKey || e.altKey || document.querySelector(".modal") || e.target.matches?.("input,textarea,select")) return;

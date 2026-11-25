@@ -81,6 +81,7 @@ const routes = {
   sanctuary: () => import("./views/sanctuary.js"),
   constellations: () => import("./views/constellations.js"),
   mythic: () => import("./xmas/mythic.js"),
+  thanksgiving: () => import("./views/thanksgiving.js"),
 };
 
 const KIDS_HIDDEN = new Set(["discover", "manga", "ai", "feeds"]);
