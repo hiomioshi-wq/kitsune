@@ -57,7 +57,7 @@ async function play(view, item) {
   setCrumbs([["Visual novels", "vn"], [item.title, "vn/" + item.id]]);
   view.innerHTML = `${CSS}<p class="muted">Opening ${esc(item.title)}…</p>`;
   let story; try { if (item.kind === "comic") { const pages = await Promise.all(item.urls.map(async (url) => { const r = await fetch(url); if (!r.ok) throw 0; return { url, svg: await r.text() }; })); story = parseComic(pages); } else { const r = await fetch(item.file); if (!r.ok) throw 0; story = parseStory(await r.text(), item.kind); } } catch { view.innerHTML = `${CSS}<p class="muted">That story didn't load. Check your connection and try again.</p><p><a class="btn" href="#vn">All visual novels</a></p>`; return; }
-  const here = () => decodeURIComponent(location.hash.slice(1)) === `vn/${item.id}`; if (!here()) return;
+  const here = () => { try { return decodeURIComponent(location.hash.slice(1)) === `vn/${item.id}`; } catch { return false; } }; if (!here()) return;
   const DB = await loadCast(), sid = item.sid || "kitsune", designOf = (n) => DB[`${sid}:${castKey(story.cast[n]?.key || n)}`];
   const portraitSvg = (n, info, m, opt = {}) => { const d = designOf(n); return d ? characterSvg(n, d, m, opt) : basicPortrait(n, info, m); };
   const P = prefs(), B = story.beats, stops = []; let bg = "room:day:", cap = "", fade = "", stage = [];

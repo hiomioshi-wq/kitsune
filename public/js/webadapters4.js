@@ -271,7 +271,7 @@ export const adapters = [
   },
   // ---- Sefaria (Jewish texts): the passage in Hebrew and English, side by side ----
   async (u) => {
-    if (host(u) !== "sefaria.org" && u.hostname !== "sefaria.org.il") return null; const ref = decodeURIComponent(u.pathname.slice(1)); if (!/^[A-Z][\w,' ()-]*\.\d/.test(ref) || ref.includes("/")) return null;
+    if (host(u) !== "sefaria.org" && u.hostname !== "sefaria.org.il") return null; const ref = (() => { try { return decodeURIComponent(u.pathname.slice(1)); } catch { return u.pathname.slice(1); } })(); if (!/^[A-Z][\w,' ()-]*\.\d/.test(ref) || ref.includes("/")) return null;
     const j = await json(`https://www.sefaria.org/api/v3/texts/${encodeURIComponent(ref)}?version=english&version=source&return_format=text_only`), vs = j.versions || []; if (!vs.length) return null;
     const he = vs.find((v) => v.language === "he" || v.actualLanguage === "he"), en = vs.find((v) => v.language === "en" || v.actualLanguage === "en");
     const flat = (t) => (Array.isArray(t) ? t.flat(3) : [t]).filter((s) => s != null);

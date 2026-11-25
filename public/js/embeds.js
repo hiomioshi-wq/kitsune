@@ -25,7 +25,7 @@ const P = [
   { id: "commons", name: "Wikimedia Commons", color: "#069", kind: "video", re: /commons\.wikimedia\.org\/wiki\/(File:[^?#]+\.(?:webm|ogv|ogg|mp4|oga|opus|mp3|wav))/i,
     player: (m) => `https://commons.wikimedia.org/wiki/${m[1]}?embedplayer=yes`, page: (m) => `https://commons.wikimedia.org/wiki/${m[1]}`, ratio: "16/9" },
   { id: "soundcloud", name: "SoundCloud", color: "#ff5500", kind: "audio", re: /(?:w\.soundcloud\.com\/player\/\?url=([^&]+)|soundcloud\.com\/((?!player)[\w-]+\/(?:sets\/)?[\w-]+))/,
-    player: (m) => `https://w.soundcloud.com/player/?url=${m[1] || encodeURIComponent("https://soundcloud.com/" + m[2])}&auto_play=true&visual=true&show_comments=false`, page: (m) => m[1] ? decodeURIComponent(m[1]) : `https://soundcloud.com/${m[2]}`, ratio: "16/9" },
+    player: (m) => `https://w.soundcloud.com/player/?url=${m[1] || encodeURIComponent("https://soundcloud.com/" + m[2])}&auto_play=true&visual=true&show_comments=false`, page: (m) => { if (!m[1]) return `https://soundcloud.com/${m[2]}`; try { return decodeURIComponent(m[1]); } catch { return m[1]; } }, ratio: "16/9" },
   { id: "spotify", name: "Spotify", color: "#1db954", kind: "audio", re: /open\.spotify\.com\/(?:embed\/)?(?:intl-\w+\/)?(track|album|playlist|episode|show|artist)\/([A-Za-z0-9]+)/,
     player: (m) => `https://open.spotify.com/embed/${m[1]}/${m[2]}`, page: (m) => `https://open.spotify.com/${m[1]}/${m[2]}`, ratio: "auto", height: (m) => (m[1] === "track" || m[1] === "episode" ? 152 : 380) },
   { id: "bandcamp", name: "Bandcamp", color: "#1da0c3", kind: "audio", re: /bandcamp\.com\/EmbeddedPlayer\/(.+)/,
@@ -179,7 +179,7 @@ export function lightbox(images, start = 0) {
   document.body.append(el);
   const img = $("img", el), apply = () => (img.style.transform = `translate(${px}px, ${py}px) scale(${z})`);
   img.onerror = () => { const im = images[i]; if (im.fallback && img.src !== im.fallback) img.src = im.fallback; };
-  const show = () => { const im = images[i]; { let o = im.full || im.src || ""; const mm = o.match(/\/api\/browse\/img\?url=([^&]+)/); if (mm) o = decodeURIComponent(mm[1]); const f = $("[data-lb=find]", el); if (f) { f.hidden = !/^https?:/.test(o); f.href = "https://tineye.com/search?url=" + encodeURIComponent(o); } } z = 1; px = py = 0; apply(); img.src = im.src; img.alt = im.alt || ""; $(".kb-lb-n", el).textContent = images.length > 1 ? `${i + 1} / ${images.length}` : ""; $(".kb-lb-cap", el).textContent = im.alt || ""; $("[data-lb=open]", el).href = im.full || im.src; };
+  const show = () => { const im = images[i]; { let o = im.full || im.src || ""; const mm = o.match(/\/api\/browse\/img\?url=([^&]+)/); if (mm) { try { o = decodeURIComponent(mm[1]); } catch { o = mm[1]; } } const f = $("[data-lb=find]", el); if (f) { f.hidden = !/^https?:/.test(o); f.href = "https://tineye.com/search?url=" + encodeURIComponent(o); } } z = 1; px = py = 0; apply(); img.src = im.src; img.alt = im.alt || ""; $(".kb-lb-n", el).textContent = images.length > 1 ? `${i + 1} / ${images.length}` : ""; $(".kb-lb-cap", el).textContent = im.alt || ""; $("[data-lb=open]", el).href = im.full || im.src; };
   const close = () => { el.remove(); removeEventListener("keydown", key, true); };
   const key = (e) => { if (e.key === "Escape") { e.stopPropagation(); close(); } else if (e.key === "ArrowRight") { e.stopPropagation(); i = (i + 1) % images.length; show(); } else if (e.key === "ArrowLeft") { e.stopPropagation(); i = (i - 1 + images.length) % images.length; show(); } };
   addEventListener("keydown", key, true);

@@ -2,12 +2,13 @@
 // Details come from how the stories and the lore describe them; everything else is assigned so no two look alike.
 import fs from "fs";
 import path from "path";
+import vm from "vm";
 import { fileURLToPath } from "url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../public"); process.chdir(root);
 const { parseStory } = await import(path.join(root, "js/vnparse.js"));
 const { CHARACTERS } = await import(path.join(root, "js/lore-curated.js"));
 const src = fs.readFileSync("js/originals.js", "utf8").replace(/^import .*$/gm, "").replace(/export const/g, "const").split("export async function addSeriesItem")[0];
-const { ORIGINALS: O, SERIES: S } = new Function(src + ";return {ORIGINALS,SERIES}")();
+const { ORIGINALS: O, SERIES: S } = vm.runInNewContext(src + ";({ORIGINALS,SERIES})", Object.create(null));
 const list = [...O.filter((x) => x.type === "book").map((x) => ({ f: x.file, k: "text", sid: "kitsune" })), ...S.flatMap((s) => s.items.map((x) => ({ f: x.file, k: x.kind, sid: s.id })))];
 const OVERRIDES = JSON.parse(fs.existsSync("../tools/vn-cast-overrides.json") ? fs.readFileSync("../tools/vn-cast-overrides.json", "utf8") : "{}");
 const branches = JSON.parse(fs.readFileSync("originals/vn-branches.json", "utf8"));

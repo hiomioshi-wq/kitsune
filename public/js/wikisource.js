@@ -34,9 +34,9 @@ const DROP = "script, style, link, .ws-noexport, #headertemplate, .headertemplat
 function clean(html, lang) {
   const doc = new DOMParser().parseFromString(`<div>${html}</div>`, "text/html");
   const root = doc.body.firstElementChild;
-  root.querySelectorAll(DROP).forEach((n) => n.remove());
-  for (const el of root.querySelectorAll("*")) for (const a of [...el.attributes]) if (/^on|^style$|^class$/i.test(a.name)) el.removeAttribute(a.name);
-  for (const img of root.querySelectorAll("img")) { const s = img.getAttribute("src") || ""; if (s.startsWith("//")) img.setAttribute("src", "https:" + s); img.removeAttribute("srcset"); img.setAttribute("loading", "lazy"); }
+  root.querySelectorAll(DROP + ",iframe,object,embed,form,svg,base").forEach((n) => n.remove());
+  for (const el of root.querySelectorAll("*")) for (const a of [...el.attributes]) if (/^on|^style$|^class$|^srcdoc$|^formaction$/i.test(a.name)) el.removeAttribute(a.name);
+  for (const img of root.querySelectorAll("img")) { const s = img.getAttribute("src") || ""; const u = s.startsWith("//") ? "https:" + s : s; if (!/^https?:\/\//i.test(u)) { img.remove(); continue; } img.setAttribute("src", u); img.removeAttribute("srcset"); img.setAttribute("loading", "lazy"); }
   for (const a of root.querySelectorAll("a")) {
     const href = a.getAttribute("href") || "";
     if (/^https?:/.test(href) && !href.includes("wikisource.org")) { a.target = "_blank"; a.rel = "noopener"; }
@@ -55,8 +55,10 @@ export async function loadWork(lang, title, onStatus = () => {}) {
   for (const a of doc.querySelectorAll("a[href]")) {
     const href = a.getAttribute("href");
     if (!href.startsWith(prefix)) continue;
-    const page = decodeURIComponent(href.slice("/wiki/".length).split("#")[0]).replace(/_/g, " ");
-    if (!subpages.includes(page)) subpages.push(page);
+    try {
+      const page = decodeURIComponent(href.slice("/wiki/".length).split("#")[0]).replace(/_/g, " ");
+      if (!subpages.includes(page)) subpages.push(page);
+    } catch {}
   }
   const mainText = doc.body.textContent.replace(/\s+/g, " ").length;
   const chapters = [];

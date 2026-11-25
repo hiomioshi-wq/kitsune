@@ -74,18 +74,23 @@ export function showLock() {
   document.documentElement.classList.add("locked");
   const input = $(".lock-input", el), dots = $(".lock-dots", el), err = $(".lock-err", el);
   const paint = () => { dots.innerHTML = Array.from({ length: Math.max(4, input.value.length) }, (_, i) => `<i class="${i < input.value.length ? "on" : ""}"></i>`).join(""); };
-  let tries = 0, waitUntil = 0;
+  const TRIES_KEY = "kitsune.lock.tries";
+  const readTries = () => { try { return JSON.parse(localStorage.getItem(TRIES_KEY) || "null") || { tries: 0, waitUntil: 0 }; } catch { return { tries: 0, waitUntil: 0 }; } };
+  const writeTries = (v) => { try { v ? localStorage.setItem(TRIES_KEY, JSON.stringify(v)) : localStorage.removeItem(TRIES_KEY); } catch {} };
   const attempt = async () => {
-    if (Date.now() < waitUntil) { err.textContent = `Too many tries. Wait ${Math.ceil((waitUntil - Date.now()) / 1000)} seconds.`; return; }
+    const st = readTries();
+    if (Date.now() < st.waitUntil) { err.textContent = `Too many tries. Wait ${Math.ceil((st.waitUntil - Date.now()) / 1000)} seconds.`; return; }
     if (!input.value) return;
     if (await checkPin(input.value)) {
+      writeTries(null);
       el.classList.add("opening");
       document.documentElement.classList.remove("locked");
       setTimeout(() => el.remove(), 380);
       return;
     }
-    tries++;
-    if (tries >= 5) { waitUntil = Date.now() + 30_000; tries = 0; }
+    st.tries = (st.tries || 0) + 1;
+    if (st.tries >= 5) { st.waitUntil = Date.now() + 30_000; st.tries = 0; }
+    writeTries(st);
     err.textContent = "That PIN isn't right.";
     el.querySelector(".lock-card").classList.remove("shake"); void el.offsetWidth; el.querySelector(".lock-card").classList.add("shake");
     input.value = ""; paint(); input.focus();

@@ -36,7 +36,7 @@ async function viaOembed(u, r) {
 }
 
 async function viaMediaWiki(u) {
-  let title = u.searchParams.get("title") || (u.pathname.match(/^\/(?:[a-z-]{2,5}\/)?(?:wiki|w|title|index\.php)\/(.+)$/) || [])[1]; if (!title) return null; title = decodeURIComponent(title).replace(/_/g, " ");
+  let title = u.searchParams.get("title") || (u.pathname.match(/^\/(?:[a-z-]{2,5}\/)?(?:wiki|w|title|index\.php)\/(.+)$/) || [])[1]; if (!title) return null; try { title = decodeURIComponent(title); } catch {} title = title.replace(/_/g, " ");
   for (const path of ["/api.php", "/w/api.php", "/wiki/api.php", "/mediawiki/api.php"]) {
     const base = `${u.origin}${path}?action=parse&format=json&redirects=1&disableeditsection=1&page=${encodeURIComponent(title)}`;
     let meta; try { meta = await json(base + "&prop=sections|displaytitle"); } catch { continue; } if (!meta.parse) continue;

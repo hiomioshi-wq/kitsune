@@ -90,7 +90,8 @@ export async function page(w, title) {
     try {
       const u = new URL(href, host);
       if (u.origin === host && u.pathname.startsWith(articlePath) && !u.search) {
-        const name = decodeURIComponent(u.pathname.slice(articlePath.length)).replace(/_/g, " ");
+        const rawName = u.pathname.slice(articlePath.length);
+        const name = (() => { try { return decodeURIComponent(rawName); } catch { return rawName; } })().replace(/_/g, " ");
         // Skip namespaced pages like "File:…" or "Category:…" (no space before the colon).
         // Categories are kept: Kitsune lists their pages.
         if (name && (!/^[^ :]+:\S/.test(name) || /^Category:/i.test(name))) target = name;

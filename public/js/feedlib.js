@@ -3,7 +3,7 @@
 import { kvGet, kvSet } from "./store.js";
 import { api } from "./util.js";
 
-const abs = (u, b) => { try { return new URL(u, b).href; } catch { return ""; } };
+const abs = (u, b) => { try { const x = new URL(u, b); return /^https?:$/i.test(x.protocol) ? x.href : ""; } catch { return ""; } };
 export const hash = (s) => { let h = 5381; for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0; return h.toString(36); };
 const txt = (s) => (s || "").replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&#0?39;|&apos;/g, "'").replace(/&quot;/g, '"').replace(/\s+/g, " ").trim();
 export const snippet = (html, n = 170) => { const t = txt(html); return t.length > n ? t.slice(0, n).replace(/\s+\S*$/, "") + "…" : t; };

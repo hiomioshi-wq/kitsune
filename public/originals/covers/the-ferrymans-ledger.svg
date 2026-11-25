@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="600" height="900">
+  <rect width="600" height="900" fill="#262b4f"/>
+  <circle cx="394" cy="48" r="1.8" fill="#fff" opacity="0.44"/><circle cx="403" cy="100" r="1.9" fill="#fff" opacity="0.59"/><circle cx="106" cy="32" r="2.9" fill="#fff" opacity="0.88"/><circle cx="72" cy="280" r="2.9" fill="#fff" opacity="0.41"/><circle cx="252" cy="147" r="2.2" fill="#fff" opacity="0.47"/><circle cx="328" cy="208" r="1.0" fill="#fff" opacity="0.76"/><circle cx="211" cy="121" r="0.8" fill="#fff" opacity="0.86"/><circle cx="82" cy="141" r="1.7" fill="#fff" opacity="0.35"/><circle cx="29" cy="260" r="2.2" fill="#fff" opacity="0.69"/><circle cx="573" cy="205" r="1.7" fill="#fff" opacity="0.60"/><circle cx="158" cy="149" r="2.4" fill="#fff" opacity="0.38"/><circle cx="15" cy="97" r="2.3" fill="#fff" opacity="0.72"/><circle cx="101" cy="24" r="0.8" fill="#fff" opacity="0.31"/><circle cx="333" cy="15" r="1.4" fill="#fff" opacity="0.51"/><circle cx="129" cy="248" r="2.2" fill="#fff" opacity="0.74"/><circle cx="448" cy="286" r="1.9" fill="#fff" opacity="0.52"/><circle cx="362" cy="182" r="2.4" fill="#fff" opacity="0.69"/><circle cx="162" cy="383" r="2.7" fill="#fff" opacity="0.88"/><circle cx="556" cy="542" r="2.4" fill="#fff" opacity="0.68"/><circle cx="263" cy="308" r="1.7" fill="#fff" opacity="0.56"/><circle cx="70" cy="60" r="1.6" fill="#fff" opacity="0.5"/><circle cx="521" cy="66" r="1.4" fill="#fff" opacity="0.58"/><circle cx="452" cy="330" r="1.5" fill="#fff" opacity="0.55"/><circle cx="580" cy="300" r="2.1" fill="#fff" opacity="0.5"/><circle cx="29" cy="385" r="1.9" fill="#fff" opacity="0.62"/><circle cx="101" cy="432" r="1.9" fill="#fff" opacity="0.63"/>
+  <circle cx="480" cy="110" r="38" fill="#fff6e6" opacity="0.95"/>
+  <g stroke-linejoin="round" stroke-linecap="round">
+    <path d="M 258 176 Q 274 156 290 176 Q 306 156 322 176" fill="none" stroke="#fff6e6" stroke-width="6"/>
+    <path d="M 274 208 Q 274 190 290 190 Q 306 190 306 208 L 302 216 L 278 216 Z" fill="#fff6e6" stroke="#1b1d33" stroke-width="4"/>
+    <rect x="108" y="250" width="192" height="236" fill="#fff6e6" stroke="#1b1d33" stroke-width="6"/>
+    <rect x="300" y="250" width="192" height="236" fill="#fff6e6" stroke="#1b1d33" stroke-width="6"/>
+    <rect x="292" y="242" width="16" height="252" rx="5" fill="#1b1d33"/>
+    <path d="M 128 296 h 152 M 128 322 h 152 M 128 348 h 152 M 128 374 h 152 M 128 400 h 152 M 128 426 h 152 M 128 452 h 152" stroke="#1b1d33" stroke-width="2" opacity="0.35"/>
+    <path d="M 320 296 h 152 M 320 322 h 152 M 320 348 h 152 M 320 374 h 152 M 320 400 h 152 M 320 426 h 152 M 320 452 h 152" stroke="#1b1d33" stroke-width="2" opacity="0.35"/>
+    <path d="M 136 296 h 34 M 136 348 h 58 M 136 374 h 26 M 136 426 h 46 M 136 452 h 38" stroke="#1b1d33" stroke-width="4" opacity="0.55"/>
+    <path d="M 328 322 h 64 M 328 374 h 40 M 328 400 h 74 M 328 452 h 34" stroke="#1b1d33" stroke-width="4" opacity="0.55"/>
+    <path d="M 428 348 h 36 M 428 426 h 30" stroke="#c8283a" stroke-width="5" opacity="0.85"/>
+    <g transform="rotate(24 380 512)">
+      <rect x="298" y="504" width="118" height="17" rx="8" fill="#ffd36b" stroke="#1b1d33" stroke-width="4"/>
+      <path d="M 416 504 L 444 512.5 L 416 521 Z" fill="#fff6e6" stroke="#1b1d33" stroke-width="4"/>
+      <circle cx="436" cy="512.5" r="3.5" fill="#1b1d33"/>
+      <rect x="290" y="504" width="18" height="17" rx="8" fill="#c8283a" stroke="#1b1d33" stroke-width="4"/>
+    </g>
+    <path d="M 0 574 Q 30 564 60 574 T 120 574 T 180 574 T 240 574 T 300 574 T 360 574 T 420 574 T 480 574 T 540 574 T 600 574" fill="none" stroke="#1b1d33" stroke-width="4" opacity="0.6"/>
+    <path d="M 0 600 Q 30 590 60 600 T 120 600 T 180 600 T 240 600 T 300 600 T 360 600 T 420 600 T 480 600 T 540 600 T 600 600" fill="none" stroke="#1b1d33" stroke-width="4" opacity="0.4"/>
+    <path d="M 0 624 Q 30 614 60 624 T 120 624 T 180 624 T 240 624 T 300 624 T 360 624 T 420 624 T 480 624 T 540 624 T 600 624" fill="none" stroke="#1b1d33" stroke-width="4" opacity="0.25"/>
+    <path d="M 238 586 L 362 586 L 342 614 L 260 614 Z" fill="#8a5a33" stroke="#1b1d33" stroke-width="5"/>
+    <path d="M 300 586 L 300 548" stroke="#6b4a2b" stroke-width="6"/>
+    <circle cx="324" cy="566" r="9" fill="#ffd36b" stroke="#1b1d33" stroke-width="4"/>
+    <circle cx="324" cy="569" r="2" fill="#1b1d33"/>
+    <path d="M 430 560 Q 442 542 454 560 Q 466 542 478 560" fill="none" stroke="#fff6e6" stroke-width="5"/>
+  </g>
+  <rect x="30" y="640" width="540" height="200" fill="#fff6e6" stroke="#1b1d33" stroke-width="6"/>
+  <text x="50" y="700" font-size="44" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="900" fill="#1b1d33"><tspan x="50" dy="0">The Ferryman's</tspan><tspan x="50" dy="48">Ledger</tspan></text>
+  <text x="50" y="815" font-size="22" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" fill="#c8283a" font-weight="700">A KITSUNE ORIGINAL · STORY</text>
+</svg>

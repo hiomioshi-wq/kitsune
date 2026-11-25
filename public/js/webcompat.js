@@ -97,6 +97,7 @@ export function viewSpecial(t, r, body, go) {
   const type = (r.ctype || "").toLowerCase(), name = r.url.split(/[?#]/)[0].toLowerCase(), text = r.text || "";
   const raw = () => { const b = body.querySelector("#kbx-raw"); if (b) b.onclick = () => { body.innerHTML = `<div class="kb-view kb-text"><pre>${esc(text.slice(0, 400000))}</pre></div>`; }; };
   const links = () => body.querySelectorAll("a[data-go]").forEach((a) => (a.onclick = (e) => { e.preventDefault(); go(a.dataset.go); }));
+  const safeUrl = (u) => (/^https?:\/\//i.test(String(u || "").trim()) ? String(u).trim() : "");
   const set = (html, title) => { t.title = title.slice(0, 120); body.innerHTML = html; raw(); links(); return true; };
 
   // ---- XML: feeds, OPML, sitemaps ----
@@ -108,9 +109,9 @@ export function viewSpecial(t, r, body, go) {
       const ftitle = TEXT(ch, "title") || "Feed", fdesc = plain(TEXT(ch, atom ? "subtitle" : "description")).slice(0, 300);
       const items = [...d.querySelectorAll(atom ? "entry" : "item")].slice(0, 200);
       const card = (it) => {
-        const title = TEXT(it, "title") || "Untitled"; let link = atom ? (it.querySelector('link[rel="alternate"], link:not([rel])')?.getAttribute("href") || "") : TEXT(it, "link") || TEXT(it, "guid");
+        const title = TEXT(it, "title") || "Untitled"; let link = safeUrl(atom ? (it.querySelector('link[rel="alternate"], link:not([rel])')?.getAttribute("href") || "") : TEXT(it, "link") || TEXT(it, "guid"));
         const date = when(TEXT(it, "pubDate") || TEXT(it, "published") || TEXT(it, "updated") || TEXT(it, "date")), sum = plain(TEXT(it, "description") || TEXT(it, "summary") || TEXT(it, "encoded") || TEXT(it, "content")).slice(0, 320);
-        const enc = it.querySelector("enclosure[url], link[rel=enclosure]"), encUrl = enc?.getAttribute("url") || enc?.getAttribute("href") || "", encType = enc?.getAttribute("type") || "";
+        const enc = it.querySelector("enclosure[url], link[rel=enclosure]"), encUrl = safeUrl(enc?.getAttribute("url") || enc?.getAttribute("href") || ""), encType = enc?.getAttribute("type") || "";
         const by = TEXT(it, "author > name") || TEXT(it, "creator") || TEXT(it, "author");
         return `<article style="padding:12px 0;border-bottom:1px solid var(--border,#8884)"><h3 style="margin:0 0 4px;font-size:1.05em">${link ? `<a href="${esc(link)}" data-go="${esc(link)}">${esc(title)}</a>` : esc(title)}</h3><div class="muted" style="font-size:.85em">${esc([date, by].filter(Boolean).join(" · "))}</div>${sum ? `<p style="margin:6px 0 0">${esc(sum)}${sum.length >= 320 ? "…" : ""}</p>` : ""}${encUrl ? `<p style="margin:6px 0 0"><a href="${esc(encUrl)}" data-go="${esc(encUrl)}">${/audio/.test(encType) ? "Audio" : /video/.test(encType) ? "Video" : "Attachment"}: ${esc(encUrl.split("/").pop().split("?")[0].slice(0, 60))}</a></p>` : ""}</article>`;
       };
@@ -119,13 +120,13 @@ export function viewSpecial(t, r, body, go) {
     if (rootTag === "urlset" || rootTag === "sitemapindex") {
       const locs = [...d.querySelectorAll("loc")].map((x) => x.textContent.trim()).slice(0, 3000);
       return set(frame(`<input class="field" id="kbx-q" placeholder="Filter…" style="width:100%;margin-bottom:10px"><div id="kbx-l"></div>`, rootTag === "urlset" ? "Sitemap" : "Sitemap index", `${locs.length} addresses`), "Sitemap") && (() => {
-        const draw = () => { const q = body.querySelector("#kbx-q").value.toLowerCase(); body.querySelector("#kbx-l").innerHTML = locs.filter((l) => !q || l.toLowerCase().includes(q)).slice(0, 400).map((l) => `<div style="padding:4px 0;word-break:break-all"><a href="${esc(l)}" data-go="${esc(l)}">${esc(l.replace(/^https?:\/\/(www\.)?/, ""))}</a></div>`).join(""); links(); };
+        const draw = () => { const q = body.querySelector("#kbx-q").value.toLowerCase(); body.querySelector("#kbx-l").innerHTML = locs.filter((l) => safeUrl(l) && (!q || l.toLowerCase().includes(q))).slice(0, 400).map((l) => `<div style="padding:4px 0;word-break:break-all"><a href="${esc(safeUrl(l))}" data-go="${esc(safeUrl(l))}">${esc(l.replace(/^https?:\/\/(www\.)?/, ""))}</a></div>`).join(""); links(); };
         body.querySelector("#kbx-q").oninput = draw; draw(); return true;
       })();
     }
     if (rootTag === "opml") {
       const rows = [...d.querySelectorAll("outline")].map((o) => ({ t: o.getAttribute("title") || o.getAttribute("text") || "", x: o.getAttribute("xmlUrl") || "", h: o.getAttribute("htmlUrl") || "" })).filter((o) => o.t);
-      return set(frame(rows.map((o) => `<div style="padding:6px 0"><b>${esc(o.t)}</b>${o.x ? ` · <a href="${esc(o.x)}" data-go="${esc(o.x)}">feed</a>` : ""}${o.h ? ` · <a href="${esc(o.h)}" data-go="${esc(o.h)}">site</a>` : ""}</div>`).join(""), "Subscriptions (OPML)", `${rows.length} items`), "OPML");
+      return set(frame(rows.map((o) => { const x = safeUrl(o.x), h = safeUrl(o.h); return `<div style="padding:6px 0"><b>${esc(o.t)}</b>${x ? ` · <a href="${esc(x)}" data-go="${esc(x)}">feed</a>` : ""}${h ? ` · <a href="${esc(h)}" data-go="${esc(h)}">site</a>` : ""}</div>`; }).join(""), "Subscriptions (OPML)", `${rows.length} items`), "OPML");
     }
     return false;
   }

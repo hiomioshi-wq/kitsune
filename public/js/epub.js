@@ -5,7 +5,7 @@ const MIME = { jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", gif: "im
 const dirOf = (p) => (p.includes("/") ? p.slice(0, p.lastIndexOf("/") + 1) : "");
 function resolve(base, rel) {
   if (!rel) return rel;
-  rel = decodeURIComponent(rel.split("#")[0]);
+  try { rel = decodeURIComponent(rel.split("#")[0]); } catch { rel = rel.split("#")[0]; }
   const parts = (dirOf(base) + rel).split("/");
   const out = [];
   for (const p of parts) { if (p === "..") out.pop(); else if (p !== "." && p !== "") out.push(p); }

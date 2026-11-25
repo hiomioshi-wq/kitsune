@@ -113,7 +113,6 @@ export function mountCarnival(host, api) {
         spinAt = performance.now(); spin = 1440 + seg * 45;
         t0 = setInterval(() => { const p = Math.min(1, (performance.now() - spinAt) / 2600); wheel.style.transform = `rotate(${spin * (1 - Math.pow(1 - p, 3))}deg)`; if (p >= 1) { clearInterval(t0); t0 = 0; settle(); } }, 40);
       };
-      return () => clearInterval(t0);
       const settle = () => {
         let value = "", line = "";
         if (grand) { api.giveHat("carnivalhat"); value = "The Ringmaster's Hat!"; api.ping("done"); }
@@ -122,6 +121,7 @@ export function mountCarnival(host, api) {
         else { line = FORTUNES[seg - 5]; value = "A fortune"; api.ping("choice"); }
         page("The wheel stops", `<p class="by-big">${value}</p>${line ? `<p class="ca-egg">“${esc(line)}”</p>` : ""}<button class="btn btn-accent" type="button" id="again">Back to the midway</button>`, (q) => { q.querySelector("#again").onclick = closePage; });
       };
+      return () => clearInterval(t0);
     });
   }
 

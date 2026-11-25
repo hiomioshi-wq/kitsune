@@ -58,7 +58,13 @@ export const CLOCKWORKS = {
       name: "The Chronos Heart", room: 1, w: 21, h: 12, base: "carpet", bg: "#08060a", tint: "rgba(255,210,90,.09)",
       props: [["kilnring", 10, 3], ["lampost", 4, 2], ["lampost", 16, 2]],
       npcs: [npc("cw_boss", null, "The Grand Horologist", 10, 5, "", [], { art: "kilnring", verb: "Face", boss: "horologist" })],
-      doors: [{ x: 10, y: 11, to: "escapement_vault", tx: 9, ty: 1, label: "Back to the Escapement Vault" }],
+      doors: [{ x: 10, y: 11, to: "escapement_vault", tx: 9, ty: 1, label: "Back to the Escapement Vault" }, { x: 20, y: 5, to: "lost_seconds", tx: 1, ty: 5, label: "Into the Lost Seconds Chamber" }],
+    },
+    lost_seconds: {
+      name: "The Lost Seconds Chamber", room: 1, w: 19, h: 11, base: "stone", bg: "#0b0a0e", tint: "rgba(255,220,120,.08)",
+      props: [["kilnring", 9, 3], ["screen", 4, 2], ["screen", 14, 2], ["lampost", 9, 2], ["bench", 4, 8], ["bench", 14, 8]],
+      npcs: [npc("cw_seconds", "Tibb", "Second-Keeper Tibb", 9, 6, "", ["The three lost seconds tick in that brass jar, where nobody can spend them. The Horologist checks the seal every noon.", "Every clock in Brask runs behind because these three won't move. They like it in here."])],
+      doors: [{ x: 0, y: 5, to: "chronos_heart", tx: 18, ty: 5, label: "Back to the Chronos Heart" }],
     },
   },
   quest: [
@@ -66,6 +72,7 @@ export const CLOCKWORKS = {
     { id: "cw_smith", title: "Tempered Springs", who: "cw_smith", goal: "Meet the Brass-Smith in The Gear Gallery.", say: "Take this Clockwork Rapier, then check on Chime-Tuner Wren in the east tower.", btn: "Take rapier", story: "" },
     { id: "cw_ringer", title: "Noon Chime", who: "cw_ringer", goal: "Speak to Chime-Tuner Wren in The Chime Tower.", say: "The chimes are tuned! Head north through the Pendulum Hall to the Escapement Vault.", btn: "Head north", story: "" },
     { id: "cw_keeper", title: "True Time", who: "cw_keeper", goal: "Meet the Time-Ledger Clerk in The Escapement Vault.", say: "The ledger is balanced. Step north into the Chronos Heart and face the Grand Horologist.", btn: "Enter Chronos Heart", story: "" },
+    { id: "cw_seconds", title: "The Brass Jar", who: "cw_seconds", goal: "Find Second-Keeper Tibb in The Lost Seconds Chamber, east of the Chronos Heart.", say: "The three lost seconds tick in their brass jar, safe from anyone who'd spend them. Give the seal one full turn—Brask's noon will land true for another hundred years.", btn: "Turn the seal", story: "" },
   ],
   relics: [
     { id: "cw_pendulum", s: "pendulum_hall", x: 14, y: 7, name: "a miniature brass pendulum", text: "Swings once every three seconds, even when held still." },
@@ -74,5 +81,6 @@ export const CLOCKWORKS = {
     { id: "cw_ledger", s: "escapement_vault", x: 5, y: 7, name: "a copper second-ledger", text: "Lists every afternoon nap taken in 1974." },
     { id: "cw_key", s: "chronos_heart", x: 15, y: 8, name: "the Grand Winding Key", text: "Heavy solid gold, stamped BRASK 1892." },
     { id: "cw_chime", s: "belfry_loft", x: 14, y: 6, name: "a pocketwatch chime", text: "Ticks three seconds ahead of noon." },
+    { id: "cw_second", s: "lost_seconds", x: 15, y: 6, name: "a caught lost second", text: "Warm as a struck bell, and three seconds behind your own heartbeat." },
   ],
 };

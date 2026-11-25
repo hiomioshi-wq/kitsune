@@ -27,8 +27,9 @@ const adapters = [
     }
     if (/^\/questions\/?$/.test(u.pathname) || /^\/questions\/tagged\//.test(u.pathname) || u.pathname === "/") {
       const tag = (u.pathname.match(/^\/questions\/tagged\/([^/]+)/) || [])[1];
-      const x = await api(`https://api.stackexchange.com/2.3/questions?order=desc&sort=${tag ? "activity" : "hot"}&site=${site}&pagesize=30${tag ? `&tagged=${encodeURIComponent(decodeURIComponent(tag))}` : ""}`);
-      const body = `<h1>${tag ? `Questions tagged ${esc(decodeURIComponent(tag))}` : "Hot questions"} on ${esc(u.hostname)}</h1>${(x.items || []).map((i) => `<div class="card"><a href="https://${u.hostname}/questions/${i.question_id}"><b>${i.title}</b></a><div class="meta">${i.score} votes · ${i.answer_count} answers · ${(i.tags || []).map(esc).join(", ")}</div></div>`).join("")}`;
+      const decTag = (() => { try { return decodeURIComponent(tag || ""); } catch { return tag || ""; } })();
+      const x = await api(`https://api.stackexchange.com/2.3/questions?order=desc&sort=${tag ? "activity" : "hot"}&site=${site}&pagesize=30${tag ? `&tagged=${encodeURIComponent(decTag)}` : ""}`);
+      const body = `<h1>${tag ? `Questions tagged ${esc(decTag)}` : "Hot questions"} on ${esc(u.hostname)}</h1>${(x.items || []).map((i) => `<div class="card"><a href="https://${u.hostname}/questions/${i.question_id}"><b>${i.title}</b></a><div class="meta">${i.score} votes · ${i.answer_count} answers · ${(i.tags || []).map(esc).join(", ")}</div></div>`).join("")}`;
       return { html: doc("Questions on " + u.hostname, body, NOTE_SE), url: u.href };
     }
     return null;

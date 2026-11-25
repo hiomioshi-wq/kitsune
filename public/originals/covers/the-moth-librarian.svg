@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="600" height="900">
+  <rect width="600" height="900" fill="#262b4f"/>
+  <circle cx="394" cy="48" r="1.8" fill="#fff" opacity="0.44"/><circle cx="106" cy="32" r="2.9" fill="#fff" opacity="0.88"/><circle cx="72" cy="280" r="2.9" fill="#fff" opacity="0.41"/><circle cx="328" cy="208" r="1.0" fill="#fff" opacity="0.76"/><circle cx="211" cy="221" r="0.8" fill="#fff" opacity="0.86"/><circle cx="82" cy="141" r="1.7" fill="#fff" opacity="0.35"/><circle cx="29" cy="260" r="2.2" fill="#fff" opacity="0.69"/><circle cx="573" cy="205" r="1.7" fill="#fff" opacity="0.60"/><circle cx="158" cy="149" r="2.4" fill="#fff" opacity="0.38"/><circle cx="15" cy="97" r="2.3" fill="#fff" opacity="0.72"/><circle cx="101" cy="24" r="0.8" fill="#fff" opacity="0.31"/><circle cx="333" cy="15" r="1.4" fill="#fff" opacity="0.51"/><circle cx="129" cy="248" r="2.2" fill="#fff" opacity="0.74"/><circle cx="266" cy="319" r="0.8" fill="#fff" opacity="0.83"/><circle cx="354" cy="259" r="1.3" fill="#fff" opacity="0.77"/><circle cx="252" cy="347" r="2.2" fill="#fff" opacity="0.47"/><circle cx="143" cy="557" r="1.7" fill="#fff" opacity="0.44"/><circle cx="162" cy="483" r="2.7" fill="#fff" opacity="0.88"/><circle cx="556" cy="542" r="2.4" fill="#fff" opacity="0.68"/><circle cx="102" cy="621" r="1.7" fill="#fff" opacity="0.44"/><circle cx="75" cy="500" r="2.8" fill="#fff" opacity="0.46"/><circle cx="396" cy="548" r="1.2" fill="#fff" opacity="0.80"/><circle cx="160" cy="603" r="0.6" fill="#fff" opacity="0.52"/><circle cx="274" cy="550" r="2.0" fill="#fff" opacity="0.58"/><circle cx="322" cy="523" r="2.6" fill="#fff" opacity="0.39"/><circle cx="29" cy="385" r="1.9" fill="#fff" opacity="0.62"/><circle cx="452" cy="330" r="1.5" fill="#fff" opacity="0.55"/><circle cx="536" cy="72" r="1.1" fill="#fff" opacity="0.6"/><circle cx="580" cy="300" r="2.1" fill="#fff" opacity="0.5"/>
+  <circle cx="470" cy="118" r="44" fill="#fff6e6" opacity="0.95"/>
+  <g stroke-linejoin="round" stroke-linecap="round">
+    <path d="M 292 254 C 280 232 270 224 260 218" stroke="#6b4a2b" stroke-width="5" fill="none"/>
+    <path d="M 308 254 C 320 232 330 224 340 218" stroke="#6b4a2b" stroke-width="5" fill="none"/>
+    <circle cx="260" cy="218" r="5" fill="#6b4a2b"/><circle cx="340" cy="218" r="5" fill="#6b4a2b"/>
+    <path d="M 300 292 C 238 240 180 252 176 318 C 173 354 216 376 292 358 Z" fill="#fff6e6" stroke="#1b1d33" stroke-width="5"/>
+    <path d="M 300 292 C 362 240 420 252 424 318 C 427 354 384 376 308 358 Z" fill="#fff6e6" stroke="#1b1d33" stroke-width="5"/>
+    <path d="M 296 316 C 252 284 210 292 208 324 C 206 350 238 362 294 350 Z" fill="#e0702f"/>
+    <path d="M 304 316 C 348 284 390 292 392 324 C 394 350 362 362 306 350 Z" fill="#e0702f"/>
+    <ellipse cx="300" cy="332" rx="22" ry="62" fill="#8a5a33" stroke="#1b1d33" stroke-width="5"/>
+    <circle cx="300" cy="258" r="19" fill="#8a5a33" stroke="#1b1d33" stroke-width="5"/>
+    <circle cx="293" cy="256" r="4" fill="#1b1d33"/><circle cx="307" cy="256" r="4" fill="#1b1d33"/>
+    <path d="M 296 388 C 258 412 244 454 260 476 C 274 492 292 480 300 448 Z" fill="#c8283a" stroke="#1b1d33" stroke-width="4"/>
+    <path d="M 304 388 C 342 412 356 454 340 476 C 326 492 308 480 300 448 Z" fill="#c8283a" stroke="#1b1d33" stroke-width="4"/>
+    <circle cx="278" cy="446" r="6" fill="#ffd36b" stroke="#1b1d33" stroke-width="3"/>
+    <circle cx="322" cy="446" r="6" fill="#ffd36b" stroke="#1b1d33" stroke-width="3"/>
+    <g transform="rotate(-5 300 524)">
+      <rect x="186" y="502" width="228" height="46" rx="5" fill="#fff6e6" stroke="#1b1d33" stroke-width="4"/>
+      <path d="M 204 518 h 96 M 204 532 h 150" stroke="#1b1d33" stroke-width="2" opacity="0.5"/>
+      <path d="M 316 518 h 70" stroke="#e0702f" stroke-width="3" opacity="0.9"/>
+    </g>
+    <path d="M 0 562 Q 30 552 60 562 T 120 562 T 180 562 T 240 562 T 300 562 T 360 562 T 420 562 T 480 562 T 540 562 T 600 562" fill="none" stroke="#1b1d33" stroke-width="4" opacity="0.7"/>
+    <path d="M 0 586 Q 30 576 60 586 T 120 586 T 180 586 T 240 586 T 300 586 T 360 586 T 420 586 T 480 586 T 540 586 T 600 586" fill="none" stroke="#1b1d33" stroke-width="4" opacity="0.45"/>
+    <path d="M 0 610 Q 30 600 60 610 T 120 610 T 180 610 T 240 610 T 300 610 T 360 610 T 420 610 T 480 610 T 540 610 T 600 610" fill="none" stroke="#1b1d33" stroke-width="4" opacity="0.25"/>
+    <rect x="150" y="612" width="300" height="9" fill="#1b1d33"/>
+    <rect x="170" y="582" width="17" height="30" fill="#c8283a" stroke="#1b1d33" stroke-width="3"/>
+    <rect x="191" y="576" width="17" height="36" fill="#e0702f" stroke="#1b1d33" stroke-width="3"/>
+    <rect x="212" y="586" width="17" height="26" fill="#ffd36b" stroke="#1b1d33" stroke-width="3"/>
+    <rect x="233" y="572" width="17" height="40" fill="#fff6e6" stroke="#1b1d33" stroke-width="3"/>
+    <rect x="334" y="576" width="17" height="36" fill="#ffd36b" stroke="#1b1d33" stroke-width="3"/>
+    <rect x="355" y="582" width="17" height="30" fill="#c8283a" stroke="#1b1d33" stroke-width="3"/>
+    <rect x="376" y="572" width="17" height="40" fill="#fff6e6" stroke="#1b1d33" stroke-width="3"/>
+    <rect x="397" y="586" width="17" height="26" fill="#e0702f" stroke="#1b1d33" stroke-width="3"/>
+  </g>
+  <rect x="30" y="640" width="540" height="200" fill="#fff6e6" stroke="#1b1d33" stroke-width="6"/>
+  <text x="50" y="715" font-size="48" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="900" fill="#1b1d33"><tspan x="50" dy="0">The Moth</tspan><tspan x="50" dy="48">Librarian</tspan></text>
+  <text x="50" y="815" font-size="22" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" fill="#c8283a" font-weight="700">A KITSUNE ORIGINAL · STORY</text>
+</svg>

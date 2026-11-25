@@ -2,6 +2,7 @@
 // chapters and word counts. Run: node tools/build-lore.mjs  →  public/originals/lore-data.json
 import fs from "fs";
 import path from "path";
+import vm from "vm";
 
 import { fileURLToPath } from "url";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -11,7 +12,7 @@ const PUB = path.join(ROOT, "public");
 const src = fs.readFileSync(path.join(PUB, "js/originals.js"), "utf8");
 const start = src.indexOf("export const ORIGINALS"), end = src.indexOf("export const CLASSICS");
 const block = src.slice(start, end).replace(/export const /g, "const ").replace(/^export (async )?function[\s\S]*?^}/gm, "");
-const { ORIGINALS, SERIES } = new Function(block + "\nreturn { ORIGINALS, SERIES };")();
+const { ORIGINALS, SERIES } = vm.runInNewContext(block + "\n;({ ORIGINALS, SERIES });", Object.create(null));
 
 const works = [];
 works.push(...ORIGINALS.map((o, i) => ({ id: o.id, series: "kitsune", order: i, title: o.title, label: o.type === "manga" ? "Illustrated manga" : "Story", kind: o.type === "manga" ? "manga" : "text", file: o.file || null, cover: o.cover, blurb: o.blurb, minutes: o.minutes })));

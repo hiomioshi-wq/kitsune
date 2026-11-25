@@ -12,6 +12,8 @@ import path from "node:path";
 import zlib from "node:zlib";
 import crypto from "node:crypto";
 import os from "node:os";
+import dns from "node:dns/promises";
+import net from "node:net";
 import { fileURLToPath } from "node:url";
 import { handleApi, errorResult, HttpError } from "./lib/core.js";
 
@@ -114,15 +116,42 @@ async function libraryPage(id, n) {
 const libraryList = () => ({ folder: LIBRARY_DIR, results: [...library.values()].map(({ _pages, _abs, ...e }) => e) });
 
 // ---------- private proxy (local only) ----------
+function isPrivateIp(ip) {
+  if (!ip) return true;
+  if (net.isIPv4(ip)) {
+    const [a, b] = ip.split(".").map(Number);
+    return a === 0 || a === 10 || a === 127 || (a === 169 && b === 254) || (a === 172 && b >= 16 && b <= 31) || (a === 192 && b === 168) || a >= 224;
+  }
+  const norm = ip.toLowerCase();
+  if (norm === "::" || norm === "::1") return true;
+  if (norm.startsWith("::ffff:")) return isPrivateIp(norm.slice(7));
+  return /^(fc|fd|fe8|fe9|fea|feb)/.test(norm);
+}
+
+async function assertPublicHost(hostname) {
+  const h = hostname.replace(/^\[|\]$/g, "").toLowerCase();
+  if (h === "localhost" || h.endsWith(".localhost") || h.endsWith(".local")) throw new HttpError(403, "Private or local addresses cannot be proxied.");
+  if (net.isIP(h)) {
+    if (isPrivateIp(h)) throw new HttpError(403, "Private or local addresses cannot be proxied.");
+    return;
+  }
+  const addrs = await dns.lookup(h, { all: true }).catch(() => { throw new HttpError(502, `Couldn't resolve ${hostname}.`); });
+  if (!addrs.length || addrs.some((a) => isPrivateIp(a.address))) throw new HttpError(403, "Private or local addresses cannot be proxied.");
+}
+
 async function proxy(req, res, target) {
   let u;
   try { u = new URL(target); } catch { throw new HttpError(400, "Give a full http(s) link."); }
   if (!/^https?:$/.test(u.protocol)) throw new HttpError(400, "Only http and https links can be fetched.");
+  await assertPublicHost(u.hostname);
   const headers = { "User-Agent": "Kitsune/2.0" };
   if (req.headers["x-kitsune-auth"]) headers.Authorization = req.headers["x-kitsune-auth"];
-  const r = await fetch(u, { headers, signal: AbortSignal.timeout(30_000) }).catch(() => { throw new HttpError(502, `Couldn't reach ${u.hostname}.`); });
+  const r = await fetch(u, { headers, redirect: "manual", signal: AbortSignal.timeout(30_000) }).catch(() => { throw new HttpError(502, `Couldn't reach ${u.hostname}.`); });
+  if (r.status >= 300 && r.status < 400) throw new HttpError(403, "Proxy redirects are blocked.");
   const body = Buffer.from(await r.arrayBuffer());
-  res.writeHead(r.status, { "Content-Type": r.headers.get("content-type") || "application/octet-stream", "Content-Length": body.length, "Cache-Control": "private, max-age=300" });
+  const rawType = (r.headers.get("content-type") || "application/octet-stream").toLowerCase();
+  const safeType = /html|svg|xhtml|script/.test(rawType) ? "text/plain; charset=utf-8" : (r.headers.get("content-type") || "application/octet-stream");
+  res.writeHead(r.status, { "Content-Type": safeType, "Content-Length": body.length, "Cache-Control": "private, max-age=300", "X-Content-Type-Options": "nosniff", "Content-Security-Policy": "default-src 'none'; sandbox" });
   res.end(body);
 }
 
@@ -131,8 +160,10 @@ function sendResult(res, out) {
   res.writeHead(out.status, { "Content-Type": out.type, "Cache-Control": out.cache, "Content-Length": Buffer.byteLength(out.body), ...(out.headers || {}) });
   res.end(out.body);
 }
+const safeDecode = (s) => { try { return decodeURIComponent(s); } catch { throw new HttpError(400, "Malformed URL encoding."); } };
 async function staticFile(res, url) {
-  let rel = decodeURIComponent(url.pathname);
+  let rel;
+  try { rel = safeDecode(url.pathname); } catch { res.writeHead(400); return res.end("Bad request"); }
   if (rel.endsWith("/")) rel += "index.html";
   const file = path.normalize(path.join(PUBLIC, rel));
   if (!file.startsWith(PUBLIC)) { res.writeHead(403); return res.end("Forbidden"); }
@@ -144,9 +175,15 @@ async function staticFile(res, url) {
 }
 
 const server = http.createServer(async (req, res) => {
+  const hostHdr = String(req.headers.host || "").split(":")[0].toLowerCase();
+  if ((HOST === "127.0.0.1" || HOST === "localhost" || HOST === "::1") && hostHdr && !["localhost", "127.0.0.1", "[::1]", "::1"].includes(hostHdr)) {
+    res.writeHead(403, { "Content-Type": "text/plain" });
+    return res.end("Forbidden host");
+  }
   const url = new URL(req.url, `http://${req.headers.host || "localhost"}`);
   if (!url.pathname.startsWith("/api/")) return staticFile(res, url);
-  const parts = url.pathname.split("/").filter(Boolean).slice(1).map(decodeURIComponent);
+  let parts;
+  try { parts = url.pathname.split("/").filter(Boolean).slice(1).map(safeDecode); } catch (e) { return sendResult(res, errorResult(e)); }
   const q = Object.fromEntries(url.searchParams);
   const is = (...p) => p.length === parts.length && p.every((x, i) => x === "*" || x === parts[i]);
   try {

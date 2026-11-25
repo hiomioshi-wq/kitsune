@@ -138,7 +138,8 @@ export function setCrumbs(parts) {
 
 async function route() {
   const seq = ++renderSeq;
-  const [name, ...params] = (location.hash.slice(1) || "home").split("/").map(decodeURIComponent);
+  const safeDec = (s) => { try { return decodeURIComponent(s); } catch { return s; } };
+  const [name, ...params] = (location.hash.slice(1) || "home").split("/").map(safeDec);
   const loader = routes[name] || routes.home;
   markNav();
   try { cleanup?.(); } catch {}

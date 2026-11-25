@@ -143,7 +143,7 @@ export function expandLinks(text) {
 export async function importLinks(text, opts = {}) {
   const urls = expandLinks(text);
   if (!urls.length) throw new Error("Paste at least one link that starts with http:// or https://.");
-  const folder = decodeURIComponent(new URL(urls[0]).pathname.split("/").slice(-2, -1)[0] || "Linked volume");
+  const folder = (() => { try { return decodeURIComponent(new URL(urls[0]).pathname.split("/").slice(-2, -1)[0] || "Linked volume"); } catch { return "Linked volume"; } })();
   return saveItem({ ...base(opts), type: "manga", title: opts.title || folder, series: opts.series || guessSeries(folder),
     source: { kind: "urls", urls }, pages: urls.length, origin: "Image links (" + new URL(urls[0]).hostname + ")" });
 }
@@ -202,7 +202,7 @@ export async function importLibraryLink(input, opts = {}) {
     return lib.items.find((i) => i.id === "gb-" + b.id) || saveItem({ ...gutenbergItem(b), status: "reading" });
   }
   if ((m = url.match(/\/\/(\w+)\.wikisource\.org\/wiki\/([^?#]+)/))) {
-    const lang = m[1], title = decodeURIComponent(m[2]).replace(/_/g, " ");
+    const lang = m[1], title = (() => { try { return decodeURIComponent(m[2]); } catch { return m[2]; } })().replace(/_/g, " ");
     const id = `ws-${lang}-${title}`.slice(0, 120);
     return lib.items.find((i) => i.id === id) || saveItem({ id, type: "book", title: title.split("/")[0], author: "", lang, source: { kind: "wikisource", lang, title: title.split("/")[0] }, origin: "Wikisource", tags: [], status: "reading", rating: 0, added: now() });
   }

@@ -59,7 +59,7 @@ const SOURCES = [
 ];
 
 export async function render(view, _name, params) {
-  const q0 = decodeURIComponent(params.join("/") || "");
+  const q0 = (() => { try { return decodeURIComponent(params.join("/") || ""); } catch { return params.join("/") || ""; } })();
   setCrumbs([["Search everywhere", ""]]);
   const kids = isKids();
   const sources = SOURCES.filter((s) => !(kids && s.adult));

@@ -16,7 +16,7 @@ export async function snapshot() {
   kvFlush();
   const kv = {};
   for (const k of [...KEYS, ...bingoKeys()]) { const v = await kvGet(k, undefined); if (v !== undefined) kv[k] = v; }
-  const items = lib.items.filter(portable).map((it) => { const c = { ...it, source: { ...it.source } }; delete c.coverBlob; delete c.offline; delete c.offlineBytes; delete c.source.epubBlob; return c; });
+  const items = lib.items.filter(portable).map((it) => { const c = { ...it, source: { ...it.source } }; delete c.coverBlob; delete c.offline; delete c.offlineBytes; delete c.source.epubBlob; for (const k of ["auth", "token", "pass", "password", "username", "headers", "Authorization", "cookie"]) delete c.source[k]; return c; });
   return { app: "Kitsune", sync: 1, at: Date.now(), kv, items };
 }
 

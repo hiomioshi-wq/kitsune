@@ -68,7 +68,7 @@ export function htmlToMd(root) {
 
 // ---------- view ----------
 export async function render(view, _n, params = []) {
-  const id = params[0] ? decodeURIComponent(params[0]) : null;
+  const id = params[0] ? (() => { try { return decodeURIComponent(params[0]); } catch { return params[0]; } })() : null;
   if (!id) return renderList(view);
   const all = (await kvGet("writeProjects", {})) || {};
   W.proj = all[id];

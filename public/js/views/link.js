@@ -160,7 +160,9 @@ function addServer(after) {
 }
 
 async function opdsFetch(server, url, as = "xml") {
-  const headers = server.auth ? { [lib.features.proxy ? "X-Kitsune-Auth" : "Authorization"]: server.auth } : {};
+  let sameOrigin = false;
+  try { sameOrigin = new URL(url).origin === new URL(server.url).origin; } catch {}
+  const headers = server.auth && sameOrigin ? { [lib.features.proxy ? "X-Kitsune-Auth" : "Authorization"]: server.auth } : {};
   const target = lib.features.proxy ? "/api/proxy?url=" + encodeURIComponent(url) : url;
   let r;
   try { r = await fetch(target, { headers, credentials: "omit" }); }

@@ -22,7 +22,7 @@ async function getWikis() {
 const setWikis = (l) => kvSet("wikis", l);
 const kindOf = (w) => (/fandom\.com/.test(w.api) ? "Fandom" : /miraheze\.org/.test(w.api) ? "Miraheze" : /wiki(pedia|books|voyage|quote|news|versity|source|media)\.org|wiktionary/.test(w.api) ? "Wikimedia" : "MediaWiki");
 const enc = (s) => encodeURIComponent(s).replace(/%20/g, "_");
-const dec = (s) => decodeURIComponent(s || "").replace(/_/g, " ");
+const dec = (s) => { try { return decodeURIComponent(s || "").replace(/_/g, " "); } catch { return String(s || "").replace(/_/g, " "); } };
 const wpLink = (t) => `#wiki/${WIKIPEDIA.id}/${enc(t)}`;
 
 // Add a wiki by address (or reuse it if it's already in the list) and return it.

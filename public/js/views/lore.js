@@ -71,7 +71,7 @@ function shell(view, crumbs, body, side = "") {
 export async function render(view, _name, params = []) {
   view.innerHTML = `<div class="page"><p class="status">Opening the wiki…</p></div>`;
   let d; try { d = await load(); } catch { view.innerHTML = `<div class="page"><p class="status">The wiki couldn't load.</p></div>`; return; }
-  const [kind, a, b] = params.map((x) => decodeURIComponent(x || ""));
+  const [kind, a, b] = params.map((x) => { try { return decodeURIComponent(x || ""); } catch { return x || ""; } });
   if (kind === "s") return seriesPage(view, d, a);
   if (kind === "c") return charPage(view, d, a, b);
   if (kind === "w") return workPage(view, d, a);

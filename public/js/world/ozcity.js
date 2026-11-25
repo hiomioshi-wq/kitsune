@@ -62,7 +62,7 @@ export function createOzCity(o) {
       <div class="se-mkt"><div class="se-good"><span><strong>Book a personal weather</strong><small>One booking a day, delivered tomorrow morning: 40 mon on arrival, plus the memory.</small></span><em>${day.weather ? "Booked today" : "20 mon"}</em></div></div>
       <div class="sg-acts" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:10px">
         ${["Drizzle", "Breeze", "Sun-shower", "Snow-fitting"].map((k) => `<button class="btn" type="button" data-w="${k}" ${!day.weather && s.mon >= 20 ? "" : "disabled"}>${k}</button>`).join("")}
-        ${st.booked && st.booked.arrive !== day.d && !landed ? `<button class="btn btn-accent" type="button" data-claim>Collect yesterday's ${st.booked.kind} (+40 mon)</button>` : ""}
+        ${st.booked && st.booked.d !== day.d ? `<button class="btn btn-accent" type="button" data-claim>Collect your booked ${st.booked.kind} (+40 mon)</button>` : ""}
       </div>
       <p class="muted" style="margin-top:10px">"It is never the rain's fault," says a small card under the counter glass. "CHECK YOUR PAPERWEIGHTS."</p>`, (p) => {
       p.querySelectorAll("[data-w]").forEach((b) => (b.onclick = () => { if (day.weather || s.mon < 20) return; s.mon -= 20; day.weather = 1; st.booked = { kind: b.dataset.w, d: day.d, arrive: new Date(Date.now() + 864e5).toDateString() }; ping("choice"); toast(`Booked: one ${st.booked.kind.toLowerCase()}, tomorrow morning, wherever you are.`); save(); hud(); weather(); }));

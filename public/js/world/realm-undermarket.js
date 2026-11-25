@@ -58,7 +58,7 @@ export const UNDERMARKET = {
       name: "The Broker's Sanctum", room: 1, w: 21, h: 12, base: "carpet", bg: "#06040a", tint: "rgba(255,120,160,.09)",
       props: [["lampost", 4, 2], ["lampost", 16, 2], ["statue", 5, 6], ["statue", 15, 6]],
       npcs: [npc("um_broker", null, "The Mask Broker", 10, 4, "", [], { art: "statue", verb: "Face", boss: "mask_broker" })],
-      doors: [{ x: 10, y: 11, to: "auction_hall", tx: 10, ty: 1, label: "Back to the Auction Hall" }, { x: 20, y: 6, to: "jade_cellar", tx: 1, ty: 4, label: "Into the Jade Tea Vault" }],
+      doors: [{ x: 10, y: 11, to: "auction_hall", tx: 10, ty: 1, label: "Back to the Auction Hall" }, { x: 20, y: 6, to: "jade_cellar", tx: 1, ty: 4, label: "Into the Jade Tea Vault" }, { x: 0, y: 6, to: "porcelain_gallery", tx: 16, ty: 4, label: "Into the Porcelain Gallery" }],
     },
     jade_cellar: {
       name: "The Jade Tea Vault", room: 1, w: 18, h: 9, base: "stone", bg: "#0a1210", tint: "rgba(80,220,160,.08)",
@@ -66,12 +66,19 @@ export const UNDERMARKET = {
       npcs: [npc("um_cellar", "Ponzu", "Cellar Master", 9, 6, "", ["Every tea leaf steeped below Hollow Pine is aged in river jade."])],
       doors: [{ x: 0, y: 4, to: "lantern_throne", tx: 19, ty: 6, label: "Back to the Broker's Sanctum" }],
     },
+    porcelain_gallery: {
+      name: "The Porcelain Gallery", room: 1, w: 18, h: 9, base: "carpet", bg: "#0c0616", tint: "rgba(210,150,255,.09)",
+      props: [["shelf", 3, 2], ["shelf", 6, 2], ["shelf", 11, 2], ["shelf", 14, 2], ["lampost", 9, 2]],
+      npcs: [npc("um_porcelain", "Pell", "The Porcelain Warden", 9, 5, "", ["Every porcelain fox the Broker ever sealed a bargain into sits on these shelves, white and listening.", "Hold one to your ear and you'll hear the whisper it was paid with."])],
+      doors: [{ x: 17, y: 4, to: "lantern_throne", tx: 1, ty: 6, label: "Back to the Broker's Sanctum" }],
+    },
   },
   quest: [
     { id: "um_tamba", title: "Below the Cobbles", who: "um_tamba", goal: "Speak to the Lantern Warden on The Lantern Steps.", say: "Welcome below the Night Market. Visit the Master Mask-Maker in Mask-Maker's Alley first.", btn: "Go west", story: "" },
     { id: "um_masker", title: "Nine Masks", who: "um_masker", goal: "Visit the Master Mask-Maker in Mask-Maker's Alley.", say: "Before you enter the Auction, visit the Ember-Smith north in the Ember Bazaar for a real weapon.", btn: "Head north", story: "" },
     { id: "um_smith", title: "Jade & Foxfire", who: "um_smith", goal: "Speak to the Ember-Smith in The Ember Bazaar.", say: "Take this Foxfire Halberd. Now head to the Whispering Auction north of the Steps.", btn: "Take halberd", story: "" },
     { id: "um_auctioneer", title: "Lot Forty-Nine", who: "um_auctioneer", goal: "Get a Whispering Stamp from The Whispering Auctioneer.", say: "Stamped and sealed. Step north into the Broker's Sanctum whenever you're ready.", btn: "Face the Broker", story: "" },
+    { id: "um_porcelain", title: "White and Listening", who: "um_porcelain", goal: "Find the Porcelain Warden in The Porcelain Gallery, west of the Broker's Sanctum.", say: "Every bargain the Broker ever sealed sits shelved here, white and listening. Set the unpainted fox from Mask-Maker's Alley among them—the Under-Market remembers every mask that finds its shelf.", btn: "Shelve the mask", story: "" },
   ],
   relics: [
     { id: "um_coin", s: "market_steps", x: 14, y: 7, name: "a notched jade coin", text: "Accepted only below ground." },
@@ -81,5 +88,6 @@ export const UNDERMARKET = {
     { id: "um_gavel", s: "auction_hall", x: 16, y: 8, name: "a velvet-wrapped gavel", text: "Makes no sound at all when struck." },
     { id: "um_ledger", s: "lantern_throne", x: 15, y: 8, name: "the Broker's Gold Ledger", text: "Every bargain ever struck in Hollow Pine, balanced to zero." },
     { id: "um_jade", s: "jade_cellar", x: 14, y: 6, name: "a carved jade teacup", text: "Cool to the touch, even filled with boiling tea." },
+    { id: "um_whisper", s: "porcelain_gallery", x: 14, y: 6, name: "a whisper-white porcelain mask", text: "Hold it to your ear and hear a bargain you never made." },
   ],
 };

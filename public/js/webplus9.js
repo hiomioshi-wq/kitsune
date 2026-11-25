@@ -78,7 +78,7 @@ function footnotes(root) {
   const isRef = (a) => { const h = a.getAttribute("href"); if (!h || h.length < 2 || h[0] !== "#") return false; const txt = (a.textContent || "").trim(); return /^\[?\d{1,3}[a-z]?\]?$|^[*†‡§]$|^\[?[a-z]\]?$/i.test(txt) || !!a.closest("sup") || /footnote|fnref|cite_ref|noteref/i.test(a.id + " " + a.className + " " + (a.getAttribute("role") || "")); };
   let pop = null, tm = null; const close = () => { pop?.remove(); pop = null; };
   const show = (a) => {
-    close(); const id = decodeURIComponent(a.getAttribute("href").slice(1)); let target; try { target = root.getElementById ? root.getElementById(id) : root.querySelector("#" + CSS.escape(id)); } catch { return; } if (!target) return;
+    close(); const rawId = a.getAttribute("href").slice(1); const id = (() => { try { return decodeURIComponent(rawId); } catch { return rawId; } })(); let target; try { target = root.getElementById ? root.getElementById(id) : root.querySelector("#" + CSS.escape(id)); } catch { return; } if (!target) return;
     const box = target.closest("li, p, div, aside, dd") || target, clone = box.cloneNode(true);
     clone.querySelectorAll('a[href^="#cite_ref"], a[href^="#fnref"], .mw-cite-backlink, [role="doc-backlink"], .footnote-back, .reversefootnote').forEach((n) => n.remove());
     const text = (clone.innerHTML || "").trim(); if (!text) return;

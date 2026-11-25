@@ -93,7 +93,7 @@ export const adapters = [
   // ---- Fandom wikis, through each wiki's own MediaWiki API ----
   async (u) => {
     const sub = u.hostname.match(/^([\w-]+)\.fandom\.com$/)?.[1]; if (!sub) return null; const m = u.pathname.match(/^(\/[a-z-]{2,5})?\/wiki\/(.+)$/); if (!m) return null;
-    const lang = m[1] || "", title = decodeURIComponent(m[2]);
+    const lang = m[1] || "", title = (() => { try { return decodeURIComponent(m[2]); } catch { return m[2]; } })();
     // Long articles are fetched a section at a time, so no single reply is too big.
     const base = `https://${sub}.fandom.com${lang}/api.php?action=parse&page=${encodeURIComponent(title)}&format=json&redirects=1&disableeditsection=1`;
     const meta = await api(base + "&prop=sections|displaytitle"); if (!meta.parse) return null;

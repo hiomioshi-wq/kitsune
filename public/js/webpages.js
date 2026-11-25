@@ -37,12 +37,12 @@ export function items(c) {
       seen.add(url);
       let r; try { r = await (await fetch("/api/browse?url=" + encodeURIComponent(url))).json(); } catch { break; }
       if (!r.html) break;
-      const d = new DOMParser().parseFromString(r.html, "text/html"), abs = (u) => { try { return new URL(u, r.url).href; } catch { return ""; } };
+      const d = new DOMParser().parseFromString(r.html, "text/html"), abs = (u) => { try { const x = new URL(u, r.url); return /^https?:$/i.test(x.protocol) ? x.href : ""; } catch { return ""; } };
       try { await fixDoc(d, abs, false); } catch {}
       try { fixDoc2(d, abs); } catch {}
-      const src = grab(d); src.querySelectorAll("script,style,iframe,form,nav,header,footer,aside,noscript,link,meta,[class*=cookie],[class*=consent],[class*=newsletter]").forEach((n) => n.remove());
-      src.querySelectorAll("*").forEach((el) => { for (const a of [...el.attributes]) if (/^on/i.test(a.name)) el.removeAttribute(a.name); });
-      src.querySelectorAll("[href]").forEach((a) => a.setAttribute("href", abs(a.getAttribute("href")) || "#")); src.querySelectorAll("[src]").forEach((a) => a.setAttribute("src", abs(a.getAttribute("src")) || ""));
+      const src = grab(d); src.querySelectorAll("script,style,iframe,object,embed,base,form,nav,header,footer,aside,noscript,link,meta,[class*=cookie],[class*=consent],[class*=newsletter]").forEach((n) => n.remove());
+      src.querySelectorAll("*").forEach((el) => { for (const a of [...el.attributes]) if (/^on|^srcdoc$|^formaction$/i.test(a.name)) el.removeAttribute(a.name); });
+      src.querySelectorAll("[href]").forEach((a) => { const h = abs(a.getAttribute("href")); h ? a.setAttribute("href", h) : a.removeAttribute("href"); }); src.querySelectorAll("[src]").forEach((a) => { const s2 = abs(a.getAttribute("src")); s2 ? a.setAttribute("src", s2) : a.removeAttribute("src"); });
       src.querySelectorAll("[srcset]").forEach((a) => a.removeAttribute("srcset"));
       const sec = document.createElement("section"); sec.className = "kb-more"; sec.style.cssText = "margin-top:32px;padding-top:16px;border-top:3px double #8888";
       sec.innerHTML = `<p style="font-size:.85em;opacity:.7;margin:0 0 12px">Next page · <a href="${esc(r.url)}">${esc(host(r.url))}${esc(new URL(r.url).pathname.slice(0, 60))}</a></p>${src.innerHTML}`;
