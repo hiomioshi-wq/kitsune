@@ -208,6 +208,15 @@ export const SERIES = [
       { id: "dreadco-5", kind: "text", release: "2026-12-23", label: "Memo Five", title: "Dreadco · Memo Five: Take Your Human to Work Day", file: "/originals/dreadco/memo-5-take-your-human-to-work-day.txt", cover: "/originals/dreadco/memo-5-take-your-human-to-work-day.svg", blurb: "Once a year, by charter, every fear on the payroll brings in the human it originally came from. Colly brings his grandmother — the woman who raised him, and the reason a boy learned to stand in doorways instead of shutting them — and the fear of open doors at night asks her the question the firm has no form for." },
       { id: "dreadco-6", kind: "text", release: "2026-12-30", label: "Memo Six", title: "Dreadco · Memo Six: The Corner Office", file: "/originals/dreadco/memo-6-the-corner-office.txt", cover: "/originals/dreadco/memo-6-the-corner-office.svg", blurb: "The tower goes white. The fear of fear — the bottom of the whole industry, older than the plate — has acquired the firm, retired the census, and blanked the Chairman, and the last unacquired thing in the building is a boy in a good coat standing in an open door, who offers it the only thing the industry never thought to put in a jar: a job." },
     ] },
+  {
+    id: "midnight-switchboard", title: "The Midnight Switchboard", author: "Kitsune Originals",
+    blurb: "A graveyard-shift telephone operator answers a disconnected copper trunk line that rings from twenty minutes in the future.",
+    cover: "/originals/the-midnight-switchboard/ep01-dead-line.svg",
+    parts: [
+      { id: "ms-ep01", kind: "text", label: "Episode 1", title: "Dead Line", file: "/originals/the-midnight-switchboard/ep01-dead-line.txt", cover: "/originals/the-midnight-switchboard/ep01-dead-line.svg", blurb: "An operator on the graveyard shift answers a disconnected copper trunk line." },
+      { id: "ms-ep02", kind: "text", label: "Episode 2", title: "Wrong Number", file: "/originals/the-midnight-switchboard/ep02-wrong-number.txt", cover: "/originals/the-midnight-switchboard/ep02-wrong-number.svg", blurb: "Trunk 19 dials backward, and the voice on the speaker is twenty minutes ahead." },
+    ],
+  },
 ];
 
 export async function addSeriesItem(series, e) {

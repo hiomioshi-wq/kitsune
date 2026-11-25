@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900">
+  <rect width="600" height="900" fill="#0d111a"/>
+  <circle cx="300" cy="340" r="110" fill="none" stroke="#ffd27a" stroke-width="3"/>
+  <text x="300" y="750" text-anchor="middle" font-size="34" font-family="Georgia,serif" fill="#f4e8e0">DEAD LINE</text>
+  <text x="300" y="795" text-anchor="middle" font-size="14" font-family="system-ui,sans-serif" fill="#ffd27a" letter-spacing="5">THE MIDNIGHT SWITCHBOARD</text>
+</svg>
