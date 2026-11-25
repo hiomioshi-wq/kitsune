@@ -21,6 +21,7 @@ import { DELVE_SITES } from "../world/delve.js";
 import { TRIALS, MEDALS, medalFor } from "../world/trials.js";
 import { createQuests, QUESTS, BOUNTIES } from "../world/sidequests.js";
 import { createOzCity, meadowAt } from "../world/ozcity.js";
+import { createInteriors } from "../world/interiors.js";
 import { createFarm, PLOT } from "../world/farm.js";
 import { createDerby } from "../world/races.js";
 import { createSiege } from "../world/sieges.js";
@@ -330,12 +331,13 @@ export async function render(view, _n, params = []) {
       if (id === "courthouse") return { label: "Enter the Courthouse of Oz", go: () => ozcity.court() };
       if (id === "weatheroffice") return { label: "Enter the Royal Weather Office", go: () => ozcity.weather() };
       if (id === "attic") return { label: "Climb to the Nine Windows", go: () => ozcity.attic() };
-      if (id === "meadowpost") return { label: "Read the Meadow Signpost", go: () => ozcity.meadowPage(false) }; const owner = people.find((p) => p.n[4] === id); return { label: `Knock at ${b[6]}`, go: () => say(owner, `You're looking for ${b[6]}? You've found it. Come in, or hear the whole story.`, owner ? storyBtns(owner) : []) }; } }
+      if (id === "meadowpost") return { label: "Read the Meadow Signpost", go: () => ozcity.meadowPage(false) };
+      return { label: `Enter ${b[6]}`, go: () => interiors.open(b) }; } }
     for (const a of lamps) if (Math.hypot(a.x - s.x, a.y - s.y) < 46) { if (a.l === FINAL_LANTERN) return { label: "The ninth lantern", go: finale }; const on = s.lit[a.l.id]; return { label: `${a.l.name} lantern`, go: () => say(null, on ? `The ${a.l.name} lantern is burning.` : `The ${a.l.name} lantern is out. ${nameOf(a.l.who)} keeps this one.`) }; }
     if (facingWater()) return { label: "Fish here", go: () => { const r = regionAt(Math.floor(s.x / T), Math.floor(s.y / T)); fishGame(["shore", "lake", "peaks", "oz", "whiteback", "bamboo", "sakura", "dunes", "mire", "isles", "capital", "coral", "cavern", "glacier"].includes(r) ? r : "any"); } };
     return null;
   }
-  const extras = createExtras({ s, map, people, panel, say, closeTalk, hud, save, ping, toast, burst, calm, isNight: () => darkness() > .28, regionName: (r) => REGIONS[r]?.[0] || r }); $("#wd-bag", root).onclick = () => extras.bag(); const ozcity = createOzCity({ s, panel, toast, ping, save, hud }); const toggleRide = () => { s.ride = !s.ride; $("#wd-ride", root).classList.toggle("on", s.ride); ping("blip"); save(); root.focus({ preventScroll: true }); }; $("#wd-ride", root).onclick = toggleRide; $("#wd-ride", root).classList.toggle("on", s.ride);
+  const extras = createExtras({ s, map, people, panel, say, closeTalk, hud, save, ping, toast, burst, calm, isNight: () => darkness() > .28, regionName: (r) => REGIONS[r]?.[0] || r }); $("#wd-bag", root).onclick = () => extras.bag(); const ozcity = createOzCity({ s, panel, toast, ping, save, hud }); const interiors = createInteriors({ s, panel, toast, ping, save, hud, esc }); const toggleRide = () => { s.ride = !s.ride; $("#wd-ride", root).classList.toggle("on", s.ride); ping("blip"); save(); root.focus({ preventScroll: true }); }; $("#wd-ride", root).onclick = toggleRide; $("#wd-ride", root).classList.toggle("on", s.ride);
   const wplay = winter ? createWinterPlay({ s, map, people, ping, toast, burst, calm, save, award, dir: () => dir, bump, hit: () => { bump("snowball"); earn(1, { bonus: false }); } }) : null;
   if (wplay) { $("#wd-time", root).insertAdjacentHTML("beforebegin", `<button type="button" id="wd-ball">Snowball <kbd>T</kbd></button><button type="button" id="wd-man">Snowman <kbd>P</kbd></button>`); $("#wd-ball", root).onclick = () => { wplay.toss(); root.focus({ preventScroll: true }); }; $("#wd-man", root).onclick = () => { wplay.snowman(); root.focus({ preventScroll: true }); }; }
   const farm = createFarm({ s, extras, panel, toast, ping, burst, save, hud: () => hud(), T }); let farmT = 0;

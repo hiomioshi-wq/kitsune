@@ -2106,3 +2106,31 @@ The six new Oz originals walk off the page and into the World — six story loca
 - **The Migrating Meadow Signpost**: the meadow itself moves to a new Emerald City green each day (deterministic by date, seven wandering spots); find it where it stands and the birdbath pays 30 mon and reads you the small print
 
 Six new overworld buildings (171 total, no overlaps), two new building art styles (bank and courthouse), and every location voiced from its story.
+
+## 48. New Original Series: *The Bureau of Small Delays* (six episodes)
+
+An episodic time-repair comedy from the clock town of Brask — Merrit Loop, Clerk (First Class, and only class); Chesney, a kettle with seniority and opinions about the water; and a filing cabinet that files by when, not what. A Kitsune Original, CC BY 4.0, kid-safe:
+
+- **1 · The Missing Minute** — Brask loses a civic minute at noon; it turns up in a jar. The return requires a witness (the Great Clock), a reception (the town applauds), and a forgiveness clause nobody believes until they see the line on the form
+- **2 · The Repeated Tuesday** — a surplus Tuesday happens twice in Hollow Pine; the pigeons are furious, the Night Market has strong views about closing time, and a grandmother wants to keep it: "a repeated day is a second draft"
+- **3 · The Borrowed Hour** — Marla Quen borrows one hour, at one minute per hour interest, to finish a letter forty-one years in the writing; the repayment arrives eleven days later and takes the shape of the kindest hour of her life
+- **4 · The Backwards Kettle** — Chesney has been boiling yesterday's water for eleven years; an inspection by Miss Gantt, Inspector of Moments, finds the longest unauthorized temporal operation in the valley, and the kindness underneath it, and the finding contains the sentence "the fault lies not with the kettle, but with a world that expects contributions to be punctual"
+- **5 · Where the Three Seconds Go** — the canonical answer to Brask's oldest mystery: the Great Clock's famous three-second lag, banked in noon-colored jars since 1840, a hundred and eighty-six years deep, with shelves that have begun to speak — and a founder's margin note that says when to tune it down
+- **6 · The Thursday That Wouldn't End** — Merrit's day off loops at nine-eleven, the cabinet grips a drawer against something pulling from the far side, and the Bureau finally opens the founder's own last filing: THE LAST, held unfiled since 1840, and the clock's three seconds turn out to be grief with a mechanism
+
+## 49. New Original Series: *Dreadco* (six memos)
+
+A dark workplace comedy from the city of Gloam, where human fears are a crop and one firm has caught them, staffed them, and sold them back since 1871. A Kitsune Original, CC BY 4.0, mature flag set so it stays off kids profiles:
+
+- **Memo One: Onboarding** — broke, cheerful Colly Vetch puts his hand on the intake jar; the bored fear of open doors at night makes the one decision no intake fear ever makes, and the paperwork calls boy and tenant one employee for all payroll purposes
+- **Memo Two: The Mandatory Retreat** — trust falls on the forty-first floor; the Catch Division declines to catch the new boy, and learns what the intake file never said: every fear is only a tenant in a darker hallway
+- **Memo Three: Performance Review** — the firm measures screams per annum, and Colly's number is zero: a district that stopped being afraid and started being proud. The Chairman asks what he is for, and gets the one answer the firm has never sold
+- **Memo Four: The Org Chart** — boxes go missing off the vellum, transferred to a division nobody can read; behind a supply-closet door that isn't on the floor plan, the first Undermanager keeps the census of fears the firm made brave, and hires them a purpose
+- **Memo Five: Take Your Human to Work Day** — by charter every fear brings in the human it came from; Colly brings his grandmother, and the fear of open doors asks her the question there's no form for
+- **Memo Six: The Corner Office** — the tower goes white: the fear of fear has acquired the firm, retired the census and blanked the Chairman, and the last unacquired thing in Gloam is a boy in an open doorway, who offers it the one thing the industry never thought to put in a jar — a job, and the Open Door Division
+
+## 50. Weekly Episodic Releases
+
+- Series items can now carry a `release` date, and stay locked until that day: the item card greys out with a clock pill reading "Unlocks Dec 2 · in 7 days", the series' Start/Next button only offers released entries, and "Add all" adds only what's out (with a toast for how many are still to come)
+- **Dreadco is scheduled weekly**: Memo One (Onboarding) is out today, and a new memo unlocks every Wednesday — The Mandatory Retreat (Dec 2), Performance Review (Dec 9), The Org Chart (Dec 16), Take Your Human to Work Day (Dec 23), and The Corner Office (Dec 30)
+- Items without a release date behave exactly as before, so every existing series is unaffected; the gate is per-item, computed from the device clock, with no server dependency

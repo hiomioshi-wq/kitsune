@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" role="img" aria-label="The Bureau of Small Delays, The Thursday That Wouldn't End">
+  <rect width="600" height="800" fill="#2b2436"/>
+  <rect x="40" y="480" width="520" height="240" fill="#3a3048"/>
+  <rect x="90" y="360" width="420" height="130" fill="#d8cfa8"/>
+  <path d="M78 360 Q300 290 522 360 Z" fill="#a8623c"/>
+  <rect x="270" y="410" width="60" height="80" rx="4" fill="#3a2418"/>
+  <circle cx="300" cy="330" r="46" fill="#f4f0e2" stroke="#123" stroke-width="4"/>
+  <line x1="300" y1="330" x2="300" y2="300" stroke="#123" stroke-width="4"/>
+  <line x1="300" y1="330" x2="318" y2="340" stroke="#123" stroke-width="4"/>
+  <g>
+    <rect x="380" y="560" width="60" height="84" rx="10" fill="#cfe8d8" stroke="#ffe9a8" stroke-width="3"/>
+    <rect x="392" y="546" width="36" height="18" rx="4" fill="#8a7a5a"/>
+    <rect x="396" y="586" width="28" height="40" rx="6" fill="#ffe9a8" opacity=".85"/>
+    <text x="410" y="672" font-family="Georgia,serif" font-size="14" text-anchor="middle" fill="#d8cfa8">The founder's last filing</text>
+  </g>
+  <g stroke="#ffe9a8" stroke-width="3" opacity=".6">
+    <path d="M120 540 q10 -14 20 0 q10 -14 20 0"/>
+    <path d="M520 620 q10 -14 20 0 q10 -14 20 0"/>
+  </g>
+  <rect x="70" y="110" width="460" height="130" rx="10" fill="#f7f0d8"/>
+  <rect x="70" y="110" width="460" height="130" rx="10" fill="none" stroke="#123" stroke-width="3"/>
+  <text x="300" y="152" font-family="Georgia,serif" font-size="30" font-weight="700" text-anchor="middle" fill="#123">The Bureau of</text>
+  <text x="300" y="192" font-family="Georgia,serif" font-size="30" font-weight="700" text-anchor="middle" fill="#123">Small Delays · 6</text>
+  <text x="300" y="224" font-family="Georgia,serif" font-size="18" font-style="italic" text-anchor="middle" fill="#555">The Thursday That Wouldn't End</text>
+</svg>

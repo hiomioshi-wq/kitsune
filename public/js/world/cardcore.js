@@ -9,6 +9,7 @@ export const COMMONS = [
   C("stag", "Forest Stag", 4, 7, null, "", "beast"), C("bonfire", "Bonfire", 4, 3, ["buff", 2], "Reveal: your other cards here get +2.", "thing"), C("owl", "Great Owl", 4, 4, ["draw", 2], "Reveal: draw two cards.", "beast"), C("bear", "Mountain Bear", 5, 9, null, "", "beast"), C("avalanche", "Avalanche", 5, 4, ["sweep", 2], "Reveal: all enemy cards get -2.", "thing"), C("dragon", "Paper Dragon", 6, 12, null, "", "beast"),
   C("bell", "Sleigh Bell", 1, 1, ["charge", 1], "Reveal: +1 energy next round.", "thing"), C("gargoyle_c", "Stone Gargoyle", 2, 4, ["fragile", 2], "-2 if there's an enemy card here.", "thing"), C("cupcake_c", "Pink Cupcake", 2, 2, ["steal", 1], "Reveal: takes 1 power from the strongest enemy card here.", "thing"),
   C("crowbar_c", "Iron Crowbar", 3, 4, ["curse", 2], "Reveal: enemy cards here get -2.", "thing"), C("geyser", "Thermal Vent", 4, 5, ["grow", 2], "Gains +2 at the end of each round.", "thing"), C("leviathan_c", "Deep Leviathan", 6, 13, ["alone", 3], "+3 while alone here.", "beast"),
+  C("seventhbell_c", "The Seventh Bell", 4, 4, ["aura", 2], "Your other cards here have +2. Forged in silver.", "thing"), C("malakor_c", "Dean Malakor", 5, 7, ["curse", 2], "Reveal: enemy cards here get -2. Velvet and antlers."),
 ];
 // One signature card per resident, won by beating them.
 export const SIGNATURES = [
@@ -162,6 +163,7 @@ export const SIGNATURES = [
   C("c-monarch", "The Monarch", 3, 4, ["late", 4], "+4 if played in round 5 or 6. It arrives with the last warm day."), C("c-barker", "Barker Pin", 3, 4, ["steal", 2], "Reveal: takes 2 power from the strongest enemy card here. Two tickets a ring."),
   C("c-fortuna", "Madam Fortuna", 4, 5, ["draw", 2], "Reveal: draw two cards. She never lies, but she does ramble."), C("c-wardbeacon", "The Ward Beacon", 4, 5, ["aura", 2], "Your other cards here have +2. The night checks its watch and moves on."),
   C("c-ptarmigan", "Blizzard Ptarmigan", 2, 3, ["alone", 3], "+3 while alone here. It naps through the whole blizzard."), C("c-wassail", "Wassail Server", 3, 3, ["buff", 2], "Reveal: your other cards here get +2. Served before their patience melts."),
+  C("c-sera", "Sera Vale", 3, 4, ["buff", 2], "Reveal: your other cards here get +2. Line Seven."), C("c-vesperthorne", "Vesper Thorne", 4, 6, ["hop"], "Reveal: flies to your weakest other lantern. Gold-seamed wings."), C("c-minapark", "Mina Park", 2, 3, ["draw", 1], "Reveal: draw a card. Bottled lightning."),
 ];
 export const TOKEN = C("token", "Paper Fox", 0, 1, null, "A folded fox.", "thing");
 export const ALL_CARDS = [...COMMONS, ...SIGNATURES, TOKEN];

@@ -1,4 +1,4 @@
-// Foxglove Detective Agency, where the casebook now closes with the hourglass, the copper heron, and the quenched beacon, and the Moonroot Apothecary.
+// Foxglove Detective Agency, where the casebook now closes with the hourglass, the copper heron, and the quenched beacon, and the Moonroot Apothecary, expanded with Brine, Ash and Starlight essences and six more recipes.
 import { dayKey, hash } from "./lifecore.js";
 import { ITEMS } from "./extras.js";
 import { genCase, clueText } from "./casecore.js";
@@ -71,10 +71,10 @@ export function createAgency(o) {
   return { board, start, state: st, build };
 }
 
-export const AXES = ["Ember", "Moon", "Root", "Tide"];
-export const POTIONS = [["Ember", "Moon", "Dawnfire Draught", "speed", 90], ["Ember", "Root", "Hearth Tonic", "mon", 45], ["Ember", "Tide", "Steam Cordial", "luck", 1], ["Moon", "Ember", "Starlit Elixir", "speed", 150], ["Moon", "Root", "Dreamroot Syrup", "luck", 2], ["Moon", "Tide", "Silver Tide Philter", "mon", 90], ["Root", "Ember", "Bramble Bitters", "speed", 60], ["Root", "Moon", "Mossglow Balm", "mon", 60], ["Root", "Tide", "Marsh Remedy", "luck", 1], ["Tide", "Ember", "Coral Spark", "speed", 120], ["Tide", "Moon", "Pearl Moon Potion", "luck", 3], ["Tide", "Root", "Kelp Brew", "mon", 35]];
-export const propsOf = (k) => { const h = hash("apothecary" + k); return [0, 1, 2, 3].map((i) => ((h >>> (i * 7)) % 7) - 3); };
-export const brew = (keys) => { const v = [0, 0, 0, 0]; for (const k of keys) propsOf(k).forEach((n, i) => (v[i] += n)); const o = v.map((n, i) => [n, i]).sort((a, b) => b[0] - a[0]); if (o[0][0] <= 0 || o[1][0] <= 0 || o[0][0] === o[1][0]) return { v, potion: null }; return { v, potion: POTIONS.find((p) => p[0] === AXES[o[0][1]] && p[1] === AXES[o[1][1]]) }; };
+export const AXES = ["Ember", "Moon", "Root", "Tide", "Brine", "Ash", "Starlight"];
+export const POTIONS = [["Ember", "Moon", "Dawnfire Draught", "speed", 90], ["Ember", "Root", "Hearth Tonic", "mon", 45], ["Ember", "Tide", "Steam Cordial", "speed", 60], ["Moon", "Ember", "Starlit Elixir", "speed", 150], ["Moon", "Root", "Dreamroot Syrup", "luck", 2], ["Moon", "Tide", "Silver Tide Philter", "mon", 90], ["Root", "Ember", "Bramble Bitters", "speed", 120], ["Root", "Moon", "Mossglow Balm", "mon", 60], ["Root", "Tide", "Marsh Remedy", "luck", 1], ["Tide", "Ember", "Coral Spark", "speed", 120], ["Tide", "Moon", "Pearl Moon Potion", "luck", 3], ["Tide", "Root", "Kelp Brew", "mon", 35], ["Brine", "Ember", "Brinefire Cordial", "speed", 105], ["Ash", "Root", "Charwood Tonic", "mon", 50], ["Starlight", "Moon", "Astral Syrup", "luck", 3], ["Brine", "Ash", "Kilnsalt Philter", "luck", 1], ["Starlight", "Tide", "Cometspray Brew", "speed", 135], ["Ash", "Ember", "Cinderheart Draught", "mon", 75]];
+export const propsOf = (k) => { const h = hash("apothecary" + k); return AXES.map((_, i) => ((h >>> (i * 7)) % 7) - 3); };
+export const brew = (keys) => { const v = AXES.map(() => 0); for (const k of keys) propsOf(k).forEach((n, i) => (v[i] += n)); const o = v.map((n, i) => [n, i]).sort((a, b) => b[0] - a[0]); if (o[0][0] <= 0 || o[1][0] <= 0 || o[0][0] === o[1][0]) return { v, potion: null }; return { v, potion: POTIONS.find((p) => p[0] === AXES[o[0][1]] && p[1] === AXES[o[1][1]]), top: [AXES[o[0][1]], AXES[o[1][1]]] }; };
 
 export function createApothecary(o) {
   const { s, extras, panel, closePanel, overlay, toast, ping, save, hud, esc } = o, x = extras.state, st = (s.apothecary ||= {}); st.shelf ||= {}; st.book ||= {}; st.brews ||= 0;

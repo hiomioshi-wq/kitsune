@@ -2260,3 +2260,4 @@ html.eink,html.eink *{animation:none!important;transition:none!important;scroll-
 .cv-toast{position:absolute;z-index:3;top:62px;left:50%;transform:translateX(-50%);max-width:calc(100% - 20px);padding:8px 14px;border-radius:9px;background:#241536f2;color:#fff;font-weight:700;text-align:center}
 .cv-act{display:none;z-index:2}@media(pointer:coarse),(max-width:760px){.rm-carnival .cv-act{display:block}}
 .rm-carnival .by-prompt{position:absolute;z-index:2;left:50%;bottom:22px;transform:translateX(-50%);max-width:calc(100% - 210px);padding:9px 14px;border:0;border-radius:9px;background:#fff4d6;color:#201400;font-weight:800;cursor:pointer}.rm-carnival .by-prompt[hidden]{display:none}
+.orig-card.is-locked{cursor:default}.orig-card.is-locked img{filter:grayscale(.85) brightness(.55)}.orig-card.is-locked strong{opacity:.75}.orig-card.is-locked .pill{background:#444a;color:#fff}

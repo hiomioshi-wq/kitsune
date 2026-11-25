@@ -622,8 +622,9 @@ async function renderTextbooks(view, q0) {
 // ---------- Kitsune Originals and the free classics starter shelf ----------
 async function renderFree(view, target = "") {
   setCrumbs([["Books", "books"], ["Originals & free", ""]]);
-  const { ORIGINALS, CLASSICS, SERIES, addOriginal, addClassic, addSeriesItem } = await import("../originals.js");
+  const { ORIGINALS, CLASSICS, SERIES, addOriginal, addClassic, addSeriesItem, itemOut, daysUntilOut } = await import("../originals.js");
   const kids = (await import("../profiles.js")).isKids();
+  const outDate = (e) => !e.release ? "" : new Date(e.release).toLocaleDateString(undefined, { month: "short", day: "numeric" });
   const series = SERIES.filter((x) => !(kids && x.mature));
   const total = CLASSICS.reduce((a, [, l]) => a + l.length, 0);
   // Where you are in each series: finished, part-read, or not started.
@@ -637,13 +638,15 @@ async function renderFree(view, target = "") {
   const pillText = (s) => (s.done ? "Finished ✓" : s.pct > 0 ? `${s.pct}% read` : s.have ? "In your library" : "Read");
   const SHOW = 8;
   const seriesHead = (x) => {
-    const st = x.items.map((e) => state(e.id));
+    const out = x.items.filter(itemOut);
+    const st = out.map((e) => state(e.id));
     const read = st.filter((s) => s.done).length, started = st.some((s) => s.pct > 0);
-    const ni = st.findIndex((s) => !s.done), next = ni >= 0 ? x.items[ni] : null;
-    const go = !started ? { id: x.items[0].id, label: `Start with ${x.items[0].label}` }
+    const ni = st.findIndex((s) => !s.done), next = ni >= 0 ? out[ni] : null;
+    const go = !out.length ? { id: null, label: x.items[0] ? `First entry unlocks ${outDate(x.items[0])}` : "Coming soon" }
+      : !started ? { id: out[0].id, label: `Start with ${out[0].label}` }
       : next ? { id: next.id, label: `${st[ni].pct > 0 ? "Continue" : "Next"}: ${next.title.replace(/^Incarnate: /, "")}` }
-      : { id: x.items[0].id, label: "Read again from the start" };
-    return { read, started, go };
+      : { id: out[0].id, label: "Read again from the start" };
+    return { read, started, go, out: out.length, locked: x.items.length - out.length };
   };
   view.innerHTML = head("free", "Books", "Stories and manga made for Kitsune, plus a hand-picked shelf of free classics. All free, all yours to keep.", null, null) + `
     <section class="section orig-hero"><div class="orig-hero-art"><img src="/originals/kitsu-delivers-1/000.svg" alt="Kitsu Delivers cover"></div>
@@ -659,10 +662,10 @@ async function renderFree(view, target = "") {
         <div class="series-banner-txt"><p class="eyebrow">Original series · ${x.items.length} ${x.items.length === 1 ? "entry" : "entries"}${x.mature ? ` · <span class="pill mature">Mature</span>` : ""}</p><h2 class="h1">${esc(x.title)}</h2>
           <p class="series-banner-blurb">${esc(x.blurb)}</p>${x.note ? `<p class="series-banner-note">${esc(x.note)}</p>` : ""}
           ${sh.started ? `<div class="series-prog" aria-label="Read ${sh.read} of ${x.items.length}"><span class="series-prog-bar"><i style="width:${Math.round((sh.read / x.items.length) * 100)}%"></i></span><span>Read ${sh.read} of ${x.items.length}</span></div>` : ""}
-          <div class="linkgrid" style="margin-top:14px"><button class="btn btn-accent" type="button" data-sitem="${sh.go.id}">${icon("book")}${esc(sh.go.label)}</button><button class="btn btn-on-dark" type="button" data-series-all="${x.id}">${icon("plus")}Add all</button><a class="btn btn-on-dark" href="#lore/s/${x.id}">${icon("list")}Wiki</a></div></div>
+          <div class="linkgrid" style="margin-top:14px"><button class="btn btn-accent" type="button" ${sh.go.id ? `data-sitem="${sh.go.id}"` : "disabled"}>${icon("book")}${esc(sh.go.label)}</button><button class="btn btn-on-dark" type="button" data-series-all="${x.id}" ${sh.locked ? `data-some="${sh.locked}"` : ""}>${icon("plus")}Add all${sh.locked ? " out now" : ""}</button><a class="btn btn-on-dark" href="#lore/s/${x.id}">${icon("list")}Wiki</a></div></div>
       </div>
       ${x.items.length > SHOW || sh.started ? `<div class="series-tools"><div class="seg" role="group" aria-label="Show"><button type="button" data-sf="all" aria-pressed="true">All ${x.items.length}</button><button type="button" data-sf="unread" aria-pressed="false">Unread ${x.items.length - sh.read}</button></div></div>` : ""}
-      <div class="orig-grid">${x.items.map((e, i) => { const s = state(e.id); return `<button class="orig-card${s.done ? " is-done" : ""}" type="button" data-sitem="${e.id}" data-done="${s.done}" ${i >= SHOW ? "hidden" : ""}><img src="${e.cover}" alt="" loading="lazy"><span><span class="eyebrow">${i + 1} · ${esc(e.label)}${e.kind === "script" ? " · Script" : " · Novel"}</span><strong>${esc(e.title)}</strong><span class="muted">${esc(e.blurb)}</span>
+      <div class="orig-grid">${x.items.map((e, i) => { const s = state(e.id), out = itemOut(e); if (!out) { const d = daysUntilOut(e); return `<div class="orig-card is-locked" aria-disabled="true"><img src="${e.cover}" alt="" loading="lazy"><span><span class="eyebrow">${i + 1} · ${esc(e.label)}${e.kind === "script" ? " · Script" : " · Novel"}</span><strong>${esc(e.title)}</strong><span class="muted">${esc(e.blurb)}</span><span class="pill">${icon("clock")}Unlocks ${outDate(e)}${d > 1 ? ` · in ${d} days` : d === 1 ? " · tomorrow" : ""}</span></span></div>`; } return `<button class="orig-card${s.done ? " is-done" : ""}" type="button" data-sitem="${e.id}" data-done="${s.done}" ${i >= SHOW ? "hidden" : ""}><img src="${e.cover}" alt="" loading="lazy"><span><span class="eyebrow">${i + 1} · ${esc(e.label)}${e.kind === "script" ? " · Script" : " · Novel"}</span><strong>${esc(e.title)}</strong><span class="muted">${esc(e.blurb)}</span>
         <span class="pill${s.done ? " pill-done" : ""}" data-have="${e.id}">${pillText(s)}</span>${s.pct > 0 && !s.done ? `<span class="card-prog"><i style="width:${s.pct}%"></i></span>` : ""}</span></button>`; }).join("")}</div>
       ${x.items.length > SHOW ? `<button class="btn btn-ghost series-more" type="button" data-smore="${x.id}">Show all ${x.items.length}</button>` : ""}
       <p class="muted" style="font-size:12px;margin-top:10px">${esc(x.rights)}</p></section>`; }).join("")}
@@ -699,8 +702,10 @@ async function renderFree(view, target = "") {
     if (sa) {
       sa.disabled = true;
       const x = series.find((y) => y.id === sa.dataset.seriesAll);
-      for (const it of x.items) { try { await addSeriesItem(x, it); const p = view.querySelector(`[data-have="${it.id}"]`); if (p && p.textContent === "Read") p.textContent = "In your library"; } catch {} }
-      toast(`${x.title} is in your library.`, { action: "View", onAction: () => (location.hash = "library/book") }); return;
+      const outNow = x.items.filter((i) => itemOut(i));
+      for (const it of outNow) { try { await addSeriesItem(x, it); const p = view.querySelector(`[data-have="${it.id}"]`); if (p && p.textContent === "Read") p.textContent = "In your library"; } catch {} }
+      const locked = x.items.length - outNow.length;
+      toast(locked ? `${outNow.length} entr${outNow.length === 1 ? "y" : "ies"} added. ${locked} more unlock weekly.` : `${x.title} is in your library.`, { action: "View", onAction: () => (location.hash = "library/book") }); return;
     }
     const sf = e.target.closest("[data-sf]"), sm = e.target.closest("[data-smore]");
     if (sf || sm) {
