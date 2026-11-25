@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a0d08"/>
+      <stop offset="100%" stop-color="#3a1c10"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="900" fill="url(#g)"/>
+  <circle cx="300" cy="340" r="130" fill="none" stroke="#ff9a3a" stroke-width="3"/>
+  <text x="300" y="730" text-anchor="middle" font-size="30" font-family="Georgia,serif" fill="#fff1d0">MANDATORY GRATITUDE</text>
+  <text x="300" y="775" text-anchor="middle" font-size="14" font-family="system-ui,sans-serif" fill="#ff9a3a" letter-spacing="5">BLACKWOOD THANKSGIVING SPECIAL</text>
+</svg>
