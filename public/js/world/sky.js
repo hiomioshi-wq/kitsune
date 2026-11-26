@@ -112,7 +112,7 @@ export function mountSky(host, api) {
       api.addMon(500);
       api.giveHat("skycaptain");
       api.giveFurn("orrery");
-      msg = "All four Wind-Bells answer together! The Aurora returns to the sky. (+500 mon, Sky Captain's cap & Brass Orrery)";
+      msg = `All ${SKY_BELLS.length} Wind-Bells answer together! The Aurora returns to the sky. (+500 mon, Sky Captain's cap & Brass Orrery)`;
     }
     api.save(); hud(); sayToast(msg);
   }
@@ -177,7 +177,7 @@ export function mountSky(host, api) {
             if (Object.keys(sk.stars).length === CONSTELLATIONS.length) {
               api.giveHat("stargazer");
               api.addMon(150);
-              sayToast("All 6 constellations charted! (+150 mon & Stargazer's veil)");
+              sayToast(`All ${CONSTELLATIONS.length} constellations charted! (+150 mon & Stargazer's veil)`);
             } else {
               sayToast(`Charted ${con.name}! (+75 mon, +2 shards)`);
             }
@@ -325,6 +325,7 @@ export function mountSky(host, api) {
         if (b.id === "windwatch") return { label: "Enter Wind-Reader's Watch", go: () => windWatchPage(skyCtx()) };
         if (b.id === "sanctum") return { label: "Enter Windmill Sanctum", go: () => sanctumPage(skyCtx()) };
         if (b.id === "aurorapavilion") return { label: "Enter Aurora Pavilion", go: () => auroraPage(skyCtx()) };
+        if (b.id === "lanternarchive") return { label: "Look through the Archive Telescope", go: () => telescope() };
         return { label: "Read Harbor Post", go: skyLog };
       }
     }

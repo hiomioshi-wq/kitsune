@@ -10,6 +10,7 @@ export const SKY_ISLANDS = [
   { id: "aerolith", name: "The Windmill Sanctum", cx: 24, cy: 52, rx: 12, ry: 9, base: STILE.meadow, accent: STILE.cloud, c: "#b8e4ff" },
   { id: "terrace", name: "The Aurora Terrace", cx: 48, cy: 52, rx: 10, ry: 8, base: STILE.plaza, accent: STILE.flower, c: "#a8ffd8" },
   { id: "kiteyard", name: "The Kite Yard", cx: 16, cy: 9, rx: 12, ry: 7, base: STILE.meadow, accent: STILE.flower, c: "#f4c8dd" },
+  { id: "lanternloft", name: "The Lantern Loft", cx: 80, cy: 6, rx: 11, ry: 6, base: STILE.plaza, accent: STILE.flower, c: "#ffd9a0" },
 ];
 
 export const SKY_SPAWN = [22, 34];
@@ -24,6 +25,7 @@ export const SKY_BUILDINGS = [
   { id: "aurorapavilion", x: 45, y: 45, w: 6, h: 4, roof: "#3a7a6a", name: "Aurora Pavilion" },
   { id: "kiteworks", x: 10, y: 4, w: 6, h: 4, roof: "#b8586e", name: "The Kite Works" },
   { id: "windwatch", x: 17, y: 4, w: 6, h: 4, roof: "#4a7a9a", name: "Wind-Reader's Watch" },
+  { id: "lanternarchive", x: 78, y: 2, w: 6, h: 4, roof: "#b8863a", name: "The Lantern Archive" },
 ];
 
 const L = (c, a, st, sk, h, f) => ({ c, a, st, sk, h, e: "#222", f });
@@ -98,6 +100,24 @@ export const SKY_NPCS = [
       "Fish where the kites dip. The shy ones only show themselves under paper wings.",
     ],
   },
+  {
+    id: "mirabel", key: "Mirabel", name: "Mirabel the Moth-Keeper", x: 77, y: 7,
+    look: L("#7a5aa8", "#ffe9c8", 6, 2, "#d8cbe8", "robe"),
+    lines: [
+      "Every moth on this loft is a filed constellation—wing-dust and starlight, catalogued and released.",
+      "The loft lanterns run on moth-light. When the bells went silent, the moths drifted off-chart.",
+      "Chart The Paper Lantern at Astrid's Telescope and our Loft Bell will finally have something to sing about.",
+    ],
+  },
+  {
+    id: "rooke", key: "Rooke", name: "Rooke the Cloud-Shepherd", x: 84, y: 8,
+    look: L("#c99a4a", "#f4ecd8", 5, 1, "#8a6a3a", "coat"),
+    lines: [
+      "A cloud flock grazes best on thin high mist—too rich and they sour into rain by supper.",
+      "I herd them with a whistle and a promise. Same as anyone keeps anything, up here.",
+      "Fish off the east rail where the lantern glow pools. The Ember Mothfish bites only under its own light.",
+    ],
+  },
 ];
 
 export const SKY_BELLS = [
@@ -108,6 +128,7 @@ export const SKY_BELLS = [
   { id: "sanctum", name: "Sanctum Bell", island: "aerolith", x: 29, y: 50, who: "gale", need: "12 Star-Shards", check: (st) => (st.shards || 0) >= 12, desc: "Gather 12 Star-Shards across the archipelago." },
   { id: "aurora_bell", name: "Aurora Bell", island: "terrace", x: 53, y: 50, who: "lyra_sky", need: "5 Constellations", check: (st) => Object.keys(st.stars || {}).length >= 5, desc: "Chart 5 constellations at Astrid's Telescope." },
   { id: "kiteyard", name: "Kite Yard Bell", island: "kiteyard", x: 26, y: 11, who: "sela", need: "Paper Kitefish", check: (st) => !!st.fish?.paperkite, desc: "Catch the Paper Kitefish where the kites dip, off the yard's east edge." },
+  { id: "lanternloft", name: "Lantern Loft Bell", island: "lanternloft", x: 87, y: 7, who: "mirabel", need: "The Paper Lantern Charted", check: (st) => !!st.stars?.lantern, desc: "Chart The Paper Lantern constellation at Astrid's Telescope." },
 ];
 
 export const SKY_FISH = [
@@ -124,6 +145,7 @@ export const SKY_FISH = [
   ["astral_ray", "Astral Ray", 62, 0.06],
   ["celestial_whale", "Cloud Leviathan", 76, 0.04],
   ["paperkite", "Paper Kitefish", 40, 0.10],
+  ["embermoth", "Ember Mothfish", 46, 0.08],
 ];
 
 export const CONSTELLATIONS = [
@@ -218,6 +240,7 @@ export function buildSkyMap() {
   bridge([22, 40], [24, 45]);
   bridge([34, 52], [50, 50]);
   bridge([17, 23], [14, 14]);
+  bridge([74, 16], [78, 10]);
 
   // Dock pier on west edge of Galeharbor
   for (let x = SKY_DOCK[0] - 2; x <= SKY_DOCK[0] + 4; x++) {
