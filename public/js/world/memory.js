@@ -9,6 +9,8 @@ export function createMemory(o) {
   st.wins ||= 0;
   st.bestMoves ||= 0;
   st.freeDay ||= "";
+  st.capsuleRoute ||= [];
+  st.capsuleDate ||= today();
 
   let game = null;
 
@@ -36,7 +38,10 @@ export function createMemory(o) {
       body = `
         <p class="muted">Match all 8 Kitsune pairs in as few moves as possible! Clear in 14 moves or fewer for a +30 mon Par Bonus.</p>
         <p>Games won: <strong>${st.wins}</strong>${st.bestMoves ? ` · Best: <strong>${st.bestMoves} moves</strong>` : ""}</p>
-        <button type="button" class="btn btn-accent" id="mm-go" ${!canFree && s.mon < 10 ? "disabled" : ""}>${canFree ? "Daily Free Match" : "Play Match (10 mon)"}</button>`;
+        <div class="px-row" style="margin-bottom:10px">
+          <button type="button" class="btn btn-accent" id="mm-go" ${!canFree && s.mon < 10 ? "disabled" : ""}>${canFree ? "Daily Free Match" : "Play Match (10 mon)"}</button>
+          <button type="button" class="btn" id="mm-cap">${s.capsulePlayback ? "Hide Route Ghost" : `Summon Time Capsule Ghost (${st.capsuleRoute.length} pts)`}</button>
+        </div>`;
     } else {
       const grid = game.cards.map((c, i) => {
         const show = c.open || c.matched;
@@ -52,6 +57,14 @@ export function createMemory(o) {
     panel(`Foxfire Memory Match · ${s.mon} mon`, body, (e) => {
       const go = e.querySelector("#mm-go");
       if (go) go.onclick = () => startGame(st.freeDay !== today() ? 0 : 10);
+
+      const cap = e.querySelector("#mm-cap");
+      if (cap) cap.onclick = () => {
+        s.capsulePlayback = !s.capsulePlayback;
+        ping("choice");
+        toast(s.capsulePlayback ? "Your Time Capsule ghost now walks your saved route beside you!" : "Time Capsule ghost dismissed.");
+        save(); open();
+      };
 
       e.querySelectorAll("[data-mm]").forEach((b) => {
         b.onclick = () => {

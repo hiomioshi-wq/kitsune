@@ -10,12 +10,48 @@ const PROMPTS = [
   { id: "night_pic", title: "Nightfall Glow", desc: "Snap a photo when darkness falls (or switch Time to Night).", check: (s, reg, dark) => dark > 0.25, pay: 45 },
 ];
 
+const FILTERS = [
+  { id: "none", name: "Natural", css: "none" },
+  { id: "sepia", name: "Warm Sepia", css: "sepia(0.85) saturate(1.1)" },
+  { id: "moon", name: "Moonlit Indigo", css: "hue-rotate(190deg) saturate(0.95) brightness(0.9)" },
+  { id: "sakura", name: "Sakura Pink", css: "sepia(0.35) hue-rotate(305deg) saturate(1.3)" },
+  { id: "noir", name: "Ink Noir", css: "grayscale(1) contrast(1.25)" },
+];
+
 export function createPhotoClub(o) {
   const { s, REGIONS, panel, toast, ping, save, hud, regionNow, darkness, addRenown } = o;
   const st = (s.photoClub ||= {});
   st.album ||= [];
   st.day ||= "";
   st.snappedDay ||= "";
+  let selFilter = FILTERS[0].id;
+  let lastDataUrl = "";
+
+  function capturePostcard(regLabel) {
+    const src = document.querySelector("#wd-c");
+    if (!src) return "";
+    const out = document.createElement("canvas");
+    out.width = 640;
+    out.height = 420;
+    const g = out.getContext("2d");
+    g.fillStyle = "#f9f3e5";
+    g.fillRect(0, 0, 640, 420);
+    const f = FILTERS.find((x) => x.id === selFilter) || FILTERS[0];
+    g.save();
+    g.filter = f.css;
+    g.drawImage(src, 18, 18, 604, 336);
+    g.restore();
+    g.strokeStyle = "#3a2415";
+    g.lineWidth = 3;
+    g.strokeRect(18, 18, 604, 336);
+    g.fillStyle = "#3a2415";
+    g.font = "700 18px Georgia, serif";
+    g.fillText(`Kitsune Postcard · ${regLabel}`, 24, 386);
+    g.font = "13px system-ui";
+    g.fillStyle = "#6e5540";
+    g.fillText(`${today()} · Filter: ${f.name}`, 24, 406);
+    return out.toDataURL("image/png");
+  }
 
   function todayPrompt() {
     const t = today();
@@ -36,6 +72,8 @@ export function createPhotoClub(o) {
       `<div class="se-good"><span><strong>📸 ${esc(p.title)}</strong><small>${esc(p.where)} · ${esc(p.day)}</small></span><span class="pill pill-done">+${p.pay} mon</span></div>`
     ).join("");
 
+    const filterChips = FILTERS.map((f) => `<button type="button" class="chip${f.id === selFilter ? " on" : ""}" data-pf="${f.id}">${esc(f.name)}</button>`).join("");
+
     panel(`Lantern Photo Club · ${st.album.length} Postcards`, `
       <div class="se-mkt" style="margin-bottom:12px">
         <div class="se-good">
@@ -49,9 +87,19 @@ export function createPhotoClub(o) {
             : `<button type="button" class="btn btn-accent" id="pc-snap" ${ready ? "" : "disabled"}>${ready ? `Snap (+${pr.pay} mon)` : "Go to location"}</button>`}
         </div>
       </div>
+      <h4>📷 Camera Mode & Exportable Postcards</h4>
+      <div class="chips" style="margin-bottom:8px">${filterChips}</div>
+      <div class="px-row" style="margin-bottom:10px">
+        <button type="button" class="btn btn-accent" id="pc-shot">Take Postcard Photo</button>
+        ${lastDataUrl ? `<a class="btn" id="pc-dl" href="${lastDataUrl}" download="kitsune-postcard-${today()}.png">Download PNG</a>` : ""}
+      </div>
+      ${lastDataUrl ? `<img src="${lastDataUrl}" alt="Postcard preview" style="width:100%;max-width:440px;border-radius:10px;border:2px solid #8a7ac8;margin-bottom:10px">` : ""}
       <h4>Postcard Album</h4>
       <div class="se-mkt">${albumRows || `<p class="muted">No postcards yet. Complete today's assignment to start your album!</p>`}</div>
     `, (e) => {
+      e.querySelectorAll("[data-pf]").forEach((b) => (b.onclick = () => { selFilter = b.dataset.pf; if (lastDataUrl) lastDataUrl = capturePostcard(regLabel); ping("blip"); open(); }));
+      const shot = e.querySelector("#pc-shot");
+      if (shot) shot.onclick = () => { lastDataUrl = capturePostcard(regLabel); ping("done"); toast("Postcard captured! Click Download PNG to save."); open(); };
       const btn = e.querySelector("#pc-snap");
       if (btn) btn.onclick = () => {
         if (st.snappedDay === today() || !pr.check(s, reg, dark)) return;

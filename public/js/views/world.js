@@ -5,6 +5,8 @@ import { setCrumbs } from "../main.js";
 import { lib, kvGet, kvSet, kvFlush, getItem, coverSrc, settings, allProgress } from "../store.js";
 import { inkWeather, tailStatus, loadMarginaliaGhosts, addRumour, activeRumour, TAX_UPGRADES, taxDue } from "../world/living.js";
 import { createBookworm } from "../world/bookworm.js";
+import { createCivic } from "../world/civic.js";
+import { gazetteHeadline } from "../world/lanternpress.js";
 import { speakAs, execVoiceCmds, askChatLine } from "../world/mindai.js";
 import { ORIGINALS, addOriginal } from "../originals.js";
 import { openItem } from "./common.js";
@@ -130,7 +132,17 @@ export async function render(view, _n, params = []) {
   if (!saveHistory.some((h) => h.date === today())) { saveHistory.push({ date: today(), fur, hat: s.hat || "", label: saveHistory.length ? today() : "1 Year Ago" }); if (saveHistory.length > 12) saveHistory.shift(); kvSet("save-history", saveHistory); }
   const isHalloween = new Date().getMonth() === 9 && new Date().getDate() === 31;
   const hauntedGhost = isHalloween ? { ...(saveHistory[0] || { fur: "#c8b4ff", label: "1 Year Ago" }), x: s.x + 110, y: s.y - 40 } : null;
-  const taxPos = { x: s.x - 95, y: s.y + 45 }; let taxRemarkT = 0;
+  const taxPos = { x: s.x - 95, y: s.y + 45 }; let taxRemarkT = 0, capRecT = 0, capIdx = 0;
+  const realMonth = new Date().getMonth();
+  const realSeason = [11, 0, 1].includes(realMonth) ? "winter" : [2, 3, 4].includes(realMonth) ? "spring" : [5, 6, 7].includes(realMonth) ? "summer" : "autumn";
+  const finishedBooks = (lib.items || []).filter((it) => it.status === "completed");
+  const groveTrees = finishedBooks.slice(0, 12).map((it, i) => {
+    const gtxt = [it.title, it.type, ...(it.genres || []), ...(it.tags || [])].join(" ").toLowerCase();
+    const color = /horror|mystery|dark/.test(gtxt) ? "#4a395c" : /romance|drama/.test(gtxt) ? "#ff92b8" : it.type === "manga" ? "#ffcf6e" : "#4ca866";
+    return { title: it.title, color, x: (VILLAGE.cx + 5 + (i % 4) * 2) * T, y: (VILLAGE.cy - 5 + Math.floor(i / 4) * 2) * T };
+  });
+  const leafPiles = realSeason === "autumn" ? [0, 1, 2, 3].map((i) => ({ id: i, x: (VILLAGE.cx - 4 + i * 3) * T, y: (VILLAGE.cy + 4 + (i % 2) * 2) * T, taken: false })) : [];
+  const civicSpot = { x: (VILLAGE.cx - 3) * T, y: (VILLAGE.cy + 1) * T };
   if (winter) applyVillage(map);
   const delves = DELVE_SITES.map((d) => ({ ...d, x: REGIONS[d.region][1] - 7, y: REGIONS[d.region][2] + 1 })); for (const d of delves) for (let y = d.y - 2; y <= d.y + 2; y++) for (let x = d.x - 2; x <= d.x + 2; x++) { const i = y * W + x; if (map.g[i] === TILE.water || map.g[i] === TILE.lava) map.g[i] = TILE.plaza; else if (map.solid[i]) map.g[i] = TILE.plaza; map.solid[i] = 0; map.reach[i] = 1; }
   const trials = TRIALS.map((t) => ({ ...t, x: REGIONS[t.region][1], y: REGIONS[t.region][2] + 3 })); for (const t of trials) for (let y = t.y - 1; y <= t.y + 2; y++) for (let x = t.x - 1; x <= t.x + 2; x++) { const i = y * W + x; if (map.solid[i] || map.g[i] === TILE.water) map.g[i] = TILE.plaza; map.solid[i] = 0; map.reach[i] = 1; }
@@ -223,7 +235,7 @@ export async function render(view, _n, params = []) {
         ...storyBtns(p),
       ]);
     }
-    const lines = p.n[7], text = lines[p.line++ % lines.length];
+    const lines = p.n[7], text = (p.line % 3 === 1 ? `${gazetteHeadline(s)} ` : "") + lines[p.line++ % lines.length];
     say(p, text, storyBtns(p));
   }
 
@@ -282,7 +294,7 @@ export async function render(view, _n, params = []) {
   async function enterCards(foe) {
     if (realm) return; closeTalk(); if (!panelEl.hidden) closePanel(); keys.clear(); const box = document.createElement("div"); box.className = "rm rm-cards"; root.appendChild(box); realm = { close() { try { off?.(); } catch {} box.remove(); } }; let off = null; const D = await loadMod(box, import("../world/duel.js")); if (!D) return; try { registerCards((await plusState()).cards); } catch {} if (!alive || !box.isConnected) return;
     const leave = () => { try { off?.(); } catch {} box.remove(); realm = null; save(); kvFlush(); hud(); root.focus({ preventScroll: true }); };
-    off = D.mountCards(box, { state: s, people, face: (id) => { const p = people.find((x) => x.id === id); return p ? characterSvg(p.n[1], p.d, "calm") : ""; }, ping, save, mon: () => s.mon, addMon: (n) => { s.mon += n; save(); hud(); }, giveHat: (h) => { if (!s.hats.includes(h)) s.hats.push(h); s.hat = h; save(); }, leave }, foe); root.__game.cards = box;
+    off = D.mountCards(box, { state: s, people, face: (id) => { const p = people.find((x) => x.id === id); return p ? characterSvg(p.n[1], p.d, "calm") : ""; }, ping, save, mon: () => s.mon, addMon: (n) => { s.mon += n; if (n > 0) { s.rival = { name: "Akane", grudge: (s.rival?.grudge || 0) + 1, cardWins: (s.rival?.cardWins || 0) + 1, derbyWins: s.rival?.derbyWins || 0 }; ((s.postOffice ||= {}).letters ||= []).unshift({ id: `rivc_${Date.now()}`, fromId: "akane", from: "Akane (Rival)", subject: "Rematch at the Derby", body: `Lucky hand at Lantern Cards! Next time on the Derby track I won't hold back. (Grudge Lv.${s.rival.grudge})`, sentAt: Date.now(), deliverAt: Date.now(), replied: false, reminded: false }); } save(); hud(); }, giveHat: (h) => { if (!s.hats.includes(h)) s.hats.push(h); s.hat = h; save(); }, leave }, foe); root.__game.cards = box;
   }
   async function enterBay() {
     if (realm || derby.active || siege.active || sea.active) return; closeTalk(); if (!panelEl.hidden) closePanel(); keys.clear(); const box = document.createElement("div"); box.className = "rm rm-bay"; root.appendChild(box); let off = null; realm = { close() { try { off?.(); } catch {} box.remove(); } }; const M = await loadMod(box, import("../world/bay.js")); if (!M || !alive || !box.isConnected) return;
@@ -403,6 +415,9 @@ export async function render(view, _n, params = []) {
       const nextUp = TAX_UPGRADES.find((u) => !doneUps.includes(u.id)) || TAX_UPGRADES[0];
       return { label: `Pay Tanuki Tax Spirit (${due} mon)`, go: () => say(null, `Tanuki Collector: “Quite a heavy purse, fox! Pay ${due} mon to fund ${nextUp.name}.”`, [[`Pay ${due} mon`, () => { if (s.mon < due) return; s.mon -= due; s.taxSettledDay = today(); s.taxUpgrades = [...new Set([...doneUps, nextUp.id])]; tale?.addRenown?.(50); fireworks = 5; save(); hud(); ping("done"); toast(`Paid ${due} mon! Town upgraded: ${nextUp.name} (+50 Renown)!`); }], ["Dodge him", () => { addRumour(s, "tax_dodge"); save(); closeTalk(); toast("Tanuki Collector narrows his eyes and keeps following you..."); }]]) };
     }
+    if (Math.hypot(civicSpot.x - s.x, civicSpot.y - s.y) < 46) return { label: "Foxhold Civic Center (Renovate / Statue / Festival)", go: () => civic.open() };
+    for (const lp of leafPiles) if (!lp.taken && Math.hypot(lp.x - s.x, lp.y - s.y) < 40) return { label: "Rustle Autumn Leaf Pile", go: () => { lp.taken = true; s.mon += 12; save(); hud(); ping("done"); toast("Found +12 mon tucked beneath the autumn leaves!"); } };
+    for (const gt of groveTrees) if (Math.hypot(gt.x - s.x, gt.y - s.y) < 40) return { label: `Reading Grove: ${gt.title}`, go: () => say(null, `This Reading Grove tree bloomed when you finished “${gt.title}”.${tailInfo.finishedSeries ? ` (${tailInfo.finishedSeries} series vignette${tailInfo.finishedSeries > 1 ? "s" : ""} unlocked!)` : ""}`) };
     if (hauntedGhost && Math.hypot(hauntedGhost.x - s.x, hauntedGhost.y - s.y) < 52) return { label: "Challenge Haunted Past-Self Ghost", go: () => derby.hauntedChallenge(0) };
     let best = null, d = 58; for (const p of people) { const q = Math.hypot(p.x - s.x, p.y - s.y); if (q < d) { d = q; best = { label: `Talk to ${p.n[2]}`, go: () => talk(p) }; } } if (best) return best;
     const wt = wanderers?.target(); if (wt) return wt;
@@ -474,7 +489,8 @@ export async function render(view, _n, params = []) {
   express = createExpress({ s, REGIONS, panel, closePanel, toast, ping, save, hud, teleport: (x, y) => { s.x = x; s.y = y; petX = x - 30; petY = y + 6; save(); }, T, addRenown: (n) => tale.addRenown(n) });
   arcade = createArcade({ s, panel, toast, ping, save, hud, addRenown: (n) => tale.addRenown(n) });
   teahouse = createTeahouse({ s, panel, toast, ping, save, hud, extras, addRenown: (n) => tale.addRenown(n) });
-  bulletinW = createBulletin({ s, panel, LANTERNS, FAR_QUESTS, NPCS, FISH, kvGet, kvSet, playerName: () => currentProfile()?.name || "Fox", openActivity: (act) => { closePanel(); if (act === "inventory") inventory.open(); else if (act === "museum") museumW.open(); else if (act === "badges") badges.open(); else if (act === "roulette") roulette.open(); else if (act === "tavern") tavern.open(); else if (act === "keno") keno.open(); else if (act === "exchange") exchange.open(); else if (act === "quiz") quiz.open(); else if (act === "petarena") petArena.open(); else if (act === "stargaze") stargaze.open(); else if (act === "postoffice") postOffice.open(); else if (act === "tidepool") tidepool.open(); } });
+  bulletinW = createBulletin({ s, panel, LANTERNS, FAR_QUESTS, NPCS, FISH, kvGet, kvSet, REGIONS, T, playerName: () => currentProfile()?.name || "Fox", openActivity: (act) => { closePanel(); if (act === "inventory") inventory.open(); else if (act === "museum") museumW.open(); else if (act === "badges") badges.open(); else if (act === "roulette") roulette.open(); else if (act === "tavern") tavern.open(); else if (act === "keno") keno.open(); else if (act === "exchange") exchange.open(); else if (act === "quiz") quiz.open(); else if (act === "petarena") petArena.open(); else if (act === "stargaze") stargaze.open(); else if (act === "postoffice") postOffice.open(); else if (act === "tidepool") tidepool.open(); else if (act === "weatherbell") weatherBell.open(); else if (act === "express") express.open(); else if (act === "raffle") raffle.open(); else if (act === "windvane") windvane.open(); else if (act === "luckyspin") luckySpin.open(); else if (act === "teahouse") teahouse.open(); else if (act === "photoclub") photoClub.open(); else if (act === "memory") memory.open(); } });
+  const civic = createCivic({ s, people, panel, toast, ping, save, hud, fireworks: () => { fireworks = 7; }, addRenown: (n) => tale.addRenown(n), fur });
   botanical = createBotanical({ s, panel, toast, ping, save, hud, addRenown: (n) => tale.addRenown(n) });
   pyro = createFireworks({ s, panel, toast, ping, save, hud, fireworks: (opt) => { fireworks = 8; if (opt?.color) burst({ x: s.x, y: s.y - 40 }, 36); }, addRenown: (n) => tale.addRenown(n) });
   luckySpin = createLuckySpin({ s, panel, toast, ping, save, hud, addRenown: (n) => tale.addRenown(n) });
@@ -527,8 +543,9 @@ export async function render(view, _n, params = []) {
     moving = !!(ax || ay);
     if (travel?.drives()) { if (!busy()) travel.drive(ax, ay, dt); if (moving) { dir = Math.abs(ax) > Math.abs(ay) ? (ax < 0 ? "left" : "right") : ay < 0 ? "up" : "down"; step += dt * 4; } }
     else if (sea.active) { if (!busy()) sea.drive(ax, ay, dt); if (moving) { dir = Math.abs(ax) > Math.abs(ay) ? (ax < 0 ? "left" : "right") : ay < 0 ? "up" : "down"; step += dt * 5; } }
-    else if (moving) { const m = Math.max(1, Math.hypot(ax, ay)), nxSt = nexusStats(s), v = (derby.active ? derby.speed(keys.has("Shift")) : (keys.has("Shift") ? 300 : 185) * (s.ride ? 1.8 : 1) * extras.speed() * inventory.speedBonus() * (square?.speedMul() || 1) * (guild?.speedMul() || 1) * (1 + nxSt.speed / 100) * (settings.world?.overworldSpeed || 1)) * dt, nx = s.x + ax / m * v, ny = s.y + ay / m * v; if (!blocked(nx, s.y)) s.x = nx; if (!blocked(s.x, ny)) s.y = ny; dir = Math.abs(ax) > Math.abs(ay) ? (ax < 0 ? "left" : "right") : ay < 0 ? "up" : "down"; step += dt * 13; }
-    { const nxSt = nexusStats(s), reach = orbReach + nxSt.reach; let got = 0; for (const o of map.orbs) if (!s.orbs[o.id] && Math.abs((o.x + .5) * T - s.x) < reach && Math.abs((o.y + .5) * T - s.y) < reach + 2) { s.orbs[o.id] = 1; s.mon += Math.max(2, Math.round(2 * (1 + nxSt.mon / 100))); got++; burst({ x: (o.x + .5) * T, y: (o.y + .5) * T + 20 }, 8); } if (got) { ping("blip"); save(); hud(); } }
+    else if (moving) { const tailMul = s.civic?.tailMods?.includes("swift") ? 1.2 : 1; const m = Math.max(1, Math.hypot(ax, ay)), nxSt = nexusStats(s), v = (derby.active ? derby.speed(keys.has("Shift")) : (keys.has("Shift") ? 300 : 185) * (s.ride ? 1.8 : 1) * extras.speed() * inventory.speedBonus() * (square?.speedMul() || 1) * (guild?.speedMul() || 1) * tailMul * (1 + nxSt.speed / 100) * (settings.world?.overworldSpeed || 1)) * dt, nx = s.x + ax / m * v, ny = s.y + ay / m * v; if (!blocked(nx, s.y)) s.x = nx; if (!blocked(s.x, ny)) s.y = ny; dir = Math.abs(ax) > Math.abs(ay) ? (ax < 0 ? "left" : "right") : ay < 0 ? "up" : "down"; step += dt * 13; }
+    if (moving && (capRecT += dt) > 1.5) { capRecT = 0; const mem = (s.memory ||= {}); mem.capsuleRoute ||= []; mem.capsuleRoute.push([Math.round(s.x), Math.round(s.y)]); if (mem.capsuleRoute.length > 40) mem.capsuleRoute.shift(); }
+    { const nxSt = nexusStats(s), reach = orbReach + nxSt.reach, goldMul = s.civic?.tailMods?.includes("gold") ? 1.35 : 1; let got = 0; for (const o of map.orbs) if (!s.orbs[o.id] && Math.abs((o.x + .5) * T - s.x) < reach && Math.abs((o.y + .5) * T - s.y) < reach + 2) { s.orbs[o.id] = 1; s.mon += Math.max(2, Math.round(2 * (1 + nxSt.mon / 100) * goldMul)); got++; burst({ x: (o.x + .5) * T, y: (o.y + .5) * T + 20 }, 8); } if (got) { ping("blip"); save(); hud(); } }
     for (const o of presents) if (!s.gifts[o.id] && Math.abs((o.x + .5) * T - s.x) < 30 && Math.abs((o.y + .5) * T - s.y) < 30) { s.gifts[o.id] = 1; save(); ping("done"); burst({ x: (o.x + .5) * T, y: (o.y + .5) * T + 20 }, 24); toast(`A present! +25 Snowbells (${presents.filter((q) => s.gifts[q.id]).length} of ${presents.length})`); document.dispatchEvent(new CustomEvent("kitsune:world", { detail: { k: "present" } })); }
     if (now > questT) { questT = now + 700; quests.tick(); } if (now > farmT) { farmT = now + 1000; farm.tick(); tale?.tick(); }
     extras.update(dt, now, moving); updateResidents(people, dt, s, blocked, T, busy); wanderers.update(dt, busy); wplay?.update(dt); if (!busy()) { derby.update(dt, moving, keys.has("Shift")); siege.update(dt); sea.update(dt); events?.update(dt, !derby.active && !siege.active && !sea.active && !travel?.active); life?.update(dt); travel?.update(dt, moving); }
@@ -591,12 +608,39 @@ export async function render(view, _n, params = []) {
     if (hauntedGhost && Math.abs(hauntedGhost.x - s.x) < vw && Math.abs(hauntedGhost.y - s.y) < vh) {
       things.push([hauntedGhost.y + 14, () => { g.save(); g.globalAlpha = .58; drawFox(g, hauntedGhost.x, hauntedGhost.y, "down", now / 90, hauntedGhost.fur || "#c8b4ff", 3, hauntedGhost.hat || "", now, false); g.font = "800 9.5px system-ui"; g.textAlign = "center"; g.fillStyle = "#e4d2ff"; g.fillText("Past Self", hauntedGhost.x, hauntedGhost.y - 34); g.restore(); }]);
     }
+    if (Math.abs(civicSpot.x - s.x) < vw && Math.abs(civicSpot.y - s.y) < vh) {
+      things.push([civicSpot.y + 12, () => { g.fillStyle = "#5a3c22"; g.fillRect(civicSpot.x - 14, civicSpot.y - 24, 28, 28); g.fillStyle = "#ffd84d"; g.font = "800 9.5px system-ui"; g.textAlign = "center"; g.fillText("CIVIC", civicSpot.x, civicSpot.y - 6); }]);
+    }
+    if (s.civic?.reno?.roads) {
+      const rx = (VILLAGE.cx - 2) * T, ry = (VILLAGE.cy + 1) * T;
+      if (Math.abs(rx - s.x) < vw && Math.abs(ry - s.y) < vh) things.push([ry - 20, () => { g.fillStyle = "rgba(216,204,186,.55)"; g.fillRect(rx - 40, ry - 20, 180, 72); }]);
+    }
+    if (s.civic?.reno?.lamps) {
+      const lx = (VILLAGE.cx + 2) * T, ly = (VILLAGE.cy + 2) * T;
+      if (Math.abs(lx - s.x) < vw && Math.abs(ly - s.y) < vh) things.push([ly + 14, () => { g.fillStyle = "#2b2b36"; g.fillRect(lx - 2, ly - 26, 4, 34); g.fillStyle = "#ffe58f"; g.beginPath(); g.arc(lx, ly - 28, 6, 0, 7); g.fill(); }]);
+    }
+    if (s.civic?.statue && Math.abs(VILLAGE.cx * T - s.x) < vw && Math.abs(VILLAGE.cy * T - s.y) < vh) {
+      const sx = (VILLAGE.cx + 0.5) * T, sy = (VILLAGE.cy - 1) * T;
+      things.push([sy + 14, () => { g.fillStyle = "#7a7268"; g.fillRect(sx - 16, sy + 2, 32, 12); drawFox(g, sx, sy - 6, "down", 0, "#d4af37", 9, s.civic.statue.hat || "", 0, false); }]);
+    }
+    for (const gt of groveTrees) if (Math.abs(gt.x - s.x) < vw && Math.abs(gt.y - s.y) < vh) {
+      things.push([gt.y + 12, () => { g.fillStyle = "#5c3d24"; g.fillRect(gt.x - 4, gt.y - 6, 8, 18); g.fillStyle = gt.color; g.beginPath(); g.arc(gt.x, gt.y - 14, 15, 0, 7); g.fill(); }]);
+    }
+    for (const lp of leafPiles) if (!lp.taken && Math.abs(lp.x - s.x) < vw && Math.abs(lp.y - s.y) < vh) {
+      things.push([lp.y + 8, () => { g.fillStyle = "#d97228"; g.beginPath(); g.ellipse(lp.x, lp.y, 14, 8, 0, 0, 7); g.fill(); g.fillStyle = "#f2b646"; g.beginPath(); g.ellipse(lp.x - 4, lp.y - 2, 7, 4, 0, 0, 7); g.fill(); }]);
+    }
+    if (s.capsulePlayback && s.memory?.capsuleRoute?.length) {
+      const rt = s.memory.capsuleRoute, pt = rt[Math.floor(now / 450) % rt.length];
+      if (pt && Math.abs(pt[0] - s.x) < vw && Math.abs(pt[1] - s.y) < vh) {
+        things.push([pt[1] + 13, () => { g.save(); g.globalAlpha = .45; drawFox(g, pt[0], pt[1], "down", now / 90, "#9fe8ff", 3, "", now, true); g.restore(); }]);
+      }
+    }
     things.push([s.y + (travel?.active ? 120 : 14), () => drawFox(g, s.x, s.y - (travel?.lift() || 0), dir, step, fur, s.final ? 9 : tailsN, s.hat, calm() ? 0 : now, moving)]);
     const trainX = ((now / 1000) % 46) / 46 * (120 * T + 900) - 450; if (!calm() && trainX > camX - 420 && trainX < camX + vw + 40 && 84 * T > camY && 82 * T < camY + vh) things.push([85 * T, () => { for (let i = 0; i < 4; i++) { const x = trainX - i * 104; g.fillStyle = i ? "#2f6b6b" : "#c8283a"; g.fillRect(x, 82 * T + 18, 96, 54); g.fillStyle = "#1b1d33"; g.fillRect(x, 82 * T + 12, 96, 8); g.fillStyle = "#ffd982"; for (let w = 0; w < 3; w++) g.fillRect(x + 10 + w * 28, 82 * T + 28, 18, 16); } }]);
     things.sort((a, b) => a[0] - b[0]); for (const t of things) t[1]();
     for (const p of sparks) { g.globalAlpha = Math.max(0, p.life); g.fillStyle = p.c; g.fillRect(p.x - 2, p.y - 2, 4, 4); } g.globalAlpha = 1; wplay?.overlay(g); derby.overlay(g); siege.overlay(g); sea.overlay(g); events?.overlay(g, !derby.active && !siege.active && !sea.active && !travel?.active); if (!derby.active && !siege.active && !sea.active && !travel?.active) { life?.overlay(g); square?.overlay(g); } g.restore();
     const dark = darkness();
-    if (dark > .01) { const k = zoom / 2, lr = (settings.world?.lanternRadius || 1) * inventory.lightRadius(), lightAt = (x, y, r, a = 1) => { const X = (x - camX) * k, Y = (y - camY) * k, R = r * k, q = og.createRadialGradient(X, Y, R * .1, X, Y, R); q.addColorStop(0, `rgba(0,0,0,${a})`); q.addColorStop(1, "rgba(0,0,0,0)"); og.fillStyle = q; og.fillRect(X - R, Y - R, R * 2, R * 2); }; og.globalCompositeOperation = "source-over"; og.clearRect(0, 0, overlay.width, overlay.height); og.fillStyle = `rgba(12,14,52,${dark})`; og.fillRect(0, 0, overlay.width, overlay.height); og.globalCompositeOperation = "destination-out"; lightAt(s.x, s.y - 6, 150 * lr, .9); for (const a of lamps) if (a.l === FINAL_LANTERN ? s.final : s.lit[a.l.id]) lightAt(a.x, a.y - 18, (s.final ? 320 : 240) * lr); for (const b of BUILDINGS) if (Math.abs(b[1] * T - s.x) < vw && Math.abs(b[2] * T - s.y) < vh) lightAt((b[1] + b[3] / 2) * T, (b[2] + b[4]) * T - 20, (s.final ? 190 : 110) * lr, .7); for (const o of map.orbs) if (!s.orbs[o.id] && Math.abs(o.x * T - s.x) < vw && Math.abs(o.y * T - s.y) < vh) lightAt((o.x + .5) * T, (o.y + .5) * T, 46 * lr, .8); g.imageSmoothingEnabled = true; g.drawImage(overlay, 0, 0, cw, ch); }
+    if (dark > .01) { const k = zoom / 2, glowMul = s.civic?.tailMods?.includes("glow") ? 1.45 : 1, lr = (settings.world?.lanternRadius || 1) * inventory.lightRadius() * glowMul, lightAt = (x, y, r, a = 1) => { const X = (x - camX) * k, Y = (y - camY) * k, R = r * k, q = og.createRadialGradient(X, Y, R * .1, X, Y, R); q.addColorStop(0, `rgba(0,0,0,${a})`); q.addColorStop(1, "rgba(0,0,0,0)"); og.fillStyle = q; og.fillRect(X - R, Y - R, R * 2, R * 2); }; og.globalCompositeOperation = "source-over"; og.clearRect(0, 0, overlay.width, overlay.height); og.fillStyle = `rgba(12,14,52,${dark})`; og.fillRect(0, 0, overlay.width, overlay.height); og.globalCompositeOperation = "destination-out"; lightAt(s.x, s.y - 6, 150 * lr, .9); for (const a of lamps) if (a.l === FINAL_LANTERN ? s.final : s.lit[a.l.id]) lightAt(a.x, a.y - 18, (s.final ? 320 : 240) * lr); for (const b of BUILDINGS) if (Math.abs(b[1] * T - s.x) < vw && Math.abs(b[2] * T - s.y) < vh) lightAt((b[1] + b[3] / 2) * T, (b[2] + b[4]) * T - 20, (s.final ? 190 : 110) * lr, .7); for (const o of map.orbs) if (!s.orbs[o.id] && Math.abs(o.x * T - s.x) < vw && Math.abs(o.y * T - s.y) < vh) lightAt((o.x + .5) * T, (o.y + .5) * T, 46 * lr, .8); g.imageSmoothingEnabled = true; g.drawImage(overlay, 0, 0, cw, ch); }
     plusW?.fall(g, cw, ch, now);
     if (ink.kind === "horror") {
       g.fillStyle = "rgba(24,28,42,.22)"; g.fillRect(0, 0, cw, ch);

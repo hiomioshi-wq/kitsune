@@ -1,6 +1,20 @@
 // Lantern Printing Press: typeset regional gazettes + daily ink stamp for mon and Renown.
 import { esc, today } from "../util.js";
 
+export function gazetteHeadline(s) {
+  const bits = [];
+  const derbyWins = Object.keys(s.derby?.wins || {}).length;
+  const litN = Object.keys(s.lit || {}).length;
+  const fishN = Object.keys(s.fish || {}).length;
+  if (derbyWins) bits.push(`Local fox wins ${derbyWins} Fox Derby course${derbyWins > 1 ? "s" : ""}`);
+  if ((s.roulette?.wins || 0) > 0) bits.push(`takes ${s.roulette.best || 50} mon at Foxfire Roulette`);
+  if ((s.taxUpgrades || []).length) bits.push(`funds ${s.taxUpgrades.length} Foxhold civic upgrade${s.taxUpgrades.length > 1 ? "s" : ""}`);
+  if (fishN) bits.push(`logs ${fishN} fish species`);
+  if (litN) bits.push(`lights ${litN} Country Lantern${litN > 1 ? "s" : ""}`);
+  if (s.gazetteExtra) bits.push(s.gazetteExtra);
+  return bits.length ? `Kitsune Gazette: “${bits.slice(0, 3).join(", ")}!”` : "Kitsune Gazette: “Quiet morning in Foxhold — lanterns burn steady.”";
+}
+
 const EDITIONS = [
   { title: "Foxhold Morning Post", blocks: ["Lanterns", "Lit", "Early"] },
   { title: "Saltwick Tide Sheet", blocks: ["Harbor", "Fog", "Clears"] },
@@ -30,8 +44,10 @@ export function createLanternPress(o) {
     const canPrint = (st.printN || 0) < 5;
     let body = "";
 
-    if (!job) {
+  const headline = gazetteHeadline(s);
+  if (!job) {
       body = `
+        <div class="hint" style="margin-bottom:10px"><strong>📰 Today's Front Page</strong><br>${esc(headline)}</div>
         <p class="muted">Set wooden type blocks in the right headline order to print a fresh edition. Each print run pays <strong>50 mon</strong> &amp; <strong>+20 Renown</strong> (up to 5/day).</p>
         <p>Editions printed: <strong>${st.printed}</strong> · Today: <strong>${st.printN}/5</strong></p>
         <div class="px-row">
