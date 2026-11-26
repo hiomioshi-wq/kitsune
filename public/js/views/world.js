@@ -2,7 +2,9 @@
 // fish, collect foxfire, spend what you earn by reading, and decorate your house. Progress lives in kv "world".
 import { $, $$, esc, toast, coverHtml, today } from "../util.js";
 import { setCrumbs } from "../main.js";
-import { lib, kvGet, kvSet, kvFlush, getItem, coverSrc, settings } from "../store.js";
+import { lib, kvGet, kvSet, kvFlush, getItem, coverSrc, settings, allProgress } from "../store.js";
+import { inkWeather, tailStatus, loadMarginaliaGhosts, addRumour, activeRumour, TAX_UPGRADES, taxDue } from "../world/living.js";
+import { createBookworm } from "../world/bookworm.js";
 import { speakAs, execVoiceCmds, askChatLine } from "../world/mindai.js";
 import { ORIGINALS, addOriginal } from "../originals.js";
 import { openItem } from "./common.js";
@@ -119,9 +121,16 @@ export async function render(view, _n, params = []) {
     <div class="wd-pad" id="wd-pad" aria-hidden="true"><i></i></div><button type="button" class="wd-act" id="wd-act" aria-label="Interact">E</button>
     <div class="wd-talk" id="wd-talk" hidden role="dialog" aria-live="polite"></div><div class="wd-panel" id="wd-panel" hidden role="dialog"></div><div class="wd-load" id="wd-load">Lighting the lamps…</div></div>`;
   const root = $("#wd", view), c = $("#wd-c", root), g = c.getContext("2d"), talkEl = $("#wd-talk", root), panelEl = $("#wd-panel", root), promptEl = $("#wd-prompt", root), bannerEl = $("#wd-banner", root);
-  const [saved, cast, den] = await Promise.all([kvGet("world", null), loadCast(), denState().catch(() => ({ level: 1, fur: ["amber", "Amber", "#e0782c"] }))]);
+  const [saved, cast, den, progMap, histRaw] = await Promise.all([kvGet("world", null), loadCast(), denState().catch(() => ({ level: 1, fur: ["amber", "Amber", "#e0782c"] })), allProgress().catch(() => ({})), kvGet("save-history", [])]);
   if (!root.isConnected) return;
-  await loadXmas().catch(() => {}); const winter = !!(isSeason() && xs()?.opts.on), s = { ...fresh(), ...(saved || {}) }, map = buildMap(), tiles = tileSprites(winter), fur = String(den.fur?.[2] || "#e0782c"), tailsN = Math.max(den.level || 1, s.final ? 9 : 1);
+  await loadXmas().catch(() => {}); const winter = !!(isSeason() && xs()?.opts.on), s = { ...fresh(), ...(saved || {}) }, map = buildMap(), tiles = tileSprites(winter), fur = String(den.fur?.[2] || "#e0782c");
+  const tailInfo = tailStatus(lib.items, progMap, s), tailsN = Math.max(tailInfo.tails, s.final ? 9 : 1), ink = inkWeather(lib.items);
+  const marginalia = await loadMarginaliaGhosts(kvGet, lib.items, { x: s.x, y: s.y });
+  const saveHistory = Array.isArray(histRaw) ? histRaw : [];
+  if (!saveHistory.some((h) => h.date === today())) { saveHistory.push({ date: today(), fur, hat: s.hat || "", label: saveHistory.length ? today() : "1 Year Ago" }); if (saveHistory.length > 12) saveHistory.shift(); kvSet("save-history", saveHistory); }
+  const isHalloween = new Date().getMonth() === 9 && new Date().getDate() === 31;
+  const hauntedGhost = isHalloween ? { ...(saveHistory[0] || { fur: "#c8b4ff", label: "1 Year Ago" }), x: s.x + 110, y: s.y - 40 } : null;
+  const taxPos = { x: s.x - 95, y: s.y + 45 }; let taxRemarkT = 0;
   if (winter) applyVillage(map);
   const delves = DELVE_SITES.map((d) => ({ ...d, x: REGIONS[d.region][1] - 7, y: REGIONS[d.region][2] + 1 })); for (const d of delves) for (let y = d.y - 2; y <= d.y + 2; y++) for (let x = d.x - 2; x <= d.x + 2; x++) { const i = y * W + x; if (map.g[i] === TILE.water || map.g[i] === TILE.lava) map.g[i] = TILE.plaza; else if (map.solid[i]) map.g[i] = TILE.plaza; map.solid[i] = 0; map.reach[i] = 1; }
   const trials = TRIALS.map((t) => ({ ...t, x: REGIONS[t.region][1], y: REGIONS[t.region][2] + 3 })); for (const t of trials) for (let y = t.y - 1; y <= t.y + 2; y++) for (let x = t.x - 1; x <= t.x + 2; x++) { const i = y * W + x; if (map.solid[i] || map.g[i] === TILE.water) map.g[i] = TILE.plaza; map.solid[i] = 0; map.reach[i] = 1; }
@@ -206,6 +215,14 @@ export async function render(view, _n, params = []) {
       return say(p, l.wait, storyBtns(p));
     }
     if (id === "kitsu" && s.mail < 0 && s.lit.village) return say(p, "Since you're walking anyway: eight letters, eight doors, fifteen mon apiece. Want the round?", [["Take the satchel", () => { s.mail = 0; save(); ping("choice"); say(p, `First one's for ${nameOf(MAIL[0][0])}.`); }], ...storyBtns(p)]);
+    const rum = activeRumour(s);
+    if (rum) {
+      return say(p, `Word around town: someone ${rum.stages[rum.stage]}`, [
+        ["Set the record straight", () => { rum.confronted = true; tale?.addRenown?.(10); save(); ping("done"); say(p, "Fair enough! I'll tell folks what really happened. (+10 Renown)"); }],
+        ["Let the legend grow", () => { rum.stage = Math.min(rum.stages.length - 1, rum.stage + 1); rum.legend = true; s.luck = (s.luck || 0) + 1; save(); hud(); ping("choice"); say(p, "Haha, a better story anyway! (+1 Lucky Ripple)"); }],
+        ...storyBtns(p),
+      ]);
+    }
     const lines = p.n[7], text = lines[p.line++ % lines.length];
     say(p, text, storyBtns(p));
   }
@@ -379,9 +396,17 @@ export async function render(view, _n, params = []) {
     { const md = meadowAt(); if (Math.hypot((md[0] + .5) * T - s.x, (md[1] + .5) * T - s.y) < 50) return { label: "Visit the migrating meadow", go: () => ozcity.meadowPage(true) }; }
     for (const p of gates) if (Math.hypot(p.cx * T - s.x, (p.cy + .6) * T - s.y) < 62) return { label: p.label, go: () => askGate(p) };
     if (winter) { for (const p of SPOTS) { const [a, b] = spotDoor(p); if (Math.hypot(a - s.x, b - s.y) < 48) return { label: p.label, go: () => eventPanel(p.tab) }; } if (Math.hypot(BR.x - s.x, BR.y - s.y) < 50) return { label: "Talk to Bracken", go: bracken }; for (const q of deer) if (!s.win.deer[q.id] && Math.hypot(q.x - s.x, q.y - s.y) < 48) return { label: `Rescue ${q.name}`, go: () => findDeer(q) }; if (Math.hypot(TREE.x - s.x, TREE.y + 20 - s.y) < 54) return { label: "Decorate the tree", go: () => eventPanel("tree") }; }
+    for (const m of marginalia) if (Math.hypot(m.x - s.x, m.y - s.y) < 44) return { label: `Listen to ${m.kind} Spirit`, go: () => say(null, `“${m.text}” — marginalia from ${m.book}.`) };
+    const due = taxDue(s);
+    if (due > 0 && s.taxSettledDay !== today() && Math.hypot(taxPos.x - s.x, taxPos.y - s.y) < 52) {
+      const doneUps = s.taxUpgrades || [];
+      const nextUp = TAX_UPGRADES.find((u) => !doneUps.includes(u.id)) || TAX_UPGRADES[0];
+      return { label: `Pay Tanuki Tax Spirit (${due} mon)`, go: () => say(null, `Tanuki Collector: “Quite a heavy purse, fox! Pay ${due} mon to fund ${nextUp.name}.”`, [[`Pay ${due} mon`, () => { if (s.mon < due) return; s.mon -= due; s.taxSettledDay = today(); s.taxUpgrades = [...new Set([...doneUps, nextUp.id])]; tale?.addRenown?.(50); fireworks = 5; save(); hud(); ping("done"); toast(`Paid ${due} mon! Town upgraded: ${nextUp.name} (+50 Renown)!`); }], ["Dodge him", () => { addRumour(s, "tax_dodge"); save(); closeTalk(); toast("Tanuki Collector narrows his eyes and keeps following you..."); }]]) };
+    }
+    if (hauntedGhost && Math.hypot(hauntedGhost.x - s.x, hauntedGhost.y - s.y) < 52) return { label: "Challenge Haunted Past-Self Ghost", go: () => derby.hauntedChallenge(0) };
     let best = null, d = 58; for (const p of people) { const q = Math.hypot(p.x - s.x, p.y - s.y); if (q < d) { d = q; best = { label: `Talk to ${p.n[2]}`, go: () => talk(p) }; } } if (best) return best;
     const wt = wanderers?.target(); if (wt) return wt;
-    for (const b of BUILDINGS) { const [x, y] = door(b); if (Math.hypot((x + .5) * T - s.x, (y + .5) * T - s.y) < 44) {       const id = b[0]; if (id === "home") return { label: "Enter your house", go: () => house() }; if (id === "shop") return { label: "Enter Foxfire Goods", go: () => shop() }; if (id === "shelf") return { label: "Enter The Great Shelf", go: () => { shelf(); plusW?.shelfExtra(); } }; if (id === "shrine") return { label: "Approach the shrine", go: finale };
+    for (const b of BUILDINGS) { const [x, y] = door(b); if (Math.hypot((x + .5) * T - s.x, (y + .5) * T - s.y) < 44) {       const id = b[0]; if (id === "home") return { label: "Enter your house", go: () => house() }; if (id === "shop") return { label: "Enter Foxfire Goods", go: () => shop() }; if (id === "shelf") return { label: "Enter The Great Shelf / Bookworm Tunnels", go: () => { say(null, "The Great Shelf hums with unread chapters.", [["Browse Great Shelf", () => { shelf(); plusW?.shelfExtra(); }], ["Enter Bookworm Tunnels", () => bookworm.open()]]); } }; if (id === "shrine") return { label: "Approach the shrine", go: finale };
       if (id === "melodybank") return { label: "Enter The Melody Bank", go: () => ozcity.bank() };
       if (id === "colorsmith") return { label: "Enter Master Indigo's", go: () => ozcity.colorsmith() };
       if (id === "courthouse") return { label: "Enter the Courthouse of Oz", go: () => ozcity.court() };
@@ -434,7 +459,8 @@ export async function render(view, _n, params = []) {
   tarot = createTarot({ s, panel, toast, ping, save, hud, addRenown: (n) => tale.addRenown(n) });
   museumW = createMuseum({ s, panel, toast, ping, save, hud, extras, giveHat: (h) => { if (!s.hats.includes(h)) s.hats.push(h); s.hat = h; save(); }, giveFurn: (f) => { s.furn[f] = (s.furn[f] || 0) + 1; save(); }, addRenown: (n) => tale.addRenown(n) });
   petArena = createPetArena({ s, panel, toast, ping, save, hud, activePet, addRenown: (n) => tale.addRenown(n) });
-  stargaze = createStargaze({ s, panel, toast, ping, save, hud, addRenown: (n) => tale.addRenown(n) });
+  stargaze = createStargaze({ s, panel, toast, ping, save, hud, kvGet, kvSet, addRenown: (n) => tale.addRenown(n) });
+  const bookworm = createBookworm({ s, panel, toast, ping, save, hud, addRenown: (n) => tale.addRenown(n) });
   postOffice = createPostOffice({ s, people, REGIONS, panel, toast, ping, save, hud, extras, giveHat: (h) => { if (!s.hats.includes(h)) s.hats.push(h); s.hat = h; save(); }, addRenown: (n) => tale.addRenown(n) });
   tidepool = createTidepool({ s, panel, toast, ping, save, hud, extras, addRenown: (n) => tale.addRenown(n) });
   photoClub = createPhotoClub({ s, REGIONS, panel, toast, ping, save, hud, regionNow: () => regionAt(Math.floor(s.x / T), Math.floor(s.y / T)), darkness, addRenown: (n) => tale.addRenown(n) });
@@ -507,6 +533,15 @@ export async function render(view, _n, params = []) {
     if (now > questT) { questT = now + 700; quests.tick(); } if (now > farmT) { farmT = now + 1000; farm.tick(); tale?.tick(); }
     extras.update(dt, now, moving); updateResidents(people, dt, s, blocked, T, busy); wanderers.update(dt, busy); wplay?.update(dt); if (!busy()) { derby.update(dt, moving, keys.has("Shift")); siege.update(dt); sea.update(dt); events?.update(dt, !derby.active && !siege.active && !sea.active && !travel?.active); life?.update(dt); travel?.update(dt, moving); }
     if (petImg) { const d = Math.hypot(s.x - petX, s.y - petY); if (d > 40) { petX += (s.x - petX) / d * Math.min(d - 40, 240 * dt); petY += (s.y - petY) / d * Math.min(d - 40, 240 * dt); } }
+    if (taxDue(s) > 0 && s.taxSettledDay !== today()) {
+      const td = Math.hypot(s.x - taxPos.x, s.y - taxPos.y);
+      if (td > 68) { taxPos.x += (s.x - taxPos.x) / td * Math.min(td - 68, 170 * dt); taxPos.y += (s.y - taxPos.y) / td * Math.min(td - 68, 170 * dt); }
+      if ((taxRemarkT += dt) > 18 && !busy()) {
+        taxRemarkT = 0;
+        const remarks = ["Tanuki Collector: “Nice coin purse. Shame if someone audited it.”", "Tanuki Collector: “Running won't lower your tax bracket, fox.”", "Tanuki Collector: “The town lanterns aren't going to fund themselves!”"];
+        toast(remarks[Math.floor(Math.random() * remarks.length)]);
+      }
+    }
     const reg = regionAt(Math.floor(s.x / T), Math.floor(s.y / T)), rk = regKey(Math.floor(s.x / T), Math.floor(s.y / T)); if (rk !== region) { region = rk; if (!s.visited[rk]) { s.visited[rk] = 1; save(); } bannerEl.textContent = REGS[rk]?.[0] || rk; bannerEl.hidden = false; bannerT = now + 2600; } if (bannerT && now > bannerT) { bannerEl.hidden = true; bannerT = 0; }
     if (!busy()) { const nt = findTarget(); if (nt?.label !== target?.label) { promptEl.hidden = !nt; if (nt) promptEl.innerHTML = `<kbd>E</kbd> ${esc(nt.label)}`; } target = nt; } else { promptEl.hidden = true; target = null; }
     for (const p of sparks) { p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 110 * dt; p.life -= dt * 1.1; } sparks = sparks.filter((p) => p.life > 0);
@@ -549,6 +584,13 @@ export async function render(view, _n, params = []) {
     for (const d of delves) { const px = (d.x + .5) * T, py = (d.y + .5) * T; if (Math.abs(px - s.x) < vw && Math.abs(py - s.y) < vh) things.push([py + 14, () => { g.fillStyle = "#3a3844"; g.beginPath(); g.moveTo(px - 34, py + 16); g.lineTo(px - 28, py - 26); g.lineTo(px - 8, py - 42); g.lineTo(px + 14, py - 38); g.lineTo(px + 30, py - 18); g.lineTo(px + 34, py + 16); g.closePath(); g.fill(); g.strokeStyle = "#17161d"; g.lineWidth = 2.5; g.stroke(); g.fillStyle = "#07070c"; g.beginPath(); g.moveTo(px - 17, py + 16); g.lineTo(px - 17, py - 8); g.quadraticCurveTo(px, py - 30, px + 17, py - 8); g.lineTo(px + 17, py + 16); g.fill(); g.fillStyle = s.realm[d.id]?.beat ? "#7dff8a" : "#ff5a6a"; g.beginPath(); g.arc(px, py - 21, 3.5, 0, 7); g.fill(); g.font = "800 11px system-ui"; g.textAlign = "center"; const w2 = g.measureText(d.name).width + 12; g.fillStyle = "rgba(15,14,24,.9)"; g.fillRect(px - w2 / 2, py - 60, w2, 16); g.fillStyle = "#ffe9b0"; g.fillText(d.name, px, py - 48); }]); }
     for (const q of FAR_QUESTS) { const px = (q.x + .5) * T, py = (q.y + .5) * T; if (Math.abs(px - s.x) < vw && Math.abs(py - s.y) < vh) things.push([py + 16, () => drawLantern(g, px, py, !!s.far.lit[q.id], now)]); }
     if (s.ride && !sea.active && !travel?.active) things.push([s.y + 13.5, () => { const j = moving && !calm() ? Math.sin(now / 45) : 0; g.fillStyle = "#8a4a2c"; g.fillRect(s.x - 19, s.y + 5 + j, 38, 9); g.strokeStyle = "#1b1d33"; g.lineWidth = 2; g.strokeRect(s.x - 19, s.y + 5 + j, 38, 9); g.fillStyle = "#3a2415"; for (const a of [-13, 13]) { g.beginPath(); g.arc(s.x + a, s.y + 16, 5, 0, 7); g.fill(); } }]);
+    for (const m of marginalia) { const mx = m.x + Math.sin(now / 1200 + m.phase) * 14, my = m.y + Math.cos(now / 950 + m.phase) * 10; if (Math.abs(mx - s.x) < vw && Math.abs(my - s.y) < vh) things.push([my + 12, () => { g.save(); g.globalAlpha = .72; g.fillStyle = "#b8e4ff"; g.beginPath(); g.arc(mx, my - 10, 10, 0, 7); g.fill(); g.fillStyle = "#e8f6ff"; g.beginPath(); g.arc(mx, my - 10, 4, 0, 7); g.fill(); g.font = "800 9px system-ui"; g.textAlign = "center"; g.fillStyle = "#d8f2ff"; g.fillText(m.kind, mx, my - 24); g.restore(); }]); }
+    if (taxDue(s) > 0 && s.taxSettledDay !== today() && Math.abs(taxPos.x - s.x) < vw && Math.abs(taxPos.y - s.y) < vh) {
+      things.push([taxPos.y + 13, () => { g.fillStyle = "#7d5536"; g.beginPath(); g.arc(taxPos.x, taxPos.y - 6, 12, 0, 7); g.fill(); g.fillStyle = "#ffd84d"; g.beginPath(); g.arc(taxPos.x, taxPos.y - 16, 8, 0, 7); g.fill(); g.font = "800 9.5px system-ui"; g.textAlign = "center"; g.fillStyle = "#ffe58f"; g.fillText("Tax Tanuki", taxPos.x, taxPos.y - 28); }]);
+    }
+    if (hauntedGhost && Math.abs(hauntedGhost.x - s.x) < vw && Math.abs(hauntedGhost.y - s.y) < vh) {
+      things.push([hauntedGhost.y + 14, () => { g.save(); g.globalAlpha = .58; drawFox(g, hauntedGhost.x, hauntedGhost.y, "down", now / 90, hauntedGhost.fur || "#c8b4ff", 3, hauntedGhost.hat || "", now, false); g.font = "800 9.5px system-ui"; g.textAlign = "center"; g.fillStyle = "#e4d2ff"; g.fillText("Past Self", hauntedGhost.x, hauntedGhost.y - 34); g.restore(); }]);
+    }
     things.push([s.y + (travel?.active ? 120 : 14), () => drawFox(g, s.x, s.y - (travel?.lift() || 0), dir, step, fur, s.final ? 9 : tailsN, s.hat, calm() ? 0 : now, moving)]);
     const trainX = ((now / 1000) % 46) / 46 * (120 * T + 900) - 450; if (!calm() && trainX > camX - 420 && trainX < camX + vw + 40 && 84 * T > camY && 82 * T < camY + vh) things.push([85 * T, () => { for (let i = 0; i < 4; i++) { const x = trainX - i * 104; g.fillStyle = i ? "#2f6b6b" : "#c8283a"; g.fillRect(x, 82 * T + 18, 96, 54); g.fillStyle = "#1b1d33"; g.fillRect(x, 82 * T + 12, 96, 8); g.fillStyle = "#ffd982"; for (let w = 0; w < 3; w++) g.fillRect(x + 10 + w * 28, 82 * T + 28, 18, 16); } }]);
     things.sort((a, b) => a[0] - b[0]); for (const t of things) t[1]();
@@ -556,6 +598,15 @@ export async function render(view, _n, params = []) {
     const dark = darkness();
     if (dark > .01) { const k = zoom / 2, lr = (settings.world?.lanternRadius || 1) * inventory.lightRadius(), lightAt = (x, y, r, a = 1) => { const X = (x - camX) * k, Y = (y - camY) * k, R = r * k, q = og.createRadialGradient(X, Y, R * .1, X, Y, R); q.addColorStop(0, `rgba(0,0,0,${a})`); q.addColorStop(1, "rgba(0,0,0,0)"); og.fillStyle = q; og.fillRect(X - R, Y - R, R * 2, R * 2); }; og.globalCompositeOperation = "source-over"; og.clearRect(0, 0, overlay.width, overlay.height); og.fillStyle = `rgba(12,14,52,${dark})`; og.fillRect(0, 0, overlay.width, overlay.height); og.globalCompositeOperation = "destination-out"; lightAt(s.x, s.y - 6, 150 * lr, .9); for (const a of lamps) if (a.l === FINAL_LANTERN ? s.final : s.lit[a.l.id]) lightAt(a.x, a.y - 18, (s.final ? 320 : 240) * lr); for (const b of BUILDINGS) if (Math.abs(b[1] * T - s.x) < vw && Math.abs(b[2] * T - s.y) < vh) lightAt((b[1] + b[3] / 2) * T, (b[2] + b[4]) * T - 20, (s.final ? 190 : 110) * lr, .7); for (const o of map.orbs) if (!s.orbs[o.id] && Math.abs(o.x * T - s.x) < vw && Math.abs(o.y * T - s.y) < vh) lightAt((o.x + .5) * T, (o.y + .5) * T, 46 * lr, .8); g.imageSmoothingEnabled = true; g.drawImage(overlay, 0, 0, cw, ch); }
     plusW?.fall(g, cw, ch, now);
+    if (ink.kind === "horror") {
+      g.fillStyle = "rgba(24,28,42,.22)"; g.fillRect(0, 0, cw, ch);
+      g.strokeStyle = "#161620"; g.lineWidth = 2;
+      for (let i = 0; i < 4; i++) { const cx = ((now / 14 + i * 240) % (cw + 80)) - 40, cy = 60 + i * 48 + Math.sin(now / 380 + i) * 14; g.beginPath(); g.moveTo(cx - 10, cy + 4); g.quadraticCurveTo(cx - 4, cy - 4, cx, cy); g.quadraticCurveTo(cx + 4, cy - 4, cx + 10, cy + 4); g.stroke(); }
+    } else if (ink.kind === "romance") {
+      const rg = g.createLinearGradient(0, 0, 0, ch); rg.addColorStop(0, "rgba(255,140,175,.24)"); rg.addColorStop(1, "rgba(255,195,160,.08)"); g.fillStyle = rg; g.fillRect(0, 0, cw, ch);
+    } else if (ink.kind === "lanternstorm") {
+      for (let i = 0; i < 14; i++) { const lx = ((i * 193 + now * 0.02) % cw), ly = ch - ((now * 0.03 + i * 97) % (ch + 40)); g.fillStyle = "rgba(255,196,90,.75)"; g.beginPath(); g.roundRect(lx, ly, 10, 14, 3); g.fill(); }
+    }
     for (const w of weather) { if (w.k === "snow") { g.fillStyle = "rgba(255,255,255,.85)"; g.fillRect(w.x, w.y, 3, 3); } else { g.strokeStyle = "rgba(190,220,255,.5)"; g.lineWidth = 1; g.beginPath(); g.moveTo(w.x, w.y); g.lineTo(w.x - 2, w.y + 11); g.stroke(); } }
     if (now - miniT > 180) { miniT = now; drawMini(); }
     raf = requestAnimationFrame(frame);

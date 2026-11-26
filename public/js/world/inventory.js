@@ -2,6 +2,7 @@
 import { esc } from "../util.js";
 import { ITEMS, MEALS, item as findItem } from "./extras.js";
 import { HATS } from "./data.js";
+import { recordLostProperty } from "./living.js";
 
 export const TRINKETS = [
   ["swift_anklet", "Swift Anklet", "+10% walking speed in Kitsune World", { copper: 0, iron: 2, spring: 2, silk: 1 }, { speed: 0.10 }],
@@ -169,6 +170,7 @@ export function createInventory(o) {
         if (!it || !(bag()[it[0]] > 0)) return;
         bag()[it[0]]--;
         s.mon += itemVal(it);
+        recordLostProperty(s, "item", it[1], `Sold at Foxfire Goods — spotted in a resident's basket.`);
         ping("blip"); save(); hud(); open();
       }));
       e.querySelectorAll("[data-sella]").forEach((b) => (b.onclick = () => {
@@ -176,6 +178,7 @@ export function createInventory(o) {
         if (!it || n < 1) return;
         bag()[it[0]] = 0;
         s.mon += itemVal(it) * n;
+        recordLostProperty(s, "item", `${n}× ${it[1]}`, `Sold in bulk — distributed across town by the courier.`);
         ping("choice"); save(); hud(); toast(`Sold ${n}× ${it[1]} for ${itemVal(it) * n} mon.`); open();
       }));
 

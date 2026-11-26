@@ -11,6 +11,43 @@ export function createPostOffice(o) {
   st.postcardDay ||= "";
   st.secretRoomUnlocked ||= false;
   st.secretRoomClaimed ||= false;
+  st.letters ||= [];
+
+  const LETTER_BODIES = [
+    ["Tea & Rain", "The roof over the lantern-shed leaked onto my ledger again. How are the roads holding up on your end?"],
+    ["A Strange Feather", "Found a silver-tipped owl feather by the milestone. Did your fox drop by Hollow Pine last night?"],
+    ["Saltwick Tide", "The morning tide brought in three glass floats and a very stubborn crab. Write back when you're in town!"],
+    ["Night Market Soup", "Ponzu tried adding star-anise to the turnip broth. Let me know if you survive a bowl!"],
+  ];
+
+  function ensureLetters() {
+    const now = Date.now();
+    let changed = false;
+    // Queue a new letter if none pending/unread and fewer than 4 active
+    if (!st.letters.some((l) => !l.replied) && st.letters.length < 12) {
+      const npc = people[(st.done + st.letters.length * 3) % people.length];
+      const tpl = LETTER_BODIES[st.letters.length % LETTER_BODIES.length];
+      st.letters.unshift({
+        id: `let_${now}`,
+        fromId: npc?.id || "kitsu",
+        from: npc?.n?.[2] || "Kitsu",
+        subject: tpl[0],
+        body: tpl[1],
+        sentAt: now,
+        deliverAt: now + 15000, // 15s real-time delivery delay
+        replied: false,
+        reminded: false,
+      });
+      changed = true;
+    }
+    for (const l of st.letters) {
+      if (!l.replied && !l.reminded && now > l.deliverAt + 60000) {
+        l.reminded = true;
+        changed = true;
+      }
+    }
+    if (changed) save();
+  }
 
   const POSTCARDS = [
     { id: "pine-latch", clue: "Heard a soft foxfire click behind the third birch in Hollow Pine." },
@@ -55,6 +92,25 @@ export function createPostOffice(o) {
 
   function open() {
     ensureDay();
+    ensureLetters();
+    const now = Date.now();
+    const letterRows = st.letters.slice(0, 6).map((l, idx) => {
+      const arrived = now >= l.deliverAt;
+      const rem = arrived ? 0 : Math.ceil((l.deliverAt - now) / 1000);
+      return `<div class="se-good">
+        <span>
+          <strong>✉️ ${esc(l.subject)} — from ${esc(l.from)}</strong>
+          <small>${arrived ? `“${esc(l.body)}”` : `In transit by fox courier (${rem}s remaining)...`}</small>
+          ${l.reminded && !l.replied ? `<small style="color:#f59e0b">💬 ${esc(l.from)} noticed you haven't written back yet!</small>` : ""}
+        </span>
+        ${!arrived ? `<span class="pill">In Transit</span>` : l.replied ? `<span class="pill pill-done">Replied ✓</span>` : `<button type="button" class="btn btn-sm btn-accent" data-reply="${idx}">Write Back (+20 mon)</button>`}
+      </div>`;
+    }).join("");
+
+    const lostRows = (s.lostProperty || []).slice(0, 6).map((lp, idx) => `<div class="se-good">
+      <span><strong>🧳 ${esc(lp.name)}</strong><small>${esc(lp.detail)}</small></span>
+      ${lp.claimed ? `<span class="pill pill-done">Checked ✓</span>` : `<button type="button" class="btn btn-sm" data-lost="${idx}">Check In (+15 Renown)</button>`}
+    </div>`).join("");
     const rows = st.contracts.map((c, i) => {
       const visited = !!s.visited?.[c.region];
       return `<div class="se-good">
@@ -88,9 +144,38 @@ export function createPostOffice(o) {
       <p class="muted">Each morning the town radio sends a handwritten mystery postcard from a resident. Collect all ${POSTCARDS.length} to unlock the secret room in Hollow Pine.</p>
       <div class="se-mkt" style="margin-bottom:10px">${pcRows || `<p class="muted">Tune in tomorrow morning for your next radio postcard.</p>`}</div>
       ${st.secretRoomUnlocked ? `<div class="se-good" style="margin-bottom:12px"><span><strong>🌲 Hollow Pine Secret Room</strong><small>The Postcard Attic is open! ${st.secretRoomClaimed ? "Attic archive visited ✓" : "Claim +150 mon & +60 Renown inside."}</small></span><button type="button" class="btn btn-sm btn-accent" id="po-room">${st.secretRoomClaimed ? "Visit Attic" : "Open Secret Room"}</button></div>` : ""}
+      <h4>✉️ Fox Letters (Real-Time Courier)</h4>
+      <div class="se-mkt" style="margin-bottom:12px">${letterRows}</div>
+      <h4>🧳 Lost Property Office (${(s.lostProperty || []).length})</h4>
+      <p class="muted">Items you sell, critters you fuse, or things you discard end up here with a resident.</p>
+      <div class="se-mkt" style="margin-bottom:12px">${lostRows || `<p class="muted">Nothing misplaced yet.</p>`}</div>
       <h4>Send a Gift Parcel (20 mon → +1 ♥)</h4>
       <div class="chips">${giftRows}</div>
     `, (e) => {
+      e.querySelectorAll("[data-reply]").forEach((b) => {
+        b.onclick = () => {
+          const l = st.letters[+b.dataset.reply];
+          if (!l || l.replied || Date.now() < l.deliverAt) return;
+          l.replied = true;
+          s.mon += 20;
+          addRenown?.(15);
+          if (extras?.state?.hearts) extras.state.hearts[l.fromId] = Math.min(5, (extras.state.hearts[l.fromId] || 0) + 1);
+          ping("done");
+          toast(`Wrote back to ${l.from}! +20 mon & +1 Heart.`);
+          save(); hud(); open();
+        };
+      });
+      e.querySelectorAll("[data-lost]").forEach((b) => {
+        b.onclick = () => {
+          const lp = s.lostProperty?.[+b.dataset.lost];
+          if (!lp || lp.claimed) return;
+          lp.claimed = true;
+          addRenown?.(15);
+          ping("choice");
+          toast(`${lp.finder} in ${lp.town} is thrilled you checked in on ${lp.name}! +15 Renown.`);
+          save(); open();
+        };
+      });
       const roomBtn = e.querySelector("#po-room");
       if (roomBtn) {
         roomBtn.onclick = () => {

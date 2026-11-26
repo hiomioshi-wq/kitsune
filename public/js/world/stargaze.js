@@ -11,22 +11,35 @@ const CONSTELLATIONS = [
 ];
 
 export function createStargaze(o) {
-  const { s, panel, toast, ping, save, hud, addRenown } = o;
+  const { s, panel, toast, ping, save, hud, addRenown, kvGet, kvSet } = o;
   const st = (s.stargaze ||= {});
   st.done ||= {};
   st.day ||= "";
+  st.coopMonth ||= "";
 
   let curIdx = 0;
   let step = 0;
 
-  function open(idx = curIdx) {
+  async function open(idx = curIdx) {
     curIdx = (idx + CONSTELLATIONS.length) % CONSTELLATIONS.length;
     const c = CONSTELLATIONS[curIdx];
     const aligned = !!st.done[c.id];
     const count = CONSTELLATIONS.filter((x) => st.done[x.id]).length;
+    const monthKey = new Date().toISOString().slice(0, 7);
+    const isLanternNight = new Date().getDate() === 15;
+    let coop = { month: monthKey, total: 0 };
+    if (kvGet && kvSet) {
+      coop = (await kvGet("lantern-night-coop", coop)) || coop;
+      if (coop.month !== monthKey) coop = { month: monthKey, total: 0 };
+    }
+    const foxLit = coop.total >= 50;
 
     panel(`Starlight Observatory · ${count}/${CONSTELLATIONS.length}`, `
       <p class="muted">Click the numbered stars in order (1 → ${c.pts.length}) to align <strong>${esc(c.name)}</strong>. Earns <strong>+${c.mon} mon</strong>, <strong>+${c.motes} Astral Motes</strong>, and <strong>+25 Renown</strong>!</p>
+      <div class="se-good" style="margin-bottom:10px">
+        <span><strong>🦊 Giant Fox Constellation (Lantern Night Co-op${isLanternNight ? " · TONIGHT!" : ""})</strong><small>Shared Lanterns this month: <b>${coop.total}/50</b> ${foxLit ? "· Giant Fox Lit! ✨" : ""}</small></span>
+        <button type="button" class="btn btn-sm btn-accent" id="sg-coop" ${s.mon < 15 ? "disabled" : ""}>Light Lantern (15)</button>
+      </div>
       <canvas id="sg-cv" width="500" height="270" style="width:100%;max-width:520px;border-radius:12px;border:2px solid #7fd0ff;background:#070b20;cursor:pointer"></canvas>
       <div class="px-row" style="margin-top:10px">
         <button type="button" class="btn" id="sg-pv">◀ Prev</button>
@@ -34,6 +47,24 @@ export function createStargaze(o) {
         <button type="button" class="btn" id="sg-nx">Next ▶</button>
       </div>
     `, (e) => {
+      const coopBtn = e.querySelector("#sg-coop");
+      if (coopBtn) coopBtn.onclick = async () => {
+        if (s.mon < 15 || !kvGet || !kvSet) return;
+        s.mon -= 15;
+        const cur = (await kvGet("lantern-night-coop", { month: monthKey, total: 0 })) || { month: monthKey, total: 0 };
+        if (cur.month !== monthKey) { cur.month = monthKey; cur.total = 0; }
+        cur.total += 1;
+        await kvSet("lantern-night-coop", cur);
+        addRenown?.(20);
+        if (cur.total >= 50 && st.coopMonth !== monthKey) {
+          st.coopMonth = monthKey;
+          s.mon += 100;
+          toast("The Giant Fox Constellation blazes across the sky! +100 mon & +20 Renown!");
+        } else {
+          toast(`Added your lantern to the Giant Fox (${cur.total}/50)! +20 Renown.`);
+        }
+        ping("done"); save(); hud(); open(curIdx);
+      };
       const cv = e.querySelector("#sg-cv");
       const g = cv.getContext("2d");
 
