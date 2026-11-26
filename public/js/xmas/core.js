@@ -2,6 +2,7 @@
 import { kvGet, kvSet, settings, saveSettings } from "../store.js";
 import { ls, toast, today } from "../util.js";
 import { SPECIES, species, RARITY, TREATS, CATALOG, item, ORNAMENTS, DAILY, GOALS, ADVENT, WISH_COST, PITY, WELL_ONLY } from "./data.js";
+import { mythicMultiplier } from "./mythic.js";
 
 export const isSeason = (d = new Date()) => { const m = d.getMonth(), x = d.getDate(); return m === 11 || (m === 10 && x >= 15) || (m === 0 && x <= 6); };
 export const daysToXmas = (d = new Date()) => { const y = d.getMonth() === 0 ? d.getFullYear() - 1 : d.getFullYear(), t = new Date(y, 11, 25), a = new Date(d.getFullYear(), d.getMonth(), d.getDate()); return Math.round((t - a) / 864e5); };
@@ -25,12 +26,21 @@ export const petLevel = (p) => { let l = 1, x = p.xp || 0; while (l < 20 && x >=
 export const petStage = (l) => (l >= 12 ? 3 : l >= 5 ? 2 : 1);
 export const petBonus = () => { const p = activePet(); if (!p) return 0; const sp = species(p.sp), mood = (p.hunger + p.joy) / 200; return Math.round((RARITY[sp[2]][2] + petLevel(p).level / 2) * (mood > .35 ? 1 : .5)); };
 
-export function earn(n, { bonus = true } = {}) { if (!S || !isSeason() || settings.incognito) return 0; const x = bonus ? n * (1 + petBonus() / 100) + (S.frac || 0) : n; const w = Math.floor(x); S.frac = bonus ? x - w : S.frac; S.bells += w; S.earned += w; save(); return w; }
+export function earn(n, { bonus = true } = {}) { if (!S || !isSeason() || settings.incognito) return 0; const x = bonus ? n * (1 + petBonus() / 100) + (S.frac || 0) : n; const w = Math.floor(x); S.frac = bonus ? x - w : S.frac; S.bells += w; S.earned += w; if (w > 0) { S.c.bellrun = (S.c.bellrun || 0) + w; S.tot.bellrun = (S.tot.bellrun || 0) + w; } save(); return w; }
 export function grant(n) { S.bells += n; S.earned += n; }
 export function bump(k, n = 1) { if (!S || !isSeason() || settings.incognito) return; S.c[k] = (S.c[k] || 0) + n; S.tot[k] = (S.tot[k] || 0) + n; save(); }
 export const todaysQuests = () => { const r = hash(S.day), pool = DAILY.slice(2).map((q, i) => [hash(S.day + q[0]) + i, q]).sort((a, b) => a[0] - b[0]).map((x) => x[1]); return [DAILY[r % 2], ...pool.slice(0, 4)].map(([k, label, need, reward]) => ({ k, label, need, reward, have: Math.min(need, Math.floor(S.c[k] || 0)), claimed: !!S.claimed[k] })); };
 export function claimQuest(k) { const q = todaysQuests().find((x) => x.k === k); if (!q || q.claimed || q.have < q.need) return false; S.claimed[k] = 1; grant(q.reward); S.tot.quests = (S.tot.quests || 0) + 1; save(); document.dispatchEvent(new Event("kitsune:done")); return true; }
-const goalHave = (k) => k === "hatched" || k === "hatchedAll" ? Object.keys(S.pets).length : k === "petlv" ? Math.max(0, ...Object.values(S.pets).map((p) => petLevel(p).level)) : k === "tree" ? Object.keys(S.tree).length : k === "advent" || k === "adventAll" ? S.advent : Math.floor(S.tot[k] || 0);
+const GOAL_MAP = { wells100: "well", wells150: "well", crafts75: "crafted", snowball100: "snowball", toys50: "toy", toys75: "toy", fish50: "fish", snowman24: "snowman", quests60: "quests", fbkill200: "fbkill", arcade200: "arcade" };
+const goalHave = (k) => {
+  if (k === "hatched" || k === "hatchedAll") return Object.keys(S.pets).length;
+  if (k === "petlv") return Math.max(0, ...Object.values(S.pets).map((p) => petLevel(p).level));
+  if (k === "allpets18") return Object.values(S.pets).filter((p) => petLevel(p).level >= 5).length;
+  if (k === "tree") return Object.keys(S.tree).length;
+  if (k === "advent" || k === "adventAll") return S.advent;
+  if (k === "pass80" || k === "pass100" || k === "pass120" || k === "pass140") return Math.min(140, Math.floor((S.earned || 0) / 150));
+  return Math.floor(S.tot[GOAL_MAP[k] || k] || 0);
+};
 export const goalList = () => GOALS.map(([k, label, need, reward]) => ({ k, label, need, reward, have: Math.min(need, goalHave(k)), claimed: !!S.goals[k] }));
 export function claimGoal(k) { const g = goalList().find((x) => x.k === k); if (!g || g.claimed || g.have < g.need) return false; S.goals[k] = 1; grant(g.reward); save(); document.dispatchEvent(new Event("kitsune:done")); return true; }
 
@@ -41,8 +51,8 @@ const eggFor = (rar) => { const list = SPECIES.filter((x) => x[2] === rar), mine
 export function addEgg(rar) { const sp = eggFor(rar), id = "e" + Date.now().toString(36) + Math.floor(Math.random() * 1e4); S.eggs.push({ id, sp, rar, have: 0, need: { c: 20, r: 35, e: 60, l: 90 }[rar] }); return id; }
 export function warmEgg(n) { for (const e of S.eggs) e.have = Math.min(e.need, e.have + n); }
 export function hatch(id) { const i = S.eggs.findIndex((e) => e.id === id); if (i < 0 || S.eggs[i].have < S.eggs[i].need) return null; const e = S.eggs[i]; S.eggs.splice(i, 1); if (S.pets[e.sp]) { const r = { c: 60, r: 140, e: 320, l: 700 }[e.rar]; grant(r); S.pets[e.sp].xp += 40; save(); return { dupe: true, sp: e.sp, refund: r }; } S.pets[e.sp] = { sp: e.sp, name: species(e.sp)[1], xp: 0, hunger: 80, joy: 80, at: Date.now(), born: today() }; if (!S.active) S.active = e.sp; save(); return { sp: e.sp }; }
-export function feed(id, t) { const p = S.pets[id], d = TREATS[t]; if (!p || !(S.treats[t] > 0)) return false; S.treats[t]--; p.hunger = Math.min(100, p.hunger + d[2]); p.joy = Math.min(100, p.joy + 4); p.xp += d[3]; p.at = Date.now(); bump("feed"); save(); return true; }
-export function pat(id) { const p = S.pets[id]; if (!p) return false; const now = Date.now(); if (now - (p.patAt || 0) < 1500) return false; p.patAt = now; p.joy = Math.min(100, p.joy + 3); p.xp += 1; bump("pat"); save(); return true; }
+export function feed(id, t) { const p = S.pets[id], d = TREATS[t]; if (!p || !(S.treats[t] > 0)) return false; S.treats[t]--; p.hunger = Math.min(100, p.hunger + d[2]); p.joy = Math.min(100, p.joy + 4); p.xp += Math.round(d[3] * mythicMultiplier("xp_mult")); p.at = Date.now(); bump("feed"); save(); return true; }
+export function pat(id) { const p = S.pets[id]; if (!p) return false; const now = Date.now(); if (now - (p.patAt || 0) < 1500) return false; p.patAt = now; p.joy = Math.min(100, p.joy + 3); p.xp += Math.max(1, Math.round(mythicMultiplier("xp_mult"))); bump("pat"); save(); return true; }
 
 export const owns = (id) => S.owned.includes(id);
 export const worldLive = { fn: null };
@@ -62,7 +72,7 @@ export function equip(id) {
 export const equipped = (id) => { const it = item(id); if (!it) return false; return it[1] === "theme" ? settings.theme === "custom:xmas-" + id : it[1] === "cursor" ? settings.cursor === id : it[1] === "wallpaper" ? settings.wallpaper === id : it[1] === "sound" ? settings.uiSound === id : false; };
 
 export function award(r) { const out = []; if (r.b) { grant(r.b); out.push(`${r.b} Snowbells`); } for (const [t, n] of Object.entries(r.treat || {})) { S.treats[t] = (S.treats[t] || 0) + n; out.push(`${n} × ${TREATS[t][0]}`); } if (r.orn) { S.orn[r.orn] = (S.orn[r.orn] || 0) + 1; out.push(ORNAMENTS.find((o) => o[0] === r.orn)[1]); } if (r.egg) { addEgg(r.egg); out.push(`${RARITY[r.egg][0]} egg`); } if (r.item) { if (giveItem(r.item)) out.push(item(r.item)[2]); else { grant(150); out.push("150 Snowbells (you already own the prize)"); } } save(); return out.join(" + "); }
-export const adventReady = () => S.advent < 25 && S.adventDay !== today();
+export const adventReady = () => isSeason() && S.advent < 25 && S.adventDay !== today();
 export function openDoor() { if (!adventReady()) return null; const r = ADVENT[S.advent]; S.advent++; S.adventDay = today(); return award(r); }
 
 function rollWish() {
@@ -74,12 +84,12 @@ function rollWish() {
   return { tier: "Common", text: award({ b: 8 + Math.floor(Math.random() * 18) }) };
 }
 export function wish(n = 1, text = "") { const cost = n === 10 ? WISH_COST * 9 : WISH_COST * n; if (S.bells < cost) return null; S.bells -= cost; const out = []; for (let i = 0; i < n; i++) out.push(rollWish()); S.wishes += n; S.c.well = (S.c.well || 0) + n; S.tot.well = (S.tot.well || 0) + n; const t = String(text).trim().slice(0, 120); if (t) S.jar = [{ t, at: today() }, ...S.jar].slice(0, 40); save(); return out; }
-export const hangOrn = (slot, o) => { if (o && Object.values(S.tree).filter((v) => v === o).length >= (S.orn[o] || 0) && S.tree[slot] !== o) return false; if (o) S.tree[slot] = o; else delete S.tree[slot]; if (o) bump("tree"); else save(); return true; };
+export const hangOrn = (slot, o) => { if (o && Object.values(S.tree).filter((v) => v === o).length >= (S.orn[o] || 0) && S.tree[slot] !== o) return false; if (o) S.tree[slot] = o; else delete S.tree[slot]; if (o) bump("tree"); save(); return true; };
 
 // Reading is the main way to earn. Everything is capped per day so it stays a treat.
 export function startEarning() {
   let lastBell = 0;
-  document.addEventListener("kitsune:stat", (e) => { if (!S) return; roll(); const { pages = 0, secs = 0, listen = 0 } = e.detail || {}, mins = (secs + listen) / 60; const p = activePet(); if (p && (pages || mins)) { p.xp += pages * .5 + mins; } warmEgg(pages + mins); if (pages) bump("pages", pages); if (mins) bump("mins", mins); if (!isSeason()) return save(); const value = Math.min(Math.max(0, 300 - S.readCap), pages * .5 + mins); S.readCap += value; if (value > 0) { const got = earn(value); if (got && Date.now() - lastBell > 45000 && S.c.pages >= 5) { lastBell = Date.now(); document.dispatchEvent(new CustomEvent("xmas:bell", { detail: got })); } } else save(); });
+  document.addEventListener("kitsune:stat", (e) => { if (!S) return; roll(); const { pages = 0, secs = 0, listen = 0 } = e.detail || {}, mins = (secs + listen) / 60; const p = activePet(); if (p && (pages || mins)) { p.xp += (pages * .5 + mins) * mythicMultiplier("xp_mult"); } warmEgg(pages + mins); if (pages) bump("pages", pages); if (mins) bump("mins", mins); if (!isSeason()) return save(); const value = Math.min(Math.max(0, 300 - S.readCap), pages * .5 + mins); S.readCap += value; if (value > 0) { const got = earn(value); if (got && Date.now() - lastBell > 45000 && S.c.pages >= 5) { lastBell = Date.now(); document.dispatchEvent(new CustomEvent("xmas:bell", { detail: got })); } } else save(); });
   document.addEventListener("kitsune:finished", () => { if (!S) return; bump("done"); earn(60); toast("Finished! +60 Snowbells"); });
   document.addEventListener("kitsune:world", (e) => { if (!S) return; const { k, n = 1 } = e.detail || {}; if (k === "fish") { bump("fish", n); earn(3); } if (k === "present") { bump("present", n); earn(25, { bonus: false }); } });
   document.addEventListener("kitsune:done", () => { if (!S || S.doneCap >= 5) return; S.doneCap++; earn(3); });

@@ -1,5 +1,5 @@
 // Mythic Pets & App-Wide Buffs System: 16 Mythic companions, 3-slot Blessing Altar, Star Ascension, and Summoning.
-import { $, $$, esc, toast } from "../util.js";
+import { $, $$, esc, toast, today } from "../util.js";
 import { setCrumbs } from "../main.js";
 
 const STORE_KEY = "kitsune.mythic.v1";
@@ -231,6 +231,7 @@ export function loadMythicState() {
       equipped: Array.isArray(raw.equipped) ? raw.equipped.slice(0, 3) : ["astral_kitsune"],
       shards: typeof raw.shards === "number" ? raw.shards : 120,
       summons: typeof raw.summons === "number" ? raw.summons : 0,
+      claimDay: typeof raw.claimDay === "string" ? raw.claimDay : "",
     };
   } catch {
     return {
@@ -238,6 +239,7 @@ export function loadMythicState() {
       equipped: ["astral_kitsune"],
       shards: 120,
       summons: 0,
+      claimDay: "",
     };
   }
 }
@@ -329,7 +331,7 @@ export async function render(view) {
             <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
               <span class="pill" style="border-color:${MYTHIC_RARITY.color}">Starlight Shards: <strong id="my-shards">${st.shards}</strong></span>
               <button type="button" class="btn btn-accent" id="my-summon" ${st.shards < 40 ? "disabled" : ""}>Summon Mythic (40 Shards)</button>
-              <button type="button" class="btn" id="my-claim">+25 Daily Shards</button>
+              <button type="button" class="btn" id="my-claim" ${st.claimDay === today() ? "disabled" : ""}>${st.claimDay === today() ? "Claimed Today ✓" : "+25 Daily Shards"}</button>
             </div>
           </div>
 
@@ -413,6 +415,8 @@ export async function render(view) {
     });
 
     $("#my-claim", view).onclick = () => {
+      if (st.claimDay === today()) return;
+      st.claimDay = today();
       st.shards += 25;
       saveMythicState(st);
       toast("+25 Starlight Shards!");
