@@ -1,5 +1,8 @@
 // Winterfest data: pets, shop stock, quests, goals, advent gifts, well odds and the daily snowfall forecast.
 import { today } from "../util.js";
+import { BIRD_SPECIES } from "./birdspecies.js";
+import { HOUSE_SPECIES } from "./houses/index.js";
+
 export const RARITY = { c: ["Common", "#8aa0b8", 1], r: ["Rare", "#3f8fe0", 3], e: ["Epic", "#9a5be0", 5], l: ["Legendary", "#f2a81d", 8] };
 
 // id, name, rarity, body, belly, accent, ears, tail, personality
@@ -124,6 +127,8 @@ export const SPECIES = [
   ["chinesealligator", "Chinese Alligator", "l", "#3c443c", "#d8d4b0", "#e0b848", "croc", "scute", "Rare Yangtze reed-marsh dragon clad in full belly-to-back osteoderm armor."],
   ["tuatara", "Tuatara", "l", "#586852", "#ced8be", "#a8e090", "agamid", "crest", "Last survivor of order Rhynchocephalia — guards an ancient parietal third-eye scale."],
   ["bluepitviper", "Blue Island Pit Viper", "l", "#18c8e8", "#aef6ff", "#e85428", "snake", "perch", "Ultra-rare Komodo-island cyan jewel (Trimeresurus insularis) with ruby eyes and a rust-tipped tail."],
+  ...BIRD_SPECIES,
+  ...HOUSE_SPECIES,
 ];
 export const species = (id) => SPECIES.find((x) => x[0] === id);
 

@@ -168,6 +168,8 @@ export function editItem(item, after = () => {}) {
 
 // Search AniList and attach a series to one or more volumes.
 export function linkToAniList(items, after = () => {}, presetQuery) {
+  items = (items || []).filter(Boolean);
+  if (!items.length) { toast("Select a manga volume to link."); return; }
   const q0 = presetQuery || items[0].series || items[0].title;
   const m = modal({
     title: items.length > 1 ? `Link ${items.length} volumes to a series` : "Link to an AniList series", wide: true,

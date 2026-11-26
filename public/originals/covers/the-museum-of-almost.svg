@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="600" height="900">
+  <defs>
+    <radialGradient id="lampA" cx="0.5" cy="0.35" r="0.65">
+      <stop offset="0" stop-color="#ffe6a6" stop-opacity=".55"/><stop offset="1" stop-color="#ffe6a6" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="wallA" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#241a2e"/><stop offset="1" stop-color="#120c18"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="900" fill="url(#wallA)"/>
+  <rect y="600" width="600" height="40" fill="#3a2a3a"/>
+  <rect y="640" width="600" height="260" fill="#1a1222"/>
+  <g opacity=".5" fill="#3b2c46">
+    <rect x="50" y="120" width="110" height="150" rx="4"/><rect x="440" y="120" width="110" height="150" rx="4"/>
+    <rect x="70" y="140" width="70" height="110" fill="#2a2034"/><rect x="460" y="140" width="70" height="110" fill="#2a2034"/>
+  </g>
+  <g opacity=".45">
+    <rect x="60" y="160" width="40" height="60" fill="#6a4a5a"/><rect x="470" y="170" width="44" height="50" fill="#4a5a6a"/>
+  </g>
+  <ellipse cx="300" cy="420" rx="240" ry="220" fill="url(#lampA)"/>
+  <g transform="translate(300 560)">
+    <path d="M -150 0 L -120 -250 L 120 -250 L 150 0 Z" fill="#2c2135" stroke="#4a3650" stroke-width="4"/>
+    <rect x="-108" y="-224" width="216" height="190" fill="#0f0a14" stroke="#5a4462" stroke-width="3"/>
+    <rect x="-92" y="-206" width="184" height="154" fill="#1a1220"/>
+    <path d="M -92 -52 L 92 -52" stroke="#5a4462" stroke-width="3"/>
+    <circle cx="300" cy="0" r="1" fill="none"/>
+    <g transform="translate(0 -128)">
+      <ellipse cx="0" cy="34" rx="70" ry="12" fill="#ffe6a6" opacity=".16"/>
+      <path d="M -34 -52 Q -40 -24 -34 6 Q -30 32 0 32 Q 30 32 34 6 Q 40 -24 34 -52 Z" fill="#3f7fb8" stroke="#1b1d33" stroke-width="4"/>
+      <path d="M -34 -44 Q 0 -52 34 -44" fill="none" stroke="#6fb0e0" stroke-width="3" opacity=".7"/>
+      <path d="M 30 -52 Q 44 -50 44 -36 Q 44 -24 32 -24" fill="none" stroke="#1b1d33" stroke-width="5"/>
+      <path d="M -12 -52 L 2 -60 L 8 -50" fill="#1a1220" stroke="#1b1d33" stroke-width="3"/>
+      <path d="M -20 32 L -20 44 L 22 44 L 22 32" fill="#2d5e8a"/>
+    </g>
+  </g>
+  <g fill="#ffe6a6">
+    <circle cx="218" cy="330" r="2.2" opacity=".6"/><circle cx="392" cy="300" r="1.6" opacity=".5"/><circle cx="350" cy="380" r="1.2" opacity=".4"/>
+  </g>
+  <rect x="30" y="640" width="540" height="200" fill="#f6efdc" stroke="#120c18" stroke-width="6"/>
+  <text x="50" y="700" font-size="44" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="900" fill="#1e1428"><tspan x="50" dy="0">The Museum of</tspan><tspan x="50" dy="46">Almost</tspan></text>
+  <text x="50" y="815" font-size="22" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" fill="#8a3d6a" font-weight="700">A KITSUNE ORIGINAL · STORY</text>
+</svg>

@@ -20,6 +20,9 @@ import { loadXmas, xs, isSeason, activePet, petLevel, petStage, earn, award, bum
 import { mythicMultiplier } from "../xmas/mythic.js";
 import * as XCore from "../xmas/core.js";
 import { GATES, applyGates, drawGate } from "../world/gates.js";
+import { HOUSES } from "../xmas/houses/index.js";
+import { BIRD_IDS } from "../xmas/birddata.js";
+import { REPTILE_IDS } from "../xmas/reptiledata.js";
 import { buildOverworldRealmActors } from "../world/worldrealms.js";
 import { createExtras } from "../world/extras.js";
 import { FAR_QUESTS, FAR_MINI, FAR_ITEMS, FAR_REGIONS, drawFarDeco } from "../world/far.js";
@@ -76,6 +79,12 @@ import { createCartography } from "../world/cartography.js";
 import { createAquarium } from "../world/aquarium.js";
 import { createLanternPress } from "../world/lanternpress.js";
 import { createWindvane } from "../world/windvane.js";
+import { createApiary } from "../world/apiary.js";
+import { createAviary } from "../world/aviary.js";
+import { createLoom } from "../world/loom.js";
+import { createPerfumery } from "../world/perfumery.js";
+import { createHedgeMaze } from "../world/hedgemaze.js";
+import { createBindery } from "../world/bindery.js";
 import { createWanderers, updateResidents } from "../world/wanderers.js";
 import { createEvents } from "../world/events.js";
 import { createPlusWorld } from "../plus/worldhook.js";
@@ -146,8 +155,9 @@ export async function render(view, _n, params = []) {
     return { title: it.title, color, x: (tx + 0.5) * T, y: (ty + 0.5) * T };
   });
   const leafPiles = realSeason === "autumn" ? [0, 1, 2, 3].map((i) => ({ id: i, x: (45 + i * 3) * T, y: (46 + (i % 2) * 2) * T, taken: false })) : [];
-  const civicSpot = { x: 47 * T, y: 42 * T }, monitorSpot = { x: 53 * T, y: 46 * T };
-  async function enterReptile() {
+  const civicSpot = { x: 47 * T, y: 42 * T }, monitorSpot = { x: 53 * T, y: 46 * T }, petRowSpot = { x: 69.5 * T, y: 47 * T };
+  // Walkable pet houses share one doorway: pause the map, load the interior on demand, hand control back on leave.
+  async function enterPetHouse(slug, name, load, back) {
     if (realm) return;
     closeTalk();
     if (!panelEl.hidden) closePanel();
@@ -155,9 +165,9 @@ export async function render(view, _n, params = []) {
     let closed = false, innerOff = null;
     realm = { close() { closed = true; innerOff?.(); } };
     try {
-      const { enterReptileHouse } = await import("../world/reptilehouse.js");
+      const enter = await load();
       if (closed || !alive) return;
-      innerOff = enterReptileHouse({
+      innerOff = enter({
         root,
         s,
         drawFox,
@@ -169,15 +179,38 @@ export async function render(view, _n, params = []) {
         hud: () => { hud(); refreshPet(); },
         onLeave: () => {
           realm = null;
-          if (location.hash === "#world/reptilehouse") history.replaceState(null, "", "#world");
+          if (location.hash === `#world/${slug}`) history.replaceState(null, "", "#world");
           root.focus({ preventScroll: true });
+          if (typeof back === "function") back();
         },
       });
     } catch (err) {
       console.error(err);
       realm = null;
-      toast("Couldn't open the Reptile House — try reloading.");
+      toast(`Couldn't open the ${name} — try reloading.`);
     }
+  }
+  const enterReptile = (back) => enterPetHouse("reptilehouse", "Reptile House", async () => (await import("../world/reptilehouse.js")).enterReptileHouse, back);
+  const enterBirds = (back) => enterPetHouse("birdhouse", "Bird House", async () => (await import("../world/birdhouse.js")).enterBirdHouse, back);
+  // Every door on Pet Row, in street order. Leaving a shop reached from the row puts you back outside its door.
+  const petDoors = {
+    birdhouse: enterBirds,
+    reptilehouse: enterReptile,
+    ...Object.fromEntries(HOUSES.map((h) => [h.slug, (back) => enterPetHouse(h.slug, h.name, async () => { const M = await import("../world/pethouse.js"); return (o) => M.enterPetHouse(h, o); }, back)])),
+  };
+  const rowShops = () => [
+    { slug: "birdhouse", name: "Bird House", icon: "🐦", roof: "#7a2f3a", front: "#e8c890", accent: "#ffd27a", ids: BIRD_IDS, show: ["cardinal", "cockatoo"] },
+    { slug: "reptilehouse", name: "Reptile House", icon: "🦎", roof: "#2b6e52", front: "#c8e0b0", accent: "#b8f23a", ids: REPTILE_IDS, show: ["leopardgecko", "pantherchameleon"] },
+    ...HOUSES.map((h) => ({ slug: h.slug, name: h.name, icon: h.icon, roof: h.theme.roof, front: h.theme.front, accent: h.theme.accent, ids: h.ids, show: [h.ambassadors[0], h.ambassadors[1]] })),
+  ];
+  function enterPetRow(from = "") {
+    return enterPetHouse("petrow", "Pet Row", async () => {
+      const { enterPetRow: open } = await import("../world/petrow.js");
+      return (o) => {
+        const leaveRow = open({ ...o, from, shops: rowShops(), onVisit: (slug) => { leaveRow(); petDoors[slug](() => { if (alive) enterPetRow(slug); }); } });
+        return leaveRow;
+      };
+    });
   }
   if (winter) applyVillage(map);
   const delves = DELVE_SITES.map((d) => ({ ...d, x: REGIONS[d.region][1] - 7, y: REGIONS[d.region][2] + 1 })); for (const d of delves) for (let y = d.y - 2; y <= d.y + 2; y++) for (let x = d.x - 2; x <= d.x + 2; x++) { const i = y * W + x; if (map.g[i] === TILE.water || map.g[i] === TILE.lava) map.g[i] = TILE.plaza; else if (map.solid[i]) map.g[i] = TILE.plaza; map.solid[i] = 0; map.reach[i] = 1; }
@@ -188,6 +221,7 @@ export async function render(view, _n, params = []) {
   const STAIR = { x: 164, y: 164 }; for (let y = STAIR.y - 2; y <= STAIR.y + 2; y++) for (let x = STAIR.x - 2; x <= STAIR.x + 2; x++) { const i = y * W + x; if (map.solid[i] || map.g[i] === TILE.water) map.g[i] = TILE.ruin; map.solid[i] = 0; map.reach[i] = 1; }
   for (let y = PLOT.y0 - 2; y <= PLOT.y0 + PLOT.h + 1; y++) for (let x = PLOT.x0 - 1; x <= PLOT.x0 + PLOT.w; x++) { const i = y * W + x; if (map.g[i] !== TILE.water && !BUILDINGS.some((b) => x >= b[1] && x < b[1] + b[3] && y >= b[2] && y < b[2] + b[4])) { if (map.solid[i]) map.g[i] = TILE.grass; map.solid[i] = 0; map.reach[i] = 1; } }
   const FOXROAD = { x: 49.5, y: 43 }; for (let y = 41; y <= 45; y++) for (let x = 47; x <= 51; x++) { const i = y * W + x; if (map.g[i] !== TILE.water && !BUILDINGS.some((b) => x >= b[1] && x < b[1] + b[3] && y >= b[2] && y < b[2] + b[4])) { if (map.solid[i]) map.g[i] = TILE.grass; map.solid[i] = 0; map.reach[i] = 1; } }
+  for (let y = 45; y <= 47; y++) for (let x = 68; x <= 71; x++) { const i = y * W + x; if (map.g[i] !== TILE.water) { if (map.solid[i]) map.g[i] = TILE.plaza; map.solid[i] = 0; map.reach[i] = 1; } }
   const SKYPORT = { x: 88, y: 69 }; for (let y = SKYPORT.y - 1; y <= SKYPORT.y + 1; y++) for (let x = SKYPORT.x - 1; x <= SKYPORT.x + 1; x++) { const i = y * W + x; if (map.g[i] !== TILE.water) { if (map.solid[i]) map.g[i] = TILE.plaza; map.solid[i] = 0; map.reach[i] = 1; } }
   const DIVEBELL = { x: 22, y: 76 }; for (let y = DIVEBELL.y - 1; y <= DIVEBELL.y + 1; y++) for (let x = DIVEBELL.x - 1; x <= DIVEBELL.x + 1; x++) { const i = y * W + x; if (map.g[i] !== TILE.water) { if (map.solid[i]) map.g[i] = TILE.sand; map.solid[i] = 0; map.reach[i] = 1; } }
   const GUILDHALL = { x: 64, y: 42 }; for (let y = GUILDHALL.y - 1; y <= GUILDHALL.y + 1; y++) for (let x = GUILDHALL.x - 1; x <= GUILDHALL.x + 1; x++) { const i = y * W + x; if (map.g[i] !== TILE.water) { if (map.solid[i]) map.g[i] = TILE.plaza; map.solid[i] = 0; map.reach[i] = 1; } }
@@ -451,6 +485,7 @@ export async function render(view, _n, params = []) {
     }
     if (Math.hypot(civicSpot.x - s.x, civicSpot.y - s.y) < 46) return { label: "Foxhold Civic Center (Renovate / Statue / Festival)", go: () => civic.open() };
     if (Math.hypot(monitorSpot.x - s.x, monitorSpot.y - s.y) < 46) return { label: "Enter Sunscale Reptile House (63 Reptiles)", go: enterReptile };
+    if (Math.hypot(petRowSpot.x - s.x, petRowSpot.y - s.y) < 46) return { label: `Stroll down Pet Row (${HOUSES.length + 2} pet shops)`, go: () => enterPetRow() };
     for (const lp of leafPiles) if (!lp.taken && Math.hypot(lp.x - s.x, lp.y - s.y) < 40) return { label: "Rustle Autumn Leaf Pile", go: () => { lp.taken = true; s.mon += 12; save(); hud(); ping("done"); toast("Found +12 mon tucked beneath the autumn leaves!"); } };
     for (const gt of groveTrees) if (Math.hypot(gt.x - s.x, gt.y - s.y) < 40) return { label: `Reading Grove: ${gt.title}`, go: () => say(null, `This Reading Grove tree bloomed when you finished “${gt.title}”.${tailInfo.finishedSeries ? ` (${tailInfo.finishedSeries} series vignette${tailInfo.finishedSeries > 1 ? "s" : ""} unlocked!)` : ""}`) };
     if (hauntedGhost && Math.hypot(hauntedGhost.x - s.x, hauntedGhost.y - s.y) < 52) return { label: "Challenge Haunted Past-Self Ghost", go: () => derby.hauntedChallenge(0) };
@@ -497,9 +532,10 @@ export async function render(view, _n, params = []) {
   const siege = createSiege({ s, map, W, H, T, REGIONS, root, panel, closePanel, toast, ping, save, hud, burst, calm, esc, busyDerby: () => derby.active, giveHat: (h) => { if (!s.hats.includes(h)) s.hats.push(h); s.hat = h; save(); } });
   const sea = createSea({ s, map, W, H, T, TILE, REGIONS, root, panel, closePanel, toast, ping, save, hud, burst, calm, esc, giveHat: (h) => { if (!s.hats.includes(h)) s.hats.push(h); s.hat = h; save(); } });
   let arena = null, codex = null, roulette = null, tavern = null, badges = null, keno = null, auction = null, jukebox = null, exchange = null, quiz = null, tarot = null, museumW = null, petArena = null, stargaze = null, postOffice = null, tidepool = null, photoClub = null, smithy = null, bakery = null, weatherBell = null, raffle = null, lounge = null, wishing = null, memory = null, express = null, arcade = null, teahouse = null, bulletinW = null, botanical = null, pyro = null, luckySpin = null, clocktower = null, beaconW = null, origami = null, observatory = null, bellFoundry = null, cartography = null, aquarium = null, lanternPress = null, windvane = null;
+  let apiary = null, aviary = null, loom = null, perfumery = null, hedgeMaze = null, bindery = null;
   const openActivity = (k) => {
     closePanel();
-    const mapAct = { nexus: enterNexus, cards: enterCards, derby: () => derby.board(), siege: () => siege.board(), sea: () => sea.log(), bay: enterBay, sky: enterSky, deep: enterDeep, guild: () => guild.board(), mine: enterMine, carnival: enterCarnival, desert: enterDesert, darwin: darwinBoard, arena: () => arena?.board(), codex: () => codex?.open(), roulette: () => roulette?.open(), tavern: () => tavern?.open(), keno: () => keno?.open(), auction: () => auction?.open(), jukebox: () => jukebox?.open(), exchange: () => exchange?.open(), quiz: () => quiz?.open(), tarot: () => tarot?.open(), inventory: () => inventory?.open(), museum: () => museumW?.open(), petarena: () => petArena?.open(), stargaze: () => stargaze?.open(), postoffice: () => postOffice?.open(), tidepool: () => tidepool?.open(), photoclub: () => photoClub?.open(), smithy: () => smithy?.open(), bakery: () => bakery?.open(), weatherbell: () => weatherBell?.open(), raffle: () => raffle?.open(), lounge: () => lounge?.open(), wishing: () => wishing?.open(), memory: () => memory?.open(), express: () => express?.open(), arcade: () => arcade?.open(), teahouse: () => teahouse?.open(), bulletin_w: () => bulletinW?.open(), botanical: () => botanical?.open(), fireworks: () => pyro?.open(), luckyspin: () => luckySpin?.open(), clocktower: () => clocktower?.open(), beacon_w: () => beaconW?.open(), origami: () => origami?.open(), observatory: () => observatory?.open(), bellfoundry: () => bellFoundry?.open(), cartography: () => cartography?.open(), aquarium: () => aquarium?.open(), lanternpress: () => lanternPress?.open(), windvane: () => windvane?.open(), badges: () => badges?.open(), events: () => events.log(), life: () => life.almanac(), square: () => square.hub(), agency: () => agency.board(), apo: () => apothecary.board(), plus: () => { location.hash = "plus"; } };
+    const mapAct = { nexus: enterNexus, cards: enterCards, derby: () => derby.board(), siege: () => siege.board(), sea: () => sea.log(), bay: enterBay, sky: enterSky, deep: enterDeep, guild: () => guild.board(), mine: enterMine, carnival: enterCarnival, desert: enterDesert, darwin: darwinBoard, arena: () => arena?.board(), codex: () => codex?.open(), roulette: () => roulette?.open(), tavern: () => tavern?.open(), keno: () => keno?.open(), auction: () => auction?.open(), jukebox: () => jukebox?.open(), exchange: () => exchange?.open(), quiz: () => quiz?.open(), tarot: () => tarot?.open(), inventory: () => inventory?.open(), museum: () => museumW?.open(), petarena: () => petArena?.open(), stargaze: () => stargaze?.open(), postoffice: () => postOffice?.open(), tidepool: () => tidepool?.open(), photoclub: () => photoClub?.open(), smithy: () => smithy?.open(), bakery: () => bakery?.open(), weatherbell: () => weatherBell?.open(), raffle: () => raffle?.open(), lounge: () => lounge?.open(), wishing: () => wishing?.open(), memory: () => memory?.open(), express: () => express?.open(), arcade: () => arcade?.open(), teahouse: () => teahouse?.open(), bulletin_w: () => bulletinW?.open(), botanical: () => botanical?.open(), fireworks: () => pyro?.open(), luckyspin: () => luckySpin?.open(), clocktower: () => clocktower?.open(), beacon_w: () => beaconW?.open(), origami: () => origami?.open(), observatory: () => observatory?.open(), bellfoundry: () => bellFoundry?.open(), cartography: () => cartography?.open(), aquarium: () => aquarium?.open(), lanternpress: () => lanternPress?.open(), windvane: () => windvane?.open(), apiary: () => apiary?.open(), aviary: () => aviary?.open(), loom: () => loom?.open(), perfumery: () => perfumery?.open(), hedgemaze: () => hedgeMaze?.open(), bindery: () => bindery?.open(), badges: () => badges?.open(), events: () => events.log(), life: () => life.almanac(), square: () => square.hub(), agency: () => agency.board(), apo: () => apothecary.board(), plus: () => { location.hash = "plus"; } };
     mapAct[k]?.();
   };
   tale = createChronicle({ s, people, say, panel, closeTalk, toast, ping, save, hud, esc, enterFinale, regionName: (p) => (p ? REGS[regKey(Math.floor(p.x / T), Math.floor(p.y / T))]?.[0] || "the World" : "the World"), giveHat: (h) => { if (!s.hats.includes(h)) s.hats.push(h); s.hat = h; save(); }, open: openActivity });
@@ -544,6 +580,12 @@ export async function render(view, _n, params = []) {
   aquarium = createAquarium({ s, panel, toast, ping, save, hud, addRenown: (n) => tale.addRenown(n) });
   lanternPress = createLanternPress({ s, panel, toast, ping, save, hud, addRenown: (n) => tale.addRenown(n) });
   windvane = createWindvane({ s, panel, toast, ping, save, hud, addRenown: (n) => tale.addRenown(n) });
+  apiary = createApiary({ s, panel, toast, ping, save, hud, addRenown: (n) => tale.addRenown(n), giveHat: (h) => { if (!s.hats.includes(h)) s.hats.push(h); s.hat = h; save(); }, giveFurn: (f) => { s.furn[f] = (s.furn[f] || 0) + 1; save(); } });
+  aviary = createAviary({ s, panel, toast, ping, save, hud, addRenown: (n) => tale.addRenown(n), giveHat: (h) => { if (!s.hats.includes(h)) s.hats.push(h); s.hat = h; save(); }, giveFurn: (f) => { s.furn[f] = (s.furn[f] || 0) + 1; save(); } });
+  loom = createLoom({ s, panel, toast, ping, save, hud, addRenown: (n) => tale.addRenown(n), giveHat: (h) => { if (!s.hats.includes(h)) s.hats.push(h); s.hat = h; save(); }, giveFurn: (f) => { s.furn[f] = (s.furn[f] || 0) + 1; save(); } });
+  perfumery = createPerfumery({ s, panel, toast, ping, save, hud, addRenown: (n) => tale.addRenown(n), giveHat: (h) => { if (!s.hats.includes(h)) s.hats.push(h); s.hat = h; save(); }, giveFurn: (f) => { s.furn[f] = (s.furn[f] || 0) + 1; save(); } });
+  hedgeMaze = createHedgeMaze({ s, panel, toast, ping, save, hud, addRenown: (n) => tale.addRenown(n), giveHat: (h) => { if (!s.hats.includes(h)) s.hats.push(h); s.hat = h; save(); }, giveFurn: (f) => { s.furn[f] = (s.furn[f] || 0) + 1; save(); } });
+  bindery = createBindery({ s, panel, toast, ping, save, hud, addRenown: (n) => tale.addRenown(n), giveHat: (h) => { if (!s.hats.includes(h)) s.hats.push(h); s.hat = h; save(); }, giveFurn: (f) => { s.furn[f] = (s.furn[f] || 0) + 1; save(); } });
   badges = createBadges({ s, panel, toast, ping, save, hud, addRenown: (n) => tale.addRenown(n) });
   const plusOverlay = async (cls, mount) => { if (realm) return; closeTalk(); if (!panelEl.hidden) closePanel(); keys.clear(); const box = document.createElement("div"); box.className = "rm " + cls; root.appendChild(box); realm = { close() { box.remove(); } }; const leave = () => { box.remove(); realm = null; save(); hud(); root.focus({ preventScroll: true }); }; await mount(box, leave); root.__game.overlay = box; };
   travel = createTravel({ s, map, W, H, T, TILE, REGIONS, root, toast, ping, save, hud, burst, calm, esc, panel, closePanel, setZoom: (k) => { zoomMul *= k; if (Math.abs(zoomMul - 1) < .01) zoomMul = 1; resize(); }, moved: () => { petX = s.x - 30; petY = s.y + 6; }, photo: () => plusW.photo() });
@@ -574,7 +616,7 @@ export async function render(view, _n, params = []) {
     if (!panelEl.hidden) { if (k === "j" || k === "m") { e.preventDefault(); closePanel(); } return; }
     if (["w", "a", "s", "d", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Shift"].includes(k)) { e.preventDefault(); keys.add(k); return; }
     if (k === "e" || k === " " || k === "Enter") { e.preventDefault(); if (!e.repeat) act(); }
-    else if (k === "j") journal(); else if (k === "c") enterCards(); else if (k === "v") derby.board(); else if (k === "h") siege.board(); else if (k === "n") sea.log(); else if (k === "y") enterBay(); else if (k === "f") enterSky(); else if (k === "k") tale.hub(); else if (k === "l") events.log(); else if (k === "o") plusW.photo(); else if (k === "u") life.almanac(); else if (k === "i") square.hub(); else if (k === "z") agency.board(); else if (k === "q") apothecary.board(); else if (k === "m") bigMap(); else if (k === "x" && winter) eventPanel(); else if (k === "b") inventory.open(); else if (k === "r") { e.preventDefault(); if (!e.repeat) toggleRide(); } else if (k === "g") { e.preventDefault(); if (!e.repeat) digHere(); } else if (k === "t" && wplay) { e.preventDefault(); wplay.toss(); } else if (k === "p" && wplay) { e.preventDefault(); if (!e.repeat) wplay.snowman(); }
+    else if (k === "j") journal(); else if (k === "c") enterCards(); else if (k === "v") derby.board(); else if (k === "h") siege.board(); else if (k === "n") sea.log(); else if (k === "y") enterBay(); else if (k === "f") enterSky(); else if (k === "k") tale.hub(); else if (k === "l") events.log(); else if (k === "o") plusW.photo(); else if (k === "u") life.almanac(); else if (k === "i") square.hub(); else if (k === "z") agency.board(); else if (k === "q") apothecary.board(); else if (k === "m") bigMap(); else if (k === "x" && winter) eventPanel(); else if (k === "b") inventory.open(); else if (k === "r") { e.preventDefault(); if (!e.repeat) toggleRide(); } else if (k === "g") { e.preventDefault(); if (!e.repeat) digHere(); } else if (k === "t" && wplay) { e.preventDefault(); wplay.toss(); } else if (k === "p" && wplay) { e.preventDefault(); if (!e.repeat) wplay.snowman(); } else if (k === "1") apiary?.open(); else if (k === "2") aviary?.open(); else if (k === "3") loom?.open(); else if (k === "4") perfumery?.open(); else if (k === "5") hedgeMaze?.open(); else if (k === "6") bindery?.open();
   };
   const onUp = (e) => keys.delete(e.key.length === 1 ? e.key.toLowerCase() : e.key), onBlur = () => keys.clear();
   document.addEventListener("keydown", onKey, true); document.addEventListener("keyup", onUp, true); addEventListener("blur", onBlur);
@@ -673,6 +715,21 @@ export async function render(view, _n, params = []) {
         g.fillText("REPTILE HOUSE", monitorSpot.x, monitorSpot.y - 39);
       }]);
     }
+    if (Math.abs(petRowSpot.x - s.x) < vw && Math.abs(petRowSpot.y - s.y) < vh) {
+      things.push([petRowSpot.y + 12, () => {
+        const { x, y } = petRowSpot;
+        g.fillStyle = "#a83a32";
+        g.fillRect(x - 30, y - 34, 7, 46); g.fillRect(x + 23, y - 34, 7, 46);
+        g.fillStyle = "#5c2420";
+        g.beginPath(); g.roundRect(x - 38, y - 44, 76, 14, [9, 9, 2, 2]); g.fill();
+        g.fillStyle = "#ffb83c";
+        for (const dx of [-14, 0, 14]) { g.beginPath(); g.ellipse(x + dx, y - 23, 5, 7, 0, 0, 7); g.fill(); }
+        g.font = "11px system-ui"; g.textAlign = "center";
+        g.fillText("🐾", x, y - 2);
+        g.font = "800 9px system-ui"; g.fillStyle = "#ffe2a8";
+        g.fillText("PET ROW", x, y - 34);
+      }]);
+    }
     if (s.civic?.reno?.roads) {
       const rx = 48 * T, ry = 42 * T;
       if (Math.abs(rx - s.x) < vw && Math.abs(ry - s.y) < vh) things.push([ry - 20, () => { g.fillStyle = "rgba(216,204,186,.55)"; g.fillRect(rx - 40, ry - 20, 180, 72); }]);
@@ -718,9 +775,9 @@ export async function render(view, _n, params = []) {
     raf = requestAnimationFrame(frame);
   }
   root.__game = { state: s, map, people, lamps, talk, blocked };
-  root.__game = { ...root.__game, deer, spots: SPOTS, eventPanel, goVillage, bracken, roundIds, gates, enterRealm, extras, wplay, far: FAR_QUESTS, delves, hunts, quests, farm, STAIR, trials, enterTrial, digSpots, digHere, enterCards, derby, siege, sea, enterBay, tale, enterFinale, events, plusW: () => plusW, life: () => life, travel: () => travel, square: () => square, agency: () => agency, apothecary: () => apothecary };
+  root.__game = { ...root.__game, findTarget, deer, spots: SPOTS, eventPanel, goVillage, bracken, roundIds, gates, enterRealm, extras, wplay, far: FAR_QUESTS, delves, hunts, quests, farm, STAIR, trials, enterTrial, digSpots, digHere, enterCards, derby, siege, sea, enterBay, tale, enterFinale, events, plusW: () => plusW, life: () => life, travel: () => travel, square: () => square, agency: () => agency, apothecary: () => apothecary };
   hud(); drawMini(); $("#wd-load", root).remove(); root.focus({ preventScroll: true }); raf = requestAnimationFrame(frame);
-  if (params[0] === "town") enterFoxhold(); else if (params[0] === "nexus") enterNexus(); else if (params[0] === "reptilehouse") enterReptile(); else if (gates.some((p) => p.id === params[0])) askGate(gates.find((p) => p.id === params[0])); else if (winter && params[0] === "village") goVillage(); else if (params[0] === "xmas") location.replace("#xmas" + (params[1] ? "/" + params[1] : ""));
+  if (params[0] === "town") enterFoxhold(); else if (params[0] === "nexus") enterNexus(); else if (params[0] === "petrow") enterPetRow(); else if (petDoors[params[0]]) petDoors[params[0]](); else if (gates.some((p) => p.id === params[0])) askGate(gates.find((p) => p.id === params[0])); else if (winter && params[0] === "village") goVillage(); else if (params[0] === "xmas") location.replace("#xmas" + (params[1] ? "/" + params[1] : ""));
   if (!saved?.x) setTimeout(() => { if (alive && !busy()) say(people[0], "You're awake. Good. Every lantern in the country went out last night. Walk over and talk to me when you're ready: W A S D or arrows to move, E to talk.", [["Got it", closeTalk]].slice(0, 0)); }, 500);
   return () => { alive = false; jukebox?.stop(); extras.destroy(); realm?.close(); realm = null; stopEmbed(); offBells?.(); if (winter && XCore.worldLive) XCore.worldLive.fn = null; cancelAnimationFrame(raf); if (fishing) cancelAnimationFrame(fishing.raf); ro.disconnect(); document.removeEventListener("keydown", onKey, true); document.removeEventListener("keyup", onUp, true); removeEventListener("blur", onBlur); if (document.fullscreenElement === root) document.exitFullscreen().catch(() => {}); save(); kvFlush(); };
 }

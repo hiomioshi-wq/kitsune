@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="600" height="900">
+  <defs>
+    <linearGradient id="sky2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5c6a74"/><stop offset="0.6" stop-color="#8a9aa0"/><stop offset="1" stop-color="#c2c9c4"/>
+    </linearGradient>
+    <linearGradient id="sea2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5f7f86"/><stop offset="1" stop-color="#263b42"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="900" fill="url(#sky2)"/>
+  <circle cx="300" cy="200" r="150" fill="#fff" opacity=".08"/>
+  <path d="M 0 430 Q 150 400 300 424 T 600 420 L 600 900 L 0 900 Z" fill="url(#sea2)"/>
+  <g stroke="#d8e4e2" stroke-width="2" fill="none" opacity=".45">
+    <path d="M 0 470 Q 100 460 200 470 T 400 470 T 600 470"/>
+    <path d="M 0 500 Q 120 490 240 500 T 480 500 T 720 500"/>
+  </g>
+  <g stroke="#a8c6c8" stroke-width="2.5" fill="none" opacity=".5">
+    <circle cx="300" cy="540" r="60"/><circle cx="300" cy="540" r="110"/><circle cx="300" cy="540" r="170"/>
+  </g>
+  <g transform="translate(120 470)">
+    <path d="M 0 0 L 0 -270" stroke="#2c3a40" stroke-width="8"/>
+    <path d="M 0 -270 L 130 -250" stroke="#2c3a40" stroke-width="7"/>
+    <path d="M 0 -200 L -80 -190" stroke="#2c3a40" stroke-width="6"/>
+    <circle cx="130" cy="-250" r="30" fill="#c9a24a" stroke="#2c3a40" stroke-width="5"/>
+    <circle cx="130" cy="-250" r="14" fill="#8a6a24"/>
+    <path d="M 130 -280 L 130 -310 M 100 -250 L 70 -250" stroke="#2c3a40" stroke-width="5"/>
+    <path d="M 0 0 L 26 -4 L 12 30 Z" fill="#2c3a40"/>
+  </g>
+  <g transform="translate(420 300) rotate(6)">
+    <rect x="-90" y="-116" width="180" height="232" rx="4" fill="#f4efe0" stroke="#2c3a40" stroke-width="5"/>
+    <path d="M -66 -72 h 132 M -66 -44 h 132 M -66 -16 h 110 M -66 12 h 132 M -66 40 h 84" stroke="#8a9490" stroke-width="4"/>
+    <rect x="40" y="-116" width="50" height="50" fill="#d8c9a4" stroke="#2c3a40" stroke-width="3"/>
+    <circle cx="65" cy="-91" r="12" fill="#b82838"/>
+    <path d="M -66 78 q 40 -22 80 0 t 80 0" stroke="#1c6a72" stroke-width="4" fill="none"/>
+  </g>
+  <g transform="translate(300 600)">
+    <path d="M -120 0 Q 0 -60 120 0 L 120 40 Q 0 -20 -120 40 Z" fill="#3d545a" stroke="#1b1d33" stroke-width="4"/>
+  </g>
+  <rect x="30" y="640" width="540" height="200" fill="#f4efe0" stroke="#26323a" stroke-width="6"/>
+  <text x="50" y="700" font-size="42" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="900" fill="#26323a"><tspan x="50" dy="0">The Office of</tspan><tspan x="50" dy="46">Coasts</tspan></text>
+  <text x="50" y="815" font-size="21" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" fill="#1c6a72" font-weight="700">THE TIDEWRITER'S ALMANAC · EPISODE TWO</text>
+</svg>

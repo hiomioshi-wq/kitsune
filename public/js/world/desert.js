@@ -7,7 +7,7 @@ const TC = { [TILE.dune]: ["#e0c184", "#d8b878"], [TILE.sand]: ["#ecd096", "#e4c
 const MESAS = [[8, 6, 12, 8], [30, 4, 10, 7], [88, 8, 14, 9], [56, 50, 12, 7], [92, 46, 10, 8]].map(([x, y, w, h], i) => ({ x, y, w, h, c: ["#c98f4a", "#bd8242", "#d29c52", "#c98f4a", "#bd8242"][i] }));
 const CRYSTALS = [[20, 30], [26, 36], [70, 18], [76, 24], [48, 40], [42, 14], [102, 30]].map(([x, y], i) => ({ x, y, i }));
 const RUIN_SPOTS = [[64, 30], [70, 34], [58, 34], [76, 28], [62, 24], [68, 40]];
-const SPOTS = [["foundry", "The Glassworks", "Shape a pane", 50, 20], ["surf", "Sand-Surf Run", "Ride a dune", 22, 38], ["caravan", "The Mirror Caravan", "Trade beads", 40, 52], ["ruinspot", "The Buried City", "Search the sands", 70, 30], ["oasis", "Oasis Teahouse", "Rest in the shade", 20, 54]];
+const SPOTS = [["foundry", "The Glassworks", "Shape a pane", 50, 20], ["surf", "Sand-Surf Run", "Ride a dune", 22, 38], ["caravan", "The Mirror Caravan", "Trade beads", 40, 52], ["reptile", "The Reptile House", "Meet the residents", 90, 20], ["ruinspot", "The Buried City", "Search the sands", 70, 30], ["oasis", "Oasis Teahouse", "Rest in the shade", 20, 54]];
 const SPAWN = [54, 58];
 const esc = (x) => String(x).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const hash = (t) => { let h = 2166136261; for (let i = 0; i < t.length; i++) h = Math.imul(h ^ t.charCodeAt(i), 16777619); return h >>> 0; }, rngFor = (k) => { let h = hash(k); return () => { h = (Math.imul(h ^ (h >>> 13), 1274126177) + 7) >>> 0; return h / 4294967296; }; };
@@ -32,6 +32,15 @@ export function buildDesert() {
 }
 
 const WRAITH = ["Mind the glare at noon. The desert keeps every mirror it's ever swallowed.", "The Buried City moves one dune a year. Nobody knows in which direction it thinks it's going.", "Vitrine pays in beads because beads can't be counterfeited — glass remembers the hand that shaped it.", "The Oasis teahouse serves cold tea on purpose. The cold is the whole point.", "Sand-Surf pays better with a rest behind you. The dunes respect patience, briefly."];
+export const REPTILES = [
+  ["glassviper", "Glass Viper", "#cfeaf4", "Transparent to the tail-tip. When it bites, the venom is visible for the entire journey, which it counts as a courtesy."],
+  ["dunekob", "Dune Kob", "#d29c52", "Eats sand, drinks the glass it becomes, and insists it's a dragon in training."],
+  ["skink", "Brass Skink", "#c79a2e", "Sheds into a perfect key. Nobody knows what it opens; the skink has forgotten, which is part of the fun."],
+  ["gecko", "Mirror Gecko", "#dff4ff", "Climbs glass by being mostly glass, which it describes as 'a lifestyle'. Eats only its own reflections."],
+  ["sandboa", "Sand Boa", "#c99a5a", "Constricts with the patience of the desert. If you sit still long enough, it will mistake you for a rock and try to become you."],
+  ["chameleon", "Hourglass Chameleon", "#8a6a3a", "Turns the color of any time of day, but only of yesterday, which makes camouflage useless and courtship extremely nostalgic."],
+];
+export const REPTILE_QUIPS = ["blinks once, slowly, which in this house is a standing ovation.", "is asleep. The house requests you admire it at a normal volume.", "has been staring at the same spot of glass for three days. It swears there's something in there.", "accepts your attention and files it under 'prey, probably, eventually'.", "has opinions about your boots. It's not sharing them.", "has eaten, thank you for asking, and would like everyone to stop asking.", "would like it noted that it was here before the desert was glass, and it remembers the grass, and it does not miss it."];
 
 export function mountDesert(host, api) {
   const s = api.state, st = ensureDesert(s), map = buildDesert(), keys = new Set();
@@ -110,6 +119,22 @@ export function mountDesert(host, api) {
     });
   }
 
+  function reptile() {
+    const day = new Date().toDateString(), r = rngFor("reptile" + day);
+    const featured = REPTILES[Math.floor(r() * REPTILES.length)];
+    const quip = REPTILE_QUIPS[Math.floor(r() * REPTILE_QUIPS.length)];
+    const visited = st.reptile = st.reptile || {}, seen = Object.keys(visited).length;
+    const isNew = !visited[featured[0]]; if (isNew) visited[featured[0]] = 1;
+    page("The Reptile House", `<p class="muted">A vaulted glasshouse sunk into the mesa, its dome fused from the panes the Glassworks rejected — the desert's only museum of things that prefer to be warm and vertical. Today's keeper's pick:</p>
+      <div class="by-list"><div class="${isNew ? "ok" : ""}"><i>🦎</i><span><strong style="color:${featured[2]}">${esc(featured[1])}</strong><small>${esc(featured[3])}</small><small style="opacity:.7">${esc(featured[1])} ${esc(quip)}</small></span>${isNew ? "<em>New!</em>" : "<em>Seen</em>"}</div></div>
+      <h3>House residents (${seen} of ${REPTILES.length} met)</h3>
+      <div class="by-dex">${REPTILES.map((q) => `<div title="${esc(q[1])}" style="--r:${q[2]}"><b>${visited[q[0]] ? "🦎" : "?"}</b><small>${visited[q[0]] ? esc(q[1]) : "???"}</small></div>`).join("")}</div>
+      <p class="muted" style="margin-top:8px">${seen === REPTILES.length && !st.reptileDone ? `<button class="btn btn-accent" type="button" id="dz-rex">Claim the full-house bonus</button>` : seen === REPTILES.length ? "You've met them all. The house nods, once." : `Meet ${REPTILES.length - seen} more residents for the bonus.`}</p>`, (e) => {
+      e.querySelectorAll("[data-t]")?.forEach?.((x) => (x.onclick = () => reptile()));
+      const bonus = e.querySelector("#dz-rex"); if (bonus) bonus.onclick = () => { st.reptileDone = 1; const v = payBeads(25); save(); api.ping("done"); say(`The house agrees you've met everyone, which it calls remarkable and the gecko calls surveillance. +${v} beads`); reptile(); };
+    });
+  }
+
   function ruinspot() {
     if (st.day.ruins >= 1) return say("The Buried City gives one find a day. The sands are firm about it.");
     const day = new Date().toDateString(), r = rngFor("ruins" + day), at = RUIN_SPOTS[Math.floor(r() * RUIN_SPOTS.length)];
@@ -126,7 +151,7 @@ export function mountDesert(host, api) {
     });
   }
 
-  const GAMES = { foundry, surf, caravan, ruinspot, oasis };
+  const GAMES = { foundry, surf, caravan, reptile, ruinspot, oasis };
   function findTarget() {
     for (const [id, name, verb, x, y] of SPOTS) if (Math.hypot((x + .5) * T - px, (y + .5) * T - py) < 44) return { label: `${name}: ${verb}`, go: GAMES[id] };
     if (Math.hypot(wraith.x - px, wraith.y - py) < 44) return { label: "Listen to the dust wraith", go: () => { say(`The dust wraith: ${WRAITH[wraith.line++ % WRAITH.length]}`); api.ping("blip"); } };
@@ -162,7 +187,7 @@ export function mountDesert(host, api) {
     for (const cc of CRYSTALS) things.push([(cc.y + 3) * T, () => { const x = cc.x * T, y = cc.y * T; for (const [ox, h2] of [[4, 26], [16, 40], [30, 20]]) { g.fillStyle = "#cfeaf4"; g.strokeStyle = "#7fa8b8"; g.lineWidth = 2; g.beginPath(); g.moveTo(x + ox, y + 34); g.lineTo(x + ox + 6, y + 34 - h2); g.lineTo(x + ox + 12, y + 34); g.closePath(); g.fill(); g.stroke(); g.fillStyle = `rgba(255,255,255,${.3 + Math.sin(now / 250 + cc.i + ox) * .25})`; g.fillRect(x + ox + 3, y + 34 - h2 * .5, 2, 6); } }]);
     things.push([14 * T + 160, () => { const x = 14 * T, y = 46 * T; g.fillStyle = "#4f7a3a"; g.strokeStyle = "#2e4a22"; g.lineWidth = 2.5; for (const [px2, h2] of [[30, 40], [130, 52], [240, 38]]) { g.fillRect(x + px2, y + 60 - h2, 6, h2); g.beginPath(); g.arc(x + px2 + 3, y + 58 - h2, 16, 0, 7); g.fill(); g.stroke(); } }]);
     for (const [x, y] of RUIN_SPOTS) things.push([(y + 3) * T, () => { const x2 = x * T, y2 = y * T; g.fillStyle = "#d8ccae"; g.strokeStyle = "#8a7a58"; g.lineWidth = 2; for (const [ox, h2] of [[6, 34], [44, 22], [86, 30]]) { g.fillRect(x2 + ox, y2 + 40 - h2, 10, h2); g.strokeRect(x2 + ox, y2 + 40 - h2, 10, h2); } g.fillStyle = "#c9b98e"; g.fillRect(x2 + 2, y2 + 38, 100, 6); g.strokeRect(x2 + 2, y2 + 38, 100, 6); }]);
-    for (const [id, name, , bx, by] of SPOTS) things.push([(by + 2) * T, () => { const x = bx * T, y = by * T, w = 7 * T, h = 2.2 * T, m = x + w / 2; g.fillStyle = "#6a4528"; g.fillRect(x + 6, y + h * .45, w - 12, h * .55); g.strokeStyle = "#231d2c"; g.lineWidth = 2.5; const aw = { foundry: "#e05a3c", surf: "#3fae6a", caravan: "#7fd8e8", ruinspot: "#c9a86a", oasis: "#35a86a" }[id]; for (let k = 0; k < 6; k++) { g.fillStyle = k % 2 ? "#f4ead8" : aw; g.beginPath(); g.moveTo(x + (w * k) / 6, y + h * .5); g.lineTo(x + (w * (k + 1)) / 6, y + h * .5); g.lineTo(x + (w * (k + .5)) / 6, y); g.closePath(); g.fill(); g.stroke(); } if (id === "caravan") for (let k = 0; k < 3; k++) { g.fillStyle = "rgba(207,234,244,.85)"; g.fillRect(x + 14 + k * 24, y + h * .55, 10, 12); g.strokeRect(x + 14 + k * 24, y + h * .55, 10, 12); } label(name, m, y + h * .72); }]);
+    for (const [id, name, , bx, by] of SPOTS) things.push([(by + 2) * T, () => { const x = bx * T, y = by * T, w = 7 * T, h = 2.2 * T, m = x + w / 2; g.fillStyle = "#6a4528"; g.fillRect(x + 6, y + h * .45, w - 12, h * .55); g.strokeStyle = "#231d2c"; g.lineWidth = 2.5; const aw = { foundry: "#e05a3c", surf: "#3fae6a", caravan: "#7fd8e8", reptile: "#8fce6a", ruinspot: "#c9a86a", oasis: "#35a86a" }[id]; for (let k = 0; k < 6; k++) { g.fillStyle = k % 2 ? "#f4ead8" : aw; g.beginPath(); g.moveTo(x + (w * k) / 6, y + h * .5); g.lineTo(x + (w * (k + 1)) / 6, y + h * .5); g.lineTo(x + (w * (k + .5)) / 6, y); g.closePath(); g.fill(); g.stroke(); } if (id === "reptile") { g.fillStyle = "rgba(207,234,244,.9)"; g.beginPath(); g.moveTo(x + w / 2 - 40, y); g.quadraticCurveTo(x + w / 2, y - 46, x + w / 2 + 40, y); g.closePath(); g.fill(); g.stroke(); g.fillStyle = "rgba(207,234,244,.7)"; g.beginPath(); g.arc(x + w / 2, y - 16, 10, 0, 7); g.fill(); g.stroke(); } if (id === "caravan") for (let k = 0; k < 3; k++) { g.fillStyle = "rgba(207,234,244,.85)"; g.fillRect(x + 14 + k * 24, y + h * .55, 10, 12); g.strokeRect(x + 14 + k * 24, y + h * .55, 10, 12); } label(name, m, y + h * .72); }]);
     things.push([wraith.y + 16, () => { g.fillStyle = "rgba(0,0,0,.15)"; g.beginPath(); g.ellipse(wraith.x, wraith.y + 12, 10, 4, 0, 0, 7); g.fill(); g.fillStyle = "rgba(216,204,174,.8)"; g.strokeStyle = "#8a7a58"; g.lineWidth = 2; const bob = Math.sin(now / 160) * 2; g.beginPath(); g.moveTo(wraith.x - 8, wraith.y + 10); g.quadraticCurveTo(wraith.x - 12, wraith.y - 14 + bob, wraith.x, wraith.y - 22 + bob); g.quadraticCurveTo(wraith.x + 12, wraith.y - 14 + bob, wraith.x + 8, wraith.y + 10); g.closePath(); g.fill(); g.stroke(); g.fillStyle = "#e05a3c"; g.beginPath(); g.arc(wraith.x - 3, wraith.y - 12 + bob, 1.8, 0, 7); g.arc(wraith.x + 3, wraith.y - 12 + bob, 1.8, 0, 7); g.fill(); }]);
     things.push([py + 14, () => api.drawFox(g, px, py, dir, step, api.fur, api.tails, s.hat, now, moving)]);
     things.sort((a, q) => a[0] - q[0]); for (const t of things) t[1]();

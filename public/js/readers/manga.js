@@ -2,33 +2,39 @@
 import { $, $$, esc, icon, toast, clamp, coverHtml, topModal } from "../util.js";
 import { settings, saveSettings, pageSrc, getProgress, setProgress, logStat, sessionTimer, getMarks, setMarks, seriesGroups, coverSrc, progressPct, allProgress, kvGet, kvSet, seriesKey } from "../store.js";
 
-const R = { item: null, i: 0, seen: new Set(), timer: null, io: null, lazy: null, zoom: 1, tx: 0, ty: 0, auto: 0, autoRaf: 0, marks: [], loadSeq: 0 };
+const R = { item: null, i: 0, seen: new Set(), timer: null, io: null, lazy: null, zoom: 1, tx: 0, ty: 0, auto: 0, autoRaf: 0, marks: [], loadSeq: 0, seq: 0 };
 const el = () => $("#reader");
 
 export async function openManga(item, opts = {}) {
   closeManga(true);
+  if (!item?.pages) { if (item) toast("This volume has no pages."); return; }
+  const seq = ++R.seq;
   R.item = item;
   const saved = await getProgress(item.id);
-  R.i = opts.from != null ? opts.from : saved && saved.pos < item.pages ? saved.pos : 0;
+  if (R.seq !== seq) return;
+  R.i = opts.from != null ? clamp(opts.from, 0, item.pages - 1) : saved && saved.pos < item.pages ? saved.pos : 0;
   if (saved && saved.pos >= item.pages - 1 && opts.from == null) R.i = 0;
   R.seen = new Set();
   R.marks = await getMarks("bookmarks", item.id);
-  R.notes = ((await kvGet("pageNotes", {})) || {})[item.id] || {}; R.turns = []; R.dwell = {}; R.lastP = null;
+  if (R.seq !== seq) return;
+  R.notes = ((await kvGet("pageNotes", {})) || {})[item.id] || {};
+  if (R.seq !== seq) return;
+  R.turns = []; R.dwell = {}; R.lastP = null;
   R.timer = sessionTimer(item.id);
   R.zoom = 1; R.tx = R.ty = 0; R.rot = 0;
   R.wide = new Set(); R.spKey = null; R.mag = false; R.guided = false; R.panels = null; R.pi = 0;
   // Direction and layout are remembered for the whole series (a webtoon stays a long strip, a manga stays right to left).
   R.sk = seriesKey(item);
-  R.sp = (await kvGet("seriesPrefs", {}))[R.sk] || {};
-  if (R.item !== item) return;
+  R.sp = settings.manga.seriesMemory === false ? {} : ((await kvGet("seriesPrefs", {}))[R.sk] || {});
+  if (R.seq !== seq) return;
   build();
   const r = el();
   r.hidden = false;
   document.body.style.overflow = "hidden";
   applyLayout();
   $("#r-close").focus();
-  R.ui = null; import("./mangaui.js").then((m) => { if (R.item === item) { R.ui = m.attach(plusCtx(), opts.from == null ? saved : null); } }).catch(() => {});
-  navigator.wakeLock?.request?.("screen").then((l) => (R.wake = l)).catch(() => {});
+  R.ui = null; import("./mangaui.js").then((m) => { if (R.seq === seq) { R.ui = m.attach(plusCtx(), opts.from == null ? saved : null); } }).catch(() => {});
+  navigator.wakeLock?.request?.("screen").then((l) => { if (R.seq === seq) R.wake = l; else l.release?.().catch(() => {}); }).catch(() => {});
 }
 
 function dir() { return R.sp?.dir || (R.item.dir === "scroll" ? settings.manga.dir : R.item.dir || settings.manga.dir); }

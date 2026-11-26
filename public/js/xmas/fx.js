@@ -5,8 +5,11 @@ import { lib, getItem, allProgress, progressPct, kvGet } from "../store.js";
 import { isKids } from "../profiles.js";
 import { loadXmas, xs, isSeason, daysToXmas, onXmas, save, earn, startEarning, activePet, petLevel, petStage, petBonus, pat, todaysQuests, giftReady, adventReady } from "./core.js";
 import { petUrl, bellIcon, giftSvg } from "./art.js";
-import { SIGNATURE_BEHAVIOURS } from "./reptiledata.js";
+import { SIGNATURE_BEHAVIOURS as REPTILE_BEHAVIOURS } from "./reptiledata.js";
+import { BIRD_BEHAVIOURS } from "./birddata.js";
+import { HOUSE_BEHAVIOURS } from "./houses/index.js";
 
+const SIGNATURE_BEHAVIOURS = { ...REPTILE_BEHAVIOURS, ...BIRD_BEHAVIOURS, ...HOUSE_BEHAVIOURS };
 const calm = () => document.documentElement.dataset.motion === "reduce" || matchMedia("(prefers-reduced-motion: reduce)").matches;
 const reading = () => !document.getElementById("reader")?.hidden || !document.getElementById("book")?.hidden;
 const route = () => location.hash.slice(1).split("/")[0] || "home";

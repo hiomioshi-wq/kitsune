@@ -156,12 +156,16 @@ async function renderLibrary(view, tab, tag = "") {
   if (tab === "smart") { smart = tag; tag = ""; tab = "all"; }
   setCrumbs([["Library", "library"]]);
   ls.set("libTab", tab);
-  const state = { q: "", status: "", tag, smart, sort: ls.get("libSort", "recent"), layout: ls.get("libLayout", "grid"), select: false, selected: new Set() };
+  const state = { q: "", statuses: new Set(), tag, smart, sort: ls.get("libSort", "recent"), layout: ls.get("libLayout", "grid"), select: false, selected: new Set() };
+  let views = ls.get("libViews", []);
+  if (!Array.isArray(views)) views = [];
   const prog = await allProgress();
 
   const counts = { all: lib.items.length, manga: 0, book: 0, audio: 0 };
   lib.items.forEach((i) => counts[i.type]++);
   const tags = [...new Set(lib.items.flatMap((i) => i.tags || []))].sort(naturalCompare);
+  counts.series = seriesGroups().length;
+  counts.collections = tags.length;
 
   view.innerHTML = `
     <div class="page-head"><div><p class="eyebrow">Your library</p><h1 class="h1">Library</h1>

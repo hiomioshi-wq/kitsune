@@ -2181,3 +2181,42 @@ The university's least dignified ceremony, held nightly in the Detention Wing ca
 - **Incarnate ×2 scenes** (34 total): The Bridge of Unfinished Names (four thousand names of the eastern front, three finished, the corruption offering to finish the rest) and The Salt Chapel (a pane of salt glass over the altar page, under it a hand corrupted for one second and sorry forever), each with a relic and a quest chapter — all boss gates proven unmoved
 - **Skyward Isles, an eighth island**: The Lantern Loft — Mirabel the Moth-Keeper (files constellations as moths) and Rooke the Cloud-Shepherd, the Lantern Archive with a working telescope, the Lantern Loft Bell tied to the existing Paper Lantern constellation, and the Ember Mothfish — bridged from the Conservatory, zero-overlap-proven, all four bell/fish/constellation counters now dynamic
 - **World Events ×3** (21 in rotation): Mirrorshards (falling glass from the Desert wind, every third catch pays double with a braver reflection), The Ledger Rain (drifting pages from the Ferryman's Ledger, 20% whisper yesterday's entry — "Ferry late by four minutes. The lake maintains it arrived on time."), and The Trophy Procession (the Darwin Awards' upside-down trophies parade the map, every catch pays with a citation — Kevin, for testing which festival lanterns were lit by juggling them)
+
+## 56. The Reptile House (Glass Desert)
+
+A new sixth location in the Glass Desert, sunk into the mesa with a fused-glass dome — the desert's only museum of things that prefer to be warm and vertical:
+
+- **Six residents**, each deterministic-by-day as the keeper's featured pick: the Glass Viper (transparent to the tail-tip, venom visible for the whole journey — a courtesy), the Dune Kob (eats sand, drinks the glass it becomes, insists it's a dragon in training), the Brass Skink (sheds into a perfect key; nobody knows what it opens), the Mirror Gecko (climbs glass by being mostly glass, "a lifestyle"; eats only its own reflections), the Sand Boa (if you sit still long enough it will mistake you for a rock and try to become you), and the Hourglass Chameleon (turns the color of any time of day, but only of yesterday — camouflage useless, courtship extremely nostalgic)
+- **Rotating quips** — the featured resident "blinks once, slowly, which in this house is a standing ovation," or "has opinions about your boots. It's not sharing them."
+- **A meeting album** — six residents tracked, a full-house bonus of +25 beads, and the award line: "The house agrees you've met everyone, which it calls remarkable and the gecko calls surveillance"
+
+## 57. The Dawn Aviary Bird House
+
+A walkable, glass-domed bird shop on Pet Row (also `#world/birdhouse` and the Winterfest **Bird House** tab):
+
+- **48 birds**, each drawn with its own field marks: Common 55% (14) · Rare 28% (13) · Epic 12% (9) · Legendary 4.8% (8) · Chase 0.2% (4, each 1 in 2,000: Hyacinth Macaw, Spix's Macaw, White Peafowl and the storybook Aurora Peacock)
+- **Woven Nest Pods** — 50 Snowbells or 75 mon, 15 a day, duplicates give +60 XP; chase birds never come from eggs; collecting all 48 pays +1,000 Snowbells once
+- **Signature behaviours** as animations for 19 birds: peafowl fans, the barn owl's head swivel, kingfisher plunge dive, hummingbird hover, kookaburra laugh, flamingo upside-down feeding, woodpecker drum, shoebill bill clatter, bird-of-paradise plume dance, crane dance, kakapo boom, blue tit hang, cockatoo and harpy eagle crests, African grey mimicry and eagle wingspreads
+- **Four habitat flights** (Hedgerow Song Hall, High Raptor Loft, Reed & Shore Pool, Sun Canopy Court), a behaviour theatre, the odds board and codex, and your own birds flying the room
+- **Dawn Chorus** — echo a growing four-bird song (tap or keys 1–4); 3 rewarded runs a day and a free pod at 6+ verses
+- **Seed bin** — scatter a scoop and the flock comes over; the first one each day tips +15 mon and fills up your birds
+
+## 58. Pet Row and seven new pet shops
+
+A lantern-lit street behind the **PET ROW** gate east of Hollow Pine village (`#world/petrow`). It scrolls sideways and holds the Bird House, the Reptile House and seven new walkable shops, each also on the Winterfest **Pet Row** tab:
+
+| Shop | Route | Residents | Mini-game |
+|---|---|---|---|
+| Teacup Cat Café | `#world/cats` | 30 cats, including four wild-cat sanctuary ambassadors | Teacup Rescue |
+| Puddle Paws Park | `#world/pups` | 30 dogs | Puppy Round-Up |
+| Bramble Burrow | `#world/burrow` | 30 small mammals | Pouch Run |
+| Hoofbeat Barn | `#world/barn` | 30 ponies, goats, sheep, cattle and friends | Bale Tower |
+| Moonpool Reef | `#world/reef` | 30 fish and sea creatures | Puffer Drift |
+| Mossdrip Grotto | `#world/grotto` | 30 amphibians | Lily Pad Leap |
+| Glowmoth Garden | `#world/glow` | 30 insects, arachnids and garden friends | Waggle Compass |
+
+- **210 new pets**, each shop with five tiers (Common 55% · Rare 28% · Epic 12% · Legendary 4.8% · Chase 0.2%), four habitats, signature behaviour animations, a behaviour theatre and a codex
+- Pets cost 50 Snowbells or 75 mon, 12 a day per shop; duplicates give +60 XP; chase pets never come from eggs; completing a shop pays +1,000 Snowbells once
+- Each mini-game has 3 rewarded runs a day and a free pet for a good score; each shop's treat bin tips +15 mon once a day
+- Adding another shop takes three files in `public/js/xmas/houses/` (data, art, game) plus one line in its `index.js`
+

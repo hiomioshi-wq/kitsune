@@ -4,6 +4,7 @@ import { dayKey } from "./lifecore.js";
 export function createInteriors({ s, panel, toast, ping, save, hud, esc }) {
   const iv = (s.interiors ||= {
     teaDay: "",
+    kiteDay: "",
     radioDay: "",
     clockDay: "",
     bindDay: "",
@@ -947,7 +948,26 @@ export function createInteriors({ s, panel, toast, ping, save, hud, esc }) {
     });
   }
 
-  const rooms = { tea, radio, clock, bindery, umbrella, station, sunken, observatory, studio, glass, post, palace, lodge, dojo, teahouse, caravan, stilt, forge, lighthouse, archive, reefhall, grotto, crater, amberlodge, saltobs, basaltlight, kelpharbor, prismspire, stormwatch, jadepavilion, sunspireinn, horizonlight, atollhouse, mirrorlight, cinderwatch, lastlight, auroraobs, velvetshrine, spirefoundry, starcustoms, tempestkeep, celestiallight, crystalspire, crimsonshrine, goldenoasis, ashfoundry, pearlpier, driftwoodhaven, eclipsewatch, terminuslight, silverwatch, elderdojo, vermilioninn, abyssfoundry, coralhorpier, misthaven, voidtower, sovereignlight, astralpost, heightstea, duneobs, magmaforge, moonpearlpier, foghaven, trenchwatch, astrallight, cometpost, lotustea, saffronobs, cindercrestforge, starfishpier, reedhaven, cobaltwatch, zenithlight, nebulapost, plumtea, ochreobs, pyrecrestforge, shellpier, willowhaven, icefallshrine, tidewrack, orchardtea, glassduneobs, eclipseforge, meteorforge, paragonlight, elysianlight, empyreanlight, quartzwatch };
+  function kiteloft() {
+    const d = today(), ready = iv.kiteDay !== d;
+    const winds = ["a warm southerly off the reservoir", "a thin easterly that smells of snow", "a salt-tanged gust off Saltwick Shore", "a high, humming wind down from the peaks"];
+    let w = 0; for (const c of d) w = (w * 31 + c.charCodeAt(0)) >>> 0;
+    const wind = winds[w % winds.length];
+    const kites = [
+      ["The Reservoir Skimmer", "Blue paper over reed spars. Flies low and thinks it's a duck."],
+      ["The Midnight Moth", "Black tissue with a moon on each wing. Only comes out after 2 a.m."],
+      ["The High Pass Comet", "A long red tail with a brass bell at the end. The bell is not for you."],
+    ];
+    panel("Inside The Kite Loft", `<p class="muted">Paper kites crowd the rafters like a flock that forgot to leave. The loft reads ${esc(wind)} today.</p><div class="se-mkt"><div class="se-good"><span><strong>🪁 Launch Today's Kite</strong><small>Daily · +35 mon & +1 Lucky Ripple</small></span><button class="btn btn-accent" type="button" id="in-kite" ${ready ? "" : "disabled"}>${ready ? "Launch Kite" : "Flown Today ✓"}</button></div>${kites.map(([n, desc]) => `<div class="se-good"><span><strong>${esc(n)}</strong><small>${esc(desc)}</small></span><em>On the rack</em></div>`).join("")}</div>`, (e) => {
+      e.querySelector("#in-kite").onclick = () => {
+        if (!ready) return;
+        iv.kiteDay = d; s.mon += 35; s.luck = (s.luck || 0) + 1;
+        ping("done"); save(); hud(); toast("Your kite catches the wind! +35 mon & +1 Luck"); kiteloft();
+      };
+    });
+  }
+
+  const rooms = { tea, radio, clock, bindery, umbrella, station, sunken, observatory, studio, glass, post, palace, lodge, dojo, teahouse, caravan, stilt, forge, lighthouse, archive, reefhall, grotto, crater, amberlodge, saltobs, basaltlight, kelpharbor, prismspire, stormwatch, jadepavilion, sunspireinn, horizonlight, atollhouse, mirrorlight, cinderwatch, lastlight, auroraobs, velvetshrine, spirefoundry, starcustoms, tempestkeep, celestiallight, crystalspire, crimsonshrine, goldenoasis, ashfoundry, pearlpier, driftwoodhaven, eclipsewatch, terminuslight, silverwatch, elderdojo, vermilioninn, abyssfoundry, coralhorpier, misthaven, voidtower, sovereignlight, astralpost, heightstea, duneobs, magmaforge, moonpearlpier, foghaven, trenchwatch, astrallight, cometpost, lotustea, saffronobs, cindercrestforge, starfishpier, reedhaven, cobaltwatch, zenithlight, nebulapost, plumtea, ochreobs, pyrecrestforge, shellpier, willowhaven, icefallshrine, tidewrack, orchardtea, glassduneobs, eclipseforge, meteorforge, paragonlight, elysianlight, empyreanlight, quartzwatch, kiteloft };
 
   function open(b) {
     if (rooms[b[0]]) return rooms[b[0]]();

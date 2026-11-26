@@ -25,7 +25,7 @@ const ambVol = () => (settings.book.ambVol ?? 40) / 100;
 const THEMES = { paper: ["#f7f4ec", "#2a2730", "Paper"], sepia: ["#f1e5cc", "#4a3a26", "Sepia"], matcha: ["#e8eedf", "#26301f", "Matcha"], night: ["#171a2e", "#d8d6e6", "Night"], ink: ["#000", "#c9c9c9", "Ink"] };
 const WPM = 250;
 
-const B = { item: null, blocks: [], words: [], totalWords: 0, toc: [], pos: 0, lastLogged: 0, timer: null, marks: [], hls: [], urls: [], speaking: false, panel: null, page: 0 };
+const B = { item: null, blocks: [], words: [], totalWords: 0, toc: [], pos: 0, lastLogged: 0, timer: null, marks: [], hls: [], urls: [], speaking: false, panel: null, page: 0, speakAt: null, speakGen: 0, ttsAt: null, ttsChunks: null };
 const el = () => $("#book");
 
 export async function openBook(item, opts = {}) {

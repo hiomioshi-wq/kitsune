@@ -3,6 +3,8 @@ import { kvGet, kvSet, settings, saveSettings } from "../store.js";
 import { ls, toast, today } from "../util.js";
 import { SPECIES, species, RARITY, TREATS, CATALOG, item, ORNAMENTS, DAILY, GOALS, ADVENT, WISH_COST, PITY, WELL_ONLY } from "./data.js";
 import { mythicMultiplier } from "./mythic.js";
+import { CHASE_BIRDS } from "./birddata.js";
+import { HOUSE_CHASE } from "./houses/index.js";
 
 export const isSeason = (d = new Date()) => { const m = d.getMonth(), x = d.getDate(); return m === 11 || (m === 10 && x >= 15) || (m === 0 && x <= 6); };
 export const daysToXmas = (d = new Date()) => { const y = d.getMonth() === 0 ? d.getFullYear() - 1 : d.getFullYear(), t = new Date(y, 11, 25), a = new Date(d.getFullYear(), d.getMonth(), d.getDate()); return Math.round((t - a) / 864e5); };
@@ -47,7 +49,7 @@ export function claimGoal(k) { const g = goalList().find((x) => x.k === k); if (
 export const giftReady = () => S.lastGift !== today();
 export function dailyGift() { if (!giftReady()) return 0; const y = new Date(); y.setDate(y.getDate() - 1); const ys = today(y); S.streak = S.lastGift === ys ? S.streak + 1 : 1; S.lastGift = today(); const n = 20 + Math.min(7, S.streak) * 5; grant(n); S.treats.cookie = (S.treats.cookie || 0) + 1; save(); return n; }
 
-export const CHASE_ONLY = new Set(["blackdragon", "fwc_lavender", "fwc_patternless", "bluepitviper"]);
+export const CHASE_ONLY = new Set(["blackdragon", "fwc_lavender", "fwc_patternless", "bluepitviper", ...CHASE_BIRDS, ...HOUSE_CHASE]);
 const eggFor = (rar) => { const list = SPECIES.filter((x) => x[2] === rar && !CHASE_ONLY.has(x[0])), mine = new Set([...Object.keys(S.pets), ...S.eggs.map((e) => e.sp)]), fresh = list.filter((x) => !mine.has(x[0])), l = rar === "l" ? list : (fresh.length ? fresh : list); return l[Math.floor(Math.random() * l.length)][0]; };
 export function addEgg(rar) { const sp = eggFor(rar), id = "e" + Date.now().toString(36) + Math.floor(Math.random() * 1e4); S.eggs.push({ id, sp, rar, have: 0, need: { c: 20, r: 35, e: 60, l: 90 }[rar] }); return id; }
 export function warmEgg(n) { for (const e of S.eggs) e.have = Math.min(e.need, e.have + n); }

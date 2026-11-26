@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="600" height="900">
+  <defs>
+    <linearGradient id="sky3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#10162a"/><stop offset="0.5" stop-color="#1f2f4d"/><stop offset="1" stop-color="#3a5a66"/>
+    </linearGradient>
+    <linearGradient id="sea3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2f5c66"/><stop offset="1" stop-color="#0c2028"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="900" fill="url(#sky3)"/>
+  <g fill="#fff" opacity=".75">
+    <circle cx="60" cy="60" r="1.5"/><circle cx="140" cy="32" r="1"/><circle cx="240" cy="88" r="1.3"/>
+    <circle cx="330" cy="40" r="1"/><circle cx="480" cy="70" r="1.6"/><circle cx="550" cy="140" r="1.1"/>
+  </g>
+  <circle cx="300" cy="150" r="70" fill="#fff" opacity=".06"/>
+  <circle cx="300" cy="150" r="40" fill="#f4eccb"/>
+  <path d="M 0 470 Q 150 440 300 462 T 600 456 L 600 900 L 0 900 Z" fill="url(#sea3)"/>
+  <g stroke="#9fd0d4" stroke-width="2.5" fill="none" opacity=".4">
+    <path d="M 0 500 Q 100 490 200 500 T 400 500 T 600 500"/>
+    <path d="M 0 535 Q 120 525 240 535 T 480 535"/>
+  </g>
+  <path d="M 0 620 Q 300 566 600 620 L 600 900 L 0 900 Z" fill="#243c40"/>
+  <g transform="translate(300 700)">
+    <path d="M -300 -80 Q 0 -130 300 -80 L 300 90 L -300 90 Z" fill="#e7dcc2" opacity=".18"/>
+    <path d="M -290 -72 Q 0 -118 290 -72" stroke="#f0e6c8" stroke-width="4" fill="none" stroke-dasharray="1 12" stroke-linecap="round"/>
+  </g>
+  <g>
+    <g transform="translate(80 640)"><line x1="0" y1="0" x2="0" y2="60" stroke="#1b1d33" stroke-width="3"/><rect x="-10" y="-6" width="20" height="24" rx="7" fill="#ffd36b"/><circle cx="0" cy="6" r="26" fill="#ffd36b" opacity=".18"/></g>
+    <g transform="translate(150 624)"><line x1="0" y1="0" x2="0" y2="76" stroke="#1b1d33" stroke-width="3"/><rect x="-10" y="-6" width="20" height="24" rx="7" fill="#ffd36b"/><circle cx="0" cy="6" r="26" fill="#ffd36b" opacity=".18"/></g>
+    <g transform="translate(450 624)"><line x1="0" y1="0" x2="0" y2="76" stroke="#1b1d33" stroke-width="3"/><rect x="-10" y="-6" width="20" height="24" rx="7" fill="#ffd36b"/><circle cx="0" cy="6" r="26" fill="#ffd36b" opacity=".18"/></g>
+    <g transform="translate(520 640)"><line x1="0" y1="0" x2="0" y2="60" stroke="#1b1d33" stroke-width="3"/><rect x="-10" y="-6" width="20" height="24" rx="7" fill="#ffd36b"/><circle cx="0" cy="6" r="26" fill="#ffd36b" opacity=".18"/></g>
+  </g>
+  <g fill="#f3ede0" stroke="#8a8268" stroke-width="1.2">
+    <ellipse cx="200" cy="676" rx="9" ry="6"/><ellipse cx="236" cy="688" rx="7" ry="5"/><ellipse cx="280" cy="672" rx="8" ry="5"/>
+    <ellipse cx="320" cy="686" rx="9" ry="6"/><ellipse cx="366" cy="674" rx="7" ry="5"/><ellipse cx="402" cy="690" rx="8" ry="5"/>
+  </g>
+  <g transform="translate(340 540) rotate(8)" opacity=".85">
+    <path d="M 0 0 L 0 0" />
+    <text x="0" y="0" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-size="13" font-weight="700" fill="#bfe3e0" letter-spacing="3">SAME TIME NEXT YEAR</text>
+  </g>
+  <rect x="30" y="640" width="540" height="200" fill="#f5eeda" stroke="#10162a" stroke-width="6"/>
+  <text x="50" y="718" font-size="48" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="900" fill="#10162a">The Last Neap</text>
+  <text x="50" y="815" font-size="21" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" fill="#1c6a72" font-weight="700">THE TIDEWRITER'S ALMANAC · EPISODE THREE</text>
+</svg>

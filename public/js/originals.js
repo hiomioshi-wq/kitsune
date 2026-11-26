@@ -72,6 +72,12 @@ export const ORIGINALS = [
     blurb: "The Emerald City courthouse tries things, not people, and today's defendant is a signpost found pointing at itself. With an opinionated sofa for the defense and a mostly-awake judge on the bench, the court must decide whether being wrong on purpose can be a kindness.", minutes: 22 },
   { id: "orig-migrating-meadow-oz", type: "book", title: "The Migrating Meadow of Oz", file: "/originals/the-migrating-meadow-of-oz.txt", cover: "/originals/covers/the-migrating-meadow-of-oz.svg",
     blurb: "A Quadling meadow walks south a step at every full moon, taking its flowers, its bees and one extremely loyal birdbath with it. The Land Registry serves it with papers — which the birdbath, the only literate object for miles, reads all the way to the back.", minutes: 18 },
+  { id: "orig-museum-of-almost", type: "book", title: "The Museum of Almost", file: "/originals/the-museum-of-almost.txt", cover: "/originals/covers/the-museum-of-almost.svg",
+    blurb: "A night guard at a museum of near-misses finds a new room that wasn't there before, holding one chipped blue mug and the morning she almost said yes.", minutes: 19 },
+  { id: "orig-extinct-colors", type: "book", title: "A Field Guide to Extinct Colors", file: "/originals/a-field-guide-to-extinct-colors.txt", cover: "/originals/covers/a-field-guide-to-extinct-colors.svg",
+    blurb: "A color archivist is going blind, and her nine-year-old granddaughter becomes her last witness. Together they re-enter the colors the world has stopped looking at, including the black of a crow in rain.", minutes: 19 },
+  { id: "orig-sound-salvage", type: "book", title: "The Sound Salvage Company", file: "/originals/the-sound-salvage-company.txt", cover: "/originals/covers/the-sound-salvage-company.svg",
+    blurb: "On the Moonwake waterfront, divers bring lost sounds up from the cold layer of the bay in glass floats. A new diver learns that the company doesn't rescue sounds; it rescues the people who lost them.", minutes: 20 },
 ];
 
 // Original series by their author, added word for word. Mature: hidden on kids profiles. All rights reserved by the author.

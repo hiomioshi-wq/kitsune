@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="600" height="900">
+  <defs>
+    <linearGradient id="sky1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#121a2e"/><stop offset="0.55" stop-color="#1d3350"/><stop offset="1" stop-color="#2d5468"/>
+    </linearGradient>
+    <linearGradient id="sea1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2c5a6b"/><stop offset="1" stop-color="#0f2733"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="900" fill="url(#sky1)"/>
+  <circle cx="424" cy="150" r="118" fill="#fff" opacity=".05"/>
+  <circle cx="424" cy="150" r="66" fill="#f6ecc9"/>
+  <circle cx="405" cy="137" r="12" fill="#e6d7a4" opacity=".8"/>
+  <g fill="#fff" opacity=".7">
+    <circle cx="70" cy="70" r="1.6"/><circle cx="130" cy="40" r="1"/><circle cx="210" cy="96" r="1.4"/>
+    <circle cx="300" cy="52" r="1"/><circle cx="520" cy="70" r="1.7"/><circle cx="560" cy="180" r="1.2"/>
+    <circle cx="90" cy="200" r="1.1"/><circle cx="250" cy="170" r=".9"/><circle cx="340" cy="230" r="1.3"/>
+  </g>
+  <path d="M 0 470 Q 120 430 240 462 T 480 452 T 600 468 L 600 900 L 0 900 Z" fill="url(#sea1)"/>
+  <g stroke="#9fd7e0" stroke-width="3" fill="none" opacity=".45">
+    <path d="M 0 520 Q 80 508 160 520 T 320 520 T 480 520 T 640 520"/>
+    <path d="M 0 560 Q 90 548 180 560 T 360 560 T 540 560"/>
+    <path d="M 0 600 Q 100 588 200 600 T 400 600"/>
+  </g>
+  <g transform="translate(300 430)">
+    <path d="M 0 70 L -250 120 L -250 240 L 0 196 L 250 240 L 250 120 Z" fill="#e8dfc6" stroke="#1b1d33" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M 0 70 L 0 196" stroke="#1b1d33" stroke-width="4"/>
+    <path d="M -226 142 L -30 116 M -226 168 L -30 142 M -226 194 L -130 180" stroke="#9a8f78" stroke-width="4" opacity=".8"/>
+    <path d="M 30 116 L 226 142 M 30 142 L 226 168 M 30 168 L 120 180" stroke="#9a8f78" stroke-width="4" opacity=".8"/>
+    <path d="M 40 132 L 214 154" stroke="#2a3a4a" stroke-width="5"/>
+    <path d="M 214 154 C 250 140 270 110 264 74" stroke="#2a3a4a" stroke-width="5" fill="none"/>
+    <circle cx="264" cy="70" r="6" fill="#2a3a4a"/>
+    <path d="M 40 132 L 24 100 L 16 78" stroke="#2a3a4a" stroke-width="7" stroke-linecap="round"/>
+    <path d="M 16 78 L 10 56" stroke="#13202b" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(330 300) rotate(18)">
+    <rect x="-8" y="-90" width="16" height="150" rx="6" fill="#7a4a2b" stroke="#1b1d33" stroke-width="4"/>
+    <path d="M -8 60 L 0 84 L 8 60 Z" fill="#1b1d33"/>
+    <path d="M -8 -90 L 0 -132 L 8 -90 Z" fill="#e8dfc6" stroke="#1b1d33" stroke-width="4"/>
+  </g>
+  <circle cx="350" cy="372" r="6" fill="#2a3a4a" opacity=".7"/>
+  <rect x="30" y="640" width="540" height="200" fill="#f6efdc" stroke="#121a2e" stroke-width="6"/>
+  <text x="50" y="700" font-size="44" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" font-weight="900" fill="#121a2e"><tspan x="50" dy="0">The Half-Written</tspan><tspan x="50" dy="46">Tide</tspan></text>
+  <text x="50" y="815" font-size="21" font-family="'Trebuchet MS','Segoe UI',system-ui,sans-serif" fill="#1c6a72" font-weight="700">THE TIDEWRITER'S ALMANAC · EPISODE ONE</text>
+</svg>
