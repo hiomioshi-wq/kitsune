@@ -4,8 +4,31 @@ import { REALMS } from "./realms.js";
 import { GATES } from "./gates.js";
 import { T } from "./data.js";
 
-export function buildOverworldRealmActors(castFn) {
+export function buildOverworldRealmActors(castFn, map, W, H, blocked) {
   const actors = [];
+  const okTile = (tx, ty) => {
+    if (!map || tx < 1 || ty < 1 || tx >= W - 1 || ty >= H - 1) return true;
+    const i = ty * W + tx;
+    if (!map.reach[i] || map.solid[i]) return false;
+    return !blocked?.((tx + 0.5) * T, (ty + 0.5) * T);
+  };
+  const findOpen = (cx, cy, taken) => {
+    for (let r = 1; r <= 7; r++) {
+      for (let dy = -r; dy <= r; dy++) {
+        for (let dx = -r; dx <= r; dx++) {
+          if (Math.abs(dx) !== r && Math.abs(dy) !== r) continue;
+          const tx = Math.round(cx) + dx, ty = Math.round(cy) + dy;
+          const key = `${tx},${ty}`;
+          if (!taken.has(key) && okTile(tx, ty)) {
+            taken.add(key);
+            return [(tx + 0.5) * T, (ty + 0.5) * T];
+          }
+        }
+      }
+    }
+    return [cx * T, (cy + 1.5) * T];
+  };
+
   for (const gate of GATES) {
     const r = REALMS[gate.id];
     if (!r) continue;
@@ -18,13 +41,9 @@ export function buildOverworldRealmActors(castFn) {
         npcs.push(n);
       }
     }
-    const baseX = gate.cx * T;
-    const baseY = (gate.cy + 1.5) * T;
+    const taken = new Set([`${Math.round(gate.cx)},${Math.round(gate.cy)}`]);
     npcs.slice(0, 8).forEach((n, idx) => {
-      const col = idx % 4;
-      const row = Math.floor(idx / 4);
-      const x = baseX + (col - 1.5) * 44;
-      const y = baseY + row * 48;
+      const [x, y] = findOpen(gate.cx, gate.cy + 1.5, taken);
       const img = new Image();
       const svg = castFn?.(n.cast);
       if (svg) img.src = "data:image/svg+xml;utf8," + encodeURIComponent(svg);
@@ -32,6 +51,7 @@ export function buildOverworldRealmActors(castFn) {
         id: `${gate.id}:${n.id || idx}`,
         realmId: gate.id,
         realmTitle: r.title || gate.name,
+        warn: gate.warn || "",
         series: r.series || gate.id,
         name: n.name,
         lines: n.lines || ["The boundary between stories feels thin here."],

@@ -159,7 +159,7 @@ export async function render(view, _n, params = []) {
   const MINESHAFT = { x: 46, y: 18 }; for (let y = MINESHAFT.y - 1; y <= MINESHAFT.y + 1; y++) for (let x = MINESHAFT.x - 1; x <= MINESHAFT.x + 1; x++) { const i = y * W + x; if (map.g[i] !== TILE.water) { if (map.solid[i]) map.g[i] = TILE.plaza; map.solid[i] = 0; map.reach[i] = 1; } }
   const NEXUSSPIRE = { x: 66, y: 30 }; for (let y = NEXUSSPIRE.y - 1; y <= NEXUSSPIRE.y + 1; y++) for (let x = NEXUSSPIRE.x - 1; x <= NEXUSSPIRE.x + 1; x++) { const i = y * W + x; if (map.g[i] !== TILE.water) { if (map.solid[i]) map.g[i] = TILE.plaza; map.solid[i] = 0; map.reach[i] = 1; } }
   const gates = isKids() ? [] : GATES; if (gates.length) applyGates(map); s.realm ||= {}; let realm = null;
-  const realmActors = isKids() ? [] : buildOverworldRealmActors((c) => cast?.(c));
+  const realmActors = isKids() ? [] : buildOverworldRealmActors((c) => cast?.(c), map, W, H, blocked);
   const REGS = { ...REGIONS, foxhold: ["Road to Foxhold", 49.5, 43.5], ...(winter ? { winter: ["Winterfest Village", VILLAGE.cx, VILLAGE.cy] } : {}), ...Object.fromEntries(gates.map((p) => ["gate-" + p.id, [p.name, p.cx, p.cy + 1]])) }, regKey = (x, y) => { if (Math.abs(x - 49.5) < 3 && Math.abs(y - 43) < 3) return "foxhold"; const q = gates.find((p) => Math.abs(x - p.cx) < 5 && Math.abs(y - p.cy) < 4); return q ? "gate-" + q.id : winter && inVillage(x, y) ? "winter" : regionAt(x, y); };
   s.far = { took: {}, lit: {}, done: 0, ...(s.far || {}) }; s.ride = !!s.ride;
   s.win = { deer: {}, took: 0, done: 0, day: "", round: {}, swap: 0, ...(s.win || {}) }; if (winter && s.win.day !== today()) { s.win.day = today(); s.win.round = {}; s.win.swap = 0; }
@@ -206,7 +206,7 @@ export async function render(view, _n, params = []) {
   function say(person, text, btns = []) {
     const special = btns.some((b) => b[2] === "gift" || b[2] === "q"), list = [...btns, ...(person && !special ? quests.btns(person) : []), ...(person && !special ? extras.talkBtns(person) : []), ...(person && !special && people.some((x) => x.id === person.id) ? [...(tale?.btns(person) || []), ...(life?.btns(person) || []), ["Duel at cards", () => enterCards(person.id)], ...aiChatBtn(person)] : []), ["Goodbye", closeTalk]];
     talkEl.hidden = false; ping("blip");
-    talkEl.innerHTML = `${person ? `<div class="wd-face">${characterSvg(person.n[1], person.d, /!/.test(text) ? "happy" : "calm")}</div>` : ""}<div class="wd-say">${person ? `<strong>${esc(person.n[2])}</strong>` : ""}<p>${esc(text)}</p><div class="wd-opts">${list.map(([l], i) => `<button class="btn${i === 0 && list.length > 1 ? " btn-accent" : ""}" type="button" data-o="${i}"><kbd>${i + 1}</kbd> ${esc(l)}</button>`).join("")}</div></div>`;
+    talkEl.innerHTML = `${person ? `<div class="wd-face">${person.d ? characterSvg(person.n[1], person.d, /!/.test(text) ? "happy" : "calm") : person.img?.src ? `<img src="${esc(person.img.src)}" alt="">` : ""}</div>` : ""}<div class="wd-say">${person ? `<strong>${esc(person.n[2])}</strong>` : ""}<p>${esc(text)}</p><div class="wd-opts">${list.map(([l], i) => `<button class="btn${i === 0 && list.length > 1 ? " btn-accent" : ""}" type="button" data-o="${i}"><kbd>${i + 1}</kbd> ${esc(l)}</button>`).join("")}</div></div>`;
     $$("[data-o]", talkEl).forEach((b) => (b.onclick = () => list[+b.dataset.o][1]()));
     $("[data-o]", talkEl)?.focus({ preventScroll: true });
   }
@@ -341,19 +341,18 @@ export async function render(view, _n, params = []) {
     root.__game.realm = realm;
   }
   function talkRealmActor(a) {
+    if (!s.realm[a.realmId]?.seen && a.warn) {
+      return say(null, a.warn, [["I understand — talk to " + a.name, () => { s.realm[a.realmId] = { ...(s.realm[a.realmId] || {}), seen: 1 }; save(); talkRealmActor(a); }]]);
+    }
     const text = a.lines[a.line++ % a.lines.length];
     const btns = [];
     if (a.story) btns.push(["Read linked story", async () => { const O = await import("../originals.js"); const ser = O.SERIES.find((x) => x.id === a.realmId || x.id === a.series); const entry = ser?.items?.find((i) => i.id === a.story); if (entry) { save(); kvFlush(); openItem(await O.addSeriesItem(ser, entry)); } else toast("Story chapter synced in your Library."); }]);
-    if (!s.realm[a.realmId]?.beat) btns.push([`Complete ${a.realmTitle}`, () => { s.realm[a.realmId] = { ...(s.realm[a.realmId] || {}), seen: 1, beat: 1 }; s.mon += 150; tale?.addRenown?.(45); save(); hud(); ping("done"); toast(`Completed ${a.realmTitle} right in the open world! +150 mon & +45 Renown!`); closeTalk(); }]);
+    btns.push([`Enter ${a.realmTitle}`, () => enterRealm(a.realmId)]);
     say({ n: [a.id, a.id, a.name], img: a.img }, text, btns);
   }
   function askGate(p) {
-    const here = realmActors.filter((a) => a.realmId === p.id);
-    const done = !!s.realm[p.id]?.beat;
-    say(null, `${p.name}: ${here.length} characters from this story are gathered right here on the open map (${done ? "Completed ✓" : "Story District"}).`, [
-      ...(!done ? [["Explore & Clear District (+150 mon)", () => { s.realm[p.id] = { ...(s.realm[p.id] || {}), seen: 1, beat: 1 }; s.mon += 150; tale?.addRenown?.(45); save(); hud(); ping("done"); toast(`Cleared ${p.name}! +150 mon & +45 Renown!`); closeTalk(); }]] : []),
-      ["Enter Deep Interior", () => enterRealm(p.id)],
-    ]);
+    if (s.realm[p.id]?.seen) return enterRealm(p.id);
+    say(null, p.warn, [["Go in", () => enterRealm(p.id)]]);
   }
   function bracken() {
     const n = deer.filter((d) => s.win.deer[d.id]).length, next = deer.find((d) => !s.win.deer[d.id]);
