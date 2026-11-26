@@ -32,8 +32,8 @@ function adoptMonitor(X) {
     for (let i = 0; i < w; i++) weighted.push(id);
   }
   let pick = weighted[Math.floor(Math.random() * weighted.length)];
-  // 4% rare chase variant: rolling an Asian Water Monitor can produce the melanistic Black Dragon morph!
-  if (pick === "watermonitor" && Math.random() < 0.04) pick = "blackdragon";
+  // 0.4% rare chase variant (~1 in 2,080 adoptions): rolling an Asian Water Monitor can produce the melanistic Black Dragon morph!
+  if (pick === "watermonitor" && Math.random() < 0.004) pick = "blackdragon";
   const sp = species(pick);
   if (s.pets[pick]) {
     s.pets[pick].xp = (s.pets[pick].xp || 0) + 50;
@@ -54,8 +54,8 @@ export async function mountMonitorEvent(host, ui = {}) {
   let lastRes = "";
 
   function ensureSanctuary(s) {
-    const sc = (s.sanctuary ||= { day: "", plays: 0, freeDay: "" });
-    if (sc.day !== today()) { sc.day = today(); sc.plays = 0; }
+    const sc = (s.sanctuary ||= { day: "", plays: 0, freeDay: "", adopts: 0 });
+    if (sc.day !== today()) { sc.day = today(); sc.plays = 0; sc.adopts = 0; }
     return sc;
   }
 
@@ -91,6 +91,7 @@ export async function mountMonitorEvent(host, ui = {}) {
     }).join("");
 
     const playsLeft = Math.max(0, 3 - sc.plays);
+    const adoptsLeft = Math.max(0, 10 - (sc.adopts || 0));
     const freeLeft = sc.freeDay !== today();
 
     host.innerHTML = `
@@ -98,11 +99,11 @@ export async function mountMonitorEvent(host, ui = {}) {
         <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
           <div>
             <h2 style="margin:0">🦎 Monitor Sanctuary Event (${owned.length}/${MONITOR_IDS.length})</h2>
-            <p class="muted" style="margin:4px 0 0">Adopt Common–Epic Varanus monitors (4% chase chance for the melanistic Black Dragon!). Crocodile Monitor &amp; Komodo Dragon are hatch-only Legendaries. Cricket Catch: ${playsLeft}/3 rewarded runs today${freeLeft ? " · Free adoption ready at 12+!" : ""}.</p>
+            <p class="muted" style="margin:4px 0 0">Adopt Common–Epic Varanus monitors (~1-in-2,000 chase chance for the melanistic Black Dragon morph! · ${adoptsLeft}/10 adoptions left today). Crocodile Monitor &amp; Komodo Dragon are hatch-only Legendaries. Cricket Catch: ${playsLeft}/3 rewarded runs today${freeLeft ? " · Free adoption ready at 12+!" : ""}.</p>
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button type="button" class="btn btn-accent" id="mn-adopt" ${playing || s.bells < 50 ? "disabled" : ""}>Adopt Monitor (50 Snowbells)</button>
-            ${ui.worldMon ? `<button type="button" class="btn btn-accent" id="mn-adopt-mon" ${playing || ui.mon() < 75 ? "disabled" : ""}>Adopt Monitor (75 mon)</button>` : ""}
+            <button type="button" class="btn btn-accent" id="mn-adopt" ${playing || !adoptsLeft || s.bells < 50 ? "disabled" : ""}>Adopt Monitor (50 Snowbells)</button>
+            ${ui.worldMon ? `<button type="button" class="btn btn-accent" id="mn-adopt-mon" ${playing || !adoptsLeft || ui.mon() < 75 ? "disabled" : ""}>Adopt Monitor (75 mon)</button>` : ""}
             <button type="button" class="btn" id="mn-game">${playing ? "Close Cricket Catch" : "Play Cricket Catch"}</button>
           </div>
         </div>
@@ -113,8 +114,9 @@ export async function mountMonitorEvent(host, ui = {}) {
     `;
 
     host.querySelector("#mn-adopt").onclick = () => {
-      if (playing || s.bells < 50) return;
+      if (playing || (sc.adopts || 0) >= 10 || s.bells < 50) return;
       s.bells -= 50;
+      sc.adopts = (sc.adopts || 0) + 1;
       const r = adoptMonitor(X);
       lastRes = r.dupe ? `${r.sp[1]} duplicate → +50 XP & full joy!` : `Adopted ${r.sp[1]} (${RARITY[r.sp[2]][0]})!`;
       ui.ping?.("done");
@@ -125,7 +127,8 @@ export async function mountMonitorEvent(host, ui = {}) {
     const monBtn = host.querySelector("#mn-adopt-mon");
     if (monBtn) {
       monBtn.onclick = () => {
-        if (playing || !ui.spendMon?.(75)) return;
+        if (playing || (sc.adopts || 0) >= 10 || !ui.spendMon?.(75)) return;
+        sc.adopts = (sc.adopts || 0) + 1;
         const r = adoptMonitor(X);
         lastRes = r.dupe ? `${r.sp[1]} duplicate → +50 XP & full joy!` : `Adopted ${r.sp[1]} (${RARITY[r.sp[2]][0]})!`;
         ui.ping?.("done");
