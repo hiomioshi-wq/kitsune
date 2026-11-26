@@ -23,8 +23,51 @@ const tail = (k, c, a, b) => {
 };
 const eyes = (mood, sp) => { const ink = sp === "penguin" ? "#fff" : "#1b1d33", dot = (x) => `<circle cx="${x}" cy="56" r="4.6" fill="${ink === "#fff" ? "#14152a" : ink}"/><circle cx="${x + 1.6}" cy="54.4" r="1.5" fill="#fff"/>`, ring = sp === "penguin" ? `<circle cx="47" cy="56" r="8" fill="#fff"/><circle cx="73" cy="56" r="8" fill="#fff"/>` : ""; if (mood === "sleepy") return `${ring}<path d="M42 57q5 4 10 0M68 57q5 4 10 0" stroke="#1b1d33" stroke-width="2.6" fill="none" stroke-linecap="round"/>`; if (mood === "love") return `${ring}<path d="M47 60l-5 -5a3 3 0 0 1 5 -3a3 3 0 0 1 5 3ZM73 60l-5 -5a3 3 0 0 1 5 -3a3 3 0 0 1 5 3Z" fill="#e0343e"/>`; if (mood === "sad") return `${ring}${dot(47)}${dot(73)}<path d="M40 48l10 -3M80 48l-10 -3" stroke="#1b1d33" stroke-width="2"/>`; return ring + dot(47) + dot(73); };
 
+function monitorSvg(id, name, rar, c, b, a, tl, stage, mood, size) {
+  const scale = stage === 1 ? .84 : stage === 2 ? .92 : 1;
+  const glow = rar === "l" ? `<circle cx="60" cy="64" r="54" fill="${a}" opacity=".14"/>` : "";
+  const tailCol = tl === "bluetail" ? "#3b8cff" : c;
+  const tailPath =
+    tl === "curl"
+      ? `<path d="M76 88C104 92 114 70 104 52C96 40 82 48 86 60C89 67 97 65 95 57" stroke="${c}" stroke-width="8" stroke-linecap="round" fill="none"/><path d="M98 68L104 54" stroke="${a}" stroke-width="2" stroke-linecap="round" opacity=".6"/>`
+      : tl === "croctail"
+      ? `<path d="M74 90C106 96 116 74 112 44C110 30 100 26 96 34" stroke="${c}" stroke-width="9" stroke-linecap="round" fill="none"/><path d="M88 92l4 -6M98 84l6 -5M106 70l7 -3M110 56l6 -1M106 42l5 2" stroke="${a}" stroke-width="3" stroke-linecap="round"/>`
+      : tl === "spiny"
+      ? `<path d="M72 90C98 94 112 82 106 64C102 54 94 58 96 66" stroke="${c}" stroke-width="10" stroke-linecap="round" fill="none"/><path d="M84 88l3 -6M93 84l4 -5M100 76l5 -4M104 68l5 -2" stroke="${a}" stroke-width="2.5" stroke-linecap="round"/>`
+      : `<path d="M74 90C102 95 114 78 108 56C105 46 97 48 98 56" stroke="${tailCol}" stroke-width="${tl === "heavy" || tl === "thick" ? 11 : 8.5}" stroke-linecap="round" fill="none"/><path d="M88 90l3 -5M98 82l5 -4M106 70l5 -3" stroke="${a}" stroke-width="2.5" stroke-linecap="round" opacity=".7"/>`;
+
+  const pat =
+    id === "crocmonitor" || id === "ackiemonitor" || id === "argusmonitor" || id === "perentie" || id === "watermonitor"
+      ? `<circle cx="44" cy="78" r="3.4" fill="none" stroke="${a}" stroke-width="2"/><circle cx="56" cy="74" r="3.8" fill="none" stroke="${a}" stroke-width="2"/><circle cx="67" cy="80" r="3.2" fill="none" stroke="${a}" stroke-width="2"/><circle cx="50" cy="88" r="3" fill="${a}" opacity=".75"/>`
+      : id === "nilemonitor" || id === "treemonitor" || id === "lacemonitor" || id === "savannahmonitor"
+      ? `<path d="M40 76Q56 70 72 76M42 86Q56 80 70 86M45 94Q56 89 67 94" stroke="${a}" stroke-width="3" fill="none" stroke-linecap="round" opacity=".85"/>`
+      : id === "komodo"
+      ? `<path d="M44 76q6 -3 12 0M54 84q6 -3 12 0M42 88q6 -3 12 0" stroke="#4a443b" stroke-width="2" fill="none"/>`
+      : "";
+
+  const snout = id === "crocmonitor" || id === "savannahmonitor"
+    ? `<path d="M32 48C32 30 44 22 60 22C76 22 88 30 88 48C88 60 76 70 60 70C44 70 32 60 32 48Z" fill="${c}"/>`
+    : `<path d="M33 46C35 28 48 20 60 20C72 20 85 28 87 46C88 60 72 70 60 71C48 70 32 60 33 46Z" fill="${c}"/>`;
+
+  const eyeIris = id === "blackdragon" ? "#ffb830" : "#181a24";
+  const mEyes = mood === "sleepy"
+    ? `<path d="M41 44q5 4 10 0M69 44q5 4 10 0" stroke="#181a24" stroke-width="2.5" fill="none" stroke-linecap="round"/>`
+    : mood === "love"
+    ? `<path d="M46 47l-4 -4a2.5 2.5 0 0 1 4 -2.5a2.5 2.5 0 0 1 4 2.5ZM74 47l-4 -4a2.5 2.5 0 0 1 4 -2.5a2.5 2.5 0 0 1 4 2.5Z" fill="#e0343e"/>`
+    : `<circle cx="46" cy="44" r="5" fill="${eyeIris}"/><circle cx="74" cy="44" r="5" fill="${eyeIris}"/><circle cx="47.6" cy="42.4" r="1.7" fill="#fff"/><circle cx="75.6" cy="42.4" r="1.7" fill="#fff"/>${mood === "sad" ? `<path d="M39 37l9 -2M81 37l-9 -2" stroke="#181a24" stroke-width="2"/>` : ""}`;
+
+  const tongueCol = id === "bluemonitor" ? "#54a8ff" : "#ff6e8a";
+  const tongue = mood === "sad" ? "" : `<path d="M60 67L60 76M60 76L56 80M60 76L64 80" stroke="${tongueCol}" stroke-width="2.3" stroke-linecap="round" fill="none"/>`;
+  const scarf = stage >= 2 ? `<path d="M40 66Q60 76 80 66L82 73Q60 83 38 73Z" fill="#d3312f"/><path d="M68 72l8 15l-8 -2l-5 -10Z" fill="#b52228"/>` : "";
+  const hat = stage >= 3 ? `<g><path d="M44 26Q54 6 74 12Q80 16 80 28Q62 20 44 26Z" fill="#d3312f"/><path d="M40 28Q60 20 82 28" stroke="#fff" stroke-width="5.5" stroke-linecap="round" fill="none"/><circle cx="82" cy="14" r="5" fill="#fff"/></g>` : "";
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 124" ${size ? `width="${size}" height="${size}"` : ""} role="img" aria-label="${name}">${glow}<g transform="translate(${60 - 60 * scale} ${124 - 122 * scale}) scale(${scale})"><ellipse cx="60" cy="116" rx="34" ry="4.5" fill="#000" opacity=".16"/>${tailPath}<path d="M34 84L22 96L28 102L40 92Z" fill="${c}"/><path d="M86 84L98 96L92 102L80 92Z" fill="${c}"/><path d="M38 102L26 112L34 115L46 106Z" fill="${c}"/><path d="M82 102L94 112L86 115L74 106Z" fill="${c}"/><path d="M22 96l-3 4M25 99l-2 4M98 96l3 4M95 99l2 4M26 112l-3 3M94 112l3 3" stroke="#222" stroke-width="1.6" stroke-linecap="round"/><ellipse cx="60" cy="88" rx="24" ry="20" fill="${c}"/><ellipse cx="60" cy="92" rx="15" ry="14" fill="${b}"/>${pat}<path d="M46 66Q60 76 74 66Q70 58 60 58Q50 58 46 66Z" fill="${b}"/>${snout}<ellipse cx="60" cy="58" rx="14" ry="9" fill="${b}" opacity=".9"/><circle cx="54" cy="30" r="1.5" fill="#181a24" opacity=".65"/><circle cx="66" cy="30" r="1.5" fill="#181a24" opacity=".65"/><ellipse cx="38" cy="53" rx="4.5" ry="2.6" fill="#ff8fa8" opacity=".5"/><ellipse cx="82" cy="53" rx="4.5" ry="2.6" fill="#ff8fa8" opacity=".5"/>${mEyes}${tongue}${scarf}${hat}</g></svg>`;
+}
+
 export function petSvg(id, stage = 1, mood = "happy", { size } = {}) {
-  const x = species(id); if (!x) return ""; const [, name, , c, b, a, ear, tl] = x, beak = ["penguin", "robin", "owl", "ptarmigan"].includes(id), scale = stage === 1 ? .82 : stage === 2 ? .92 : 1, mouth = beak ? `<path d="M54 63h12l-6 8Z" fill="${a}"/>` : mood === "sad" ? `<path d="M55 70q5 -4 10 0" stroke="#1b1d33" stroke-width="2.2" fill="none"/>` : `<ellipse cx="60" cy="63" rx="3" ry="2.2" fill="#1b1d33"/><path d="M54 67q3 3 6 0q3 3 6 0" stroke="#1b1d33" stroke-width="2" fill="none"/>`;
+  const x = species(id); if (!x) return ""; const [, name, rar, c, b, a, ear, tl] = x;
+  if (ear === "monitor") return monitorSvg(id, name, rar, c, b, a, tl, stage, mood, size);
+  const beak = ["penguin", "robin", "owl", "ptarmigan"].includes(id), scale = stage === 1 ? .82 : stage === 2 ? .92 : 1, mouth = beak ? `<path d="M54 63h12l-6 8Z" fill="${a}"/>` : mood === "sad" ? `<path d="M55 70q5 -4 10 0" stroke="#1b1d33" stroke-width="2.2" fill="none"/>` : `<ellipse cx="60" cy="63" rx="3" ry="2.2" fill="#1b1d33"/><path d="M54 67q3 3 6 0q3 3 6 0" stroke="#1b1d33" stroke-width="2" fill="none"/>`;
   const scarf = stage >= 2 ? `<path d="M36 80Q60 92 84 80L86 88Q60 100 34 88Z" fill="#d3312f"/><path d="M72 88l10 20l-10 -2l-6 -14Z" fill="#b52228"/><path d="M42 84v6M52 88v5M62 89v5M72 87v5" stroke="#fff" stroke-width="2"/>` : "";
   const top = stage >= 3 ? (id === "spirit" ? `<circle cx="60" cy="60" r="56" fill="#ffd27a" opacity=".16"/>` : `<g><path d="M40 34Q52 8 78 14Q88 18 88 36Q64 26 40 34Z" fill="#d3312f"/><path d="M36 36Q62 26 90 36" stroke="#fff" stroke-width="7" stroke-linecap="round" fill="none"/><circle cx="90" cy="16" r="6" fill="#fff"/></g>`) : "";
   const glow = x[2] === "l" ? `<circle cx="60" cy="66" r="54" fill="${a}" opacity=".14"/>` : "";

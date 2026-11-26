@@ -17,6 +17,10 @@ export const KITS = {
   wolverine: ["ember", ["Pine Claw", 1.9, "hit"], ["Drift Ambush", 2.2, "stun"]], glacierstag: ["frost", ["Diamond Antlers", 2.1, "stun"], ["Chime Blizzard", 2.5, "all"]], solsticefox: ["star", ["Eternal Nine-Cuts", 3.0, "hit"], ["Architect's Crown", 2.9, "all"]],
   snowhare2: ["wild", ["Clover Kick", 1.6, "hit"], ["Woodpile Dash", 1.9, "all"]], polarbear2: ["frost", ["Snowbank Nap", 1.8, "guard"], ["Glacier Hug", 2.1, "healall"]], snowowl2: ["star", ["Lantern Hoot", 1.7, "rally"], ["Boreal Swoop", 2.1, "all"]],
   icewolf: ["frost", ["River Fang", 2.0, "chill"], ["Blizzard Pack", 2.3, "all"]], cometdeer: ["star", ["Violet Leap", 2.2, "stun"], ["Comet Stampede", 2.6, "all"]], yulekitsune: ["star", ["Chronicle Seal", 3.1, "hit"], ["Midwinter Tome", 3.0, "all"]],
+  savannahmonitor: ["wild", ["Bask Tackle", 1.7, "guard"], ["Sandstone Nap", 2.0, "healall"]], ackiemonitor: ["ember", ["Spiny Tail Whip", 1.8, "hit"], ["Red Outback Dash", 2.1, "all"]],
+  nilemonitor: ["wild", ["River Sprint", 1.9, "hit"], ["Chevron Lash", 2.2, "all"]], watermonitor: ["frost", ["Harbor Splash", 1.8, "chill"], ["Tidal Tail Sweep", 2.2, "chillall"]], argusmonitor: ["wild", ["Tripod Strike", 2.0, "stun"], ["Horizon Ambush", 2.3, "all"]],
+  lacemonitor: ["wild", ["Canopy Climb", 2.0, "hit"], ["Lace Band Storm", 2.4, "all"]], perentie: ["ember", ["Desert Charge", 2.1, "burn"], ["Goliath Whip", 2.4, "all"]], treemonitor: ["wild", ["Emerald Coil", 1.9, "stun"], ["Canopy Chorus", 2.2, "rally"]], bluemonitor: ["frost", ["Cobalt Flick", 2.0, "chill"], ["Sapphire Lash", 2.4, "all"]],
+  crocmonitor: ["ember", ["Canopy Fang", 2.6, "burn"], ["Salvadorii Whip", 2.8, "all"]], blackdragon: ["star", ["Obsidian Tide", 2.6, "hit"], ["Golden Eye Eclipse", 2.8, "all"]], komodo: ["ember", ["Armored Clamp", 2.7, "stun"], ["Island Sovereign", 3.0, "all"]],
 };
 // name, hp, attack, element, shape, colour, move pattern
 const F = (name, hp, atk, el, shape, color, moves) => ({ name, hp, atk, el, shape, color, moves });
