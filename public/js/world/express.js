@@ -2,22 +2,38 @@
 import { esc, today } from "../util.js";
 
 const STOPS = ["village", "clock", "shore", "market", "oz"];
+const BRIDGE_STATIONS = [
+  { id: "bay", name: "Moonwake Bay Pier", cost: 80 },
+  { id: "pine", name: "Hollow Pine Viaduct", cost: 140 },
+  { id: "sky", name: "Skyward Isles Terminus", cost: 220 },
+];
 
 export function createExpress(o) {
   const { s, REGIONS, panel, closePanel, toast, ping, save, hud, teleport, T, addRenown } = o;
   const st = (s.express ||= {});
   st.rides ||= 0;
   st.shiftDay ||= "";
+  st.stations ||= {};
 
   function open() {
     const canShift = st.shiftDay !== today();
-    const rows = STOPS.map((rk) => {
+    const allStops = [...STOPS, ...BRIDGE_STATIONS.filter((b) => st.stations[b.id]).map((b) => b.id)];
+    const rows = allStops.map((rk) => {
       const r = REGIONS[rk];
       if (!r) return "";
-      const seen = !!s.visited?.[rk];
+      const seen = !!s.visited?.[rk] || !!st.stations[rk];
       return `<div class="se-good">
         <span><strong>🚂 ${esc(r[0])}</strong><small>${seen ? "Express service · 10 mon" : "Visit on foot first to unlock rail pass"}</small></span>
         <button type="button" class="btn btn-sm btn-accent" data-ride="${rk}" ${!seen || s.mon < 10 ? "disabled" : ""}>Board (10)</button>
+      </div>`;
+    }).join("");
+
+    const bridgeRows = BRIDGE_STATIONS.map((b, i) => {
+      const built = !!st.stations[b.id];
+      const prevBuilt = i === 0 || !!st.stations[BRIDGE_STATIONS[i - 1].id];
+      return `<div class="se-good">
+        <span><strong>🌉 ${esc(b.name)}</strong><small>${built ? "Bridge station open · Spirit Express route unlocked ✓" : prevBuilt ? `Fund construction (${b.cost} mon) for +30 Renown` : "Complete previous station first"}</small></span>
+        ${built ? `<span class="pill pill-done">Built ✓</span>` : `<button type="button" class="btn btn-sm btn-accent" data-fund="${b.id}" ${!prevBuilt || s.mon < b.cost ? "disabled" : ""}>Fund (${b.cost})</button>`}
       </div>`;
     }).join("");
 
@@ -29,8 +45,23 @@ export function createExpress(o) {
         </div>
       </div>
       <h4>Sleeper Train Timetable</h4>
-      <div class="se-mkt">${rows}</div>
+      <div class="se-mkt" style="margin-bottom:12px">${rows}</div>
+      <h4>🌉 Build-a-Bridge Rail (Moonwake Bay → Skyward Isles)</h4>
+      <p class="muted">Fund rail stations across the sky-bridge to unlock new Spirit Express routes.</p>
+      <div class="se-mkt">${bridgeRows}</div>
     `, (e) => {
+      e.querySelectorAll("[data-fund]").forEach((btn) => {
+        btn.onclick = () => {
+          const b = BRIDGE_STATIONS.find((q) => q.id === btn.dataset.fund);
+          if (!b || st.stations[b.id] || s.mon < b.cost) return;
+          s.mon -= b.cost;
+          st.stations[b.id] = true;
+          addRenown?.(30);
+          ping("done");
+          toast(`Built ${b.name}! New Spirit Express route unlocked & +30 Renown.`);
+          save(); hud(); open();
+        };
+      });
       const sh = e.querySelector("#ex-sh");
       if (sh) sh.onclick = () => {
         if (st.shiftDay === today()) return;

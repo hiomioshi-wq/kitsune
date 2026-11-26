@@ -7,6 +7,21 @@ export function createRaffle(o) {
   st.draws ||= 0;
   st.wins ||= 0;
   st.freeDay ||= "";
+  st.forgeries ||= [];
+
+  const FORGE_NAMES = ["Replica Lantern Crown", "Faux Foxfire Beret", "Counterfeit Courier Cap", "Gilded Starlight Tricorne"];
+
+  function craftForgery() {
+    if (s.mon < 25) return toast("Need 25 mon for replica silk and gilt thread.");
+    s.mon -= 25;
+    const bonus = Math.min(18, (s.hats?.length || 0) * 2);
+    const quality = Math.min(99, 45 + bonus + Math.floor(Math.random() * 45));
+    const name = FORGE_NAMES[st.forgeries.length % FORGE_NAMES.length];
+    st.forgeries.push({ id: `${Date.now()}_${Math.random().toString(36).slice(2, 6)}`, name, quality });
+    lastRes = `🪡 Crafted <strong>${name}</strong> (craft: ${quality}%). Take it to the Detective Agency for appraisal!`;
+    ping("choice"); toast(`Crafted ${name}! Have the Detective Agency appraise it.`);
+    save(); hud(); open();
+  }
 
   let lastRes = null;
 
@@ -52,15 +67,21 @@ export function createRaffle(o) {
 
   function open() {
     const canFree = st.freeDay !== today();
+    const forgeList = st.forgeries.map((f) => `<span class="pill">🎩 ${f.name} (${f.quality}%)</span>`).join(" ");
     panel(`Night Market Raffle · ${s.mon} mon`, `
       <p class="muted">Draw a ticket from the Foxfire Drum! Win up to <strong>200 mon</strong>, Lucky Ripples, or the <strong>Lantern Master's Hat</strong>.</p>
       <p>Draws: <strong>${st.draws}</strong> · Prizes won: <strong>${st.wins}</strong></p>
       ${lastRes ? `<div class="hint" style="margin:10px 0">${lastRes}</div>` : ""}
-      <div class="px-row">
+      <div class="px-row" style="margin-bottom:12px">
         <button type="button" class="btn btn-accent" id="rf-go" ${!canFree && s.mon < 15 ? "disabled" : ""}>${canFree ? "Daily Free Ticket" : "Buy & Draw Ticket (15 mon)"}</button>
+        <button type="button" class="btn" id="rf-forge" ${s.mon < 25 ? "disabled" : ""}>Forge Replica Hat (25 mon)</button>
       </div>
+      <h4>🎩 Night Market Forgeries (${st.forgeries.length})</h4>
+      <p class="muted">Stitch a replica hat blank here, then visit the <strong>Foxglove Detective Agency</strong> to see if your forgery passes inspection (+95 mon if quality ≥ 65%).</p>
+      ${forgeList ? `<div class="chips">${forgeList}</div>` : ""}
     `, (e) => {
       e.querySelector("#rf-go").onclick = () => drawTicket(st.freeDay !== today() ? 0 : 15);
+      e.querySelector("#rf-forge").onclick = craftForgery;
     });
   }
 

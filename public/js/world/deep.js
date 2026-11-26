@@ -1,5 +1,6 @@
 // The Sunken Deep: walkable underwater realm reached by Diving Bell.
 import { characterSvg } from "../vnchar.js";
+import { lib } from "../store.js";
 import { DW, DH, DT as T, DTILE, DEEP_ZONES, DEEP_SPAWN, DEEP_BELL, DEEP_BUILDINGS, DEEP_NPCS, DEEP_LANTERNS, DEEP_FISH, DEEP_GOODS, ensureDeep, buildDeepMap } from "./deepcore.js";
 
 const esc = (x) => String(x).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -236,12 +237,40 @@ export function mountDeep(host, api) {
   }
 
   function deepLog() {
-    page("Deep Log", `<h3>Sunken Lanterns (${Object.keys(dp.lit).length}/${DEEP_LANTERNS.length})</h3>
+    dp.salvaged ||= {};
+    const books = (lib?.items || []).slice(0, 12);
+    const salvageRows = books.length
+      ? books.map((bk) => {
+          const done = !!dp.salvaged[bk.id];
+          return `<li><strong>📖 ${esc(bk.title || bk.id)}</strong><span>${done ? "Salvaged ✓" : `<button class="btn btn-sm btn-accent" type="button" data-salvage="${esc(bk.id)}">Salvage Page (+35 mon)</button>`}</span></li>`;
+        }).join("")
+      : `<li class="muted">Read or add books in the Library to find their drowned pages here.</li>`;
+    const passages = Object.values(dp.salvaged);
+
+    page("Deep Log & Sunken Library", `<h3>Sunken Lanterns (${Object.keys(dp.lit).length}/${DEEP_LANTERNS.length})</h3>
       <ol class="wd-list">${DEEP_LANTERNS.map((l) => `<li class="${dp.lit[l.id] ? "ok" : ""}"><strong>${esc(l.name)}</strong><span>${dp.lit[l.id] ? "Lit" : l.need}</span></li>`).join("")}</ol>
+      <h3>📚 The Sunken Library (${passages.length} Passages Salvaged)</h3>
+      <p class="muted">Every book in your Library drifts down here as a drowned page. Salvage pages to weave the Deep's story.</p>
+      <ol class="wd-list">${salvageRows}</ol>
+      ${passages.length ? `<div class="se-mkt" style="margin:8px 0">${passages.map((p) => `<div class="se-good"><span><small>“${esc(p)}”</small></span></div>`).join("")}</div>` : ""}
       <h3>Abyssal Fish (${Object.keys(dp.fish).length}/${DEEP_FISH.length})</h3>
       <ol class="wd-list">${DEEP_FISH.map((f) => `<li class="${dp.fish[f[0]] ? "ok" : ""}"><strong>${dp.fish[f[0]] ? esc(f[1]) : "???"}</strong><span>${dp.fish[f[0]] ? `${dp.fish[f[0]]} caught · ${f[2]} mon` : "Trench edge"}</span></li>`).join("")}</ol>
       <h3>Fast Travel</h3>
       <div class="chips">${DEEP_ZONES.map((z) => `<button class="chip" type="button" data-go="${z.id}">${esc(z.name)}</button>`).join("")}</div>`, (e) => {
+      e.querySelectorAll("[data-salvage]").forEach((b) => (b.onclick = () => {
+        const id = b.dataset.salvage;
+        if (dp.salvaged[id]) return;
+        const bk = (lib?.items || []).find((q) => String(q.id) === id);
+        const title = bk?.title || id;
+        dp.salvaged[id] = `From “${title}”: ink dissolved into glowing brine, revealing a forgotten tideway beneath the bells.`;
+        s.mon += 35;
+        api.addRenown?.(20);
+        api.save?.();
+        api.hud?.();
+        api.ping?.("done");
+        api.toast?.(`Salvaged drowned page from “${title}”! +35 mon`);
+        deepLog();
+      }));
       e.querySelectorAll("[data-go]").forEach((b) => (b.onclick = () => {
         const z = DEEP_ZONES.find((q) => q.id === b.dataset.go);
         if (z) { px = (z.cx + 0.5) * T; py = (z.cy + 1.5) * T; }

@@ -9,7 +9,7 @@ import { openItem } from "./common.js";
 import { loadCast } from "./vn.js";
 import { characterSvg } from "../vnchar.js";
 import { denState } from "../den.js";
-import { isKids } from "../profiles.js";
+import { isKids, currentProfile } from "../profiles.js";
 import { W, H, T, TILE, SPAWN, REGIONS, regionAt, BUILDINGS, door, NPCS, npcPos, LANTERNS, FINAL_LANTERN, FISH, HATS, FURNITURE, MAIL } from "../world/data.js";
 import { buildMap, tileSprites, drawTree, drawBuilding, drawLantern, drawFox, furnitureUrl } from "../world/art.js";
 import { loadXmas, xs, isSeason, activePet, petLevel, petStage, earn, award, bump, onXmas } from "../xmas/core.js";
@@ -448,7 +448,7 @@ export async function render(view, _n, params = []) {
   express = createExpress({ s, REGIONS, panel, closePanel, toast, ping, save, hud, teleport: (x, y) => { s.x = x; s.y = y; petX = x - 30; petY = y + 6; save(); }, T, addRenown: (n) => tale.addRenown(n) });
   arcade = createArcade({ s, panel, toast, ping, save, hud, addRenown: (n) => tale.addRenown(n) });
   teahouse = createTeahouse({ s, panel, toast, ping, save, hud, extras, addRenown: (n) => tale.addRenown(n) });
-  bulletinW = createBulletin({ s, panel, LANTERNS, FAR_QUESTS, NPCS, FISH, openActivity: (act) => { closePanel(); if (act === "inventory") inventory.open(); else if (act === "museum") museumW.open(); else if (act === "badges") badges.open(); else if (act === "roulette") roulette.open(); else if (act === "tavern") tavern.open(); else if (act === "keno") keno.open(); else if (act === "exchange") exchange.open(); else if (act === "quiz") quiz.open(); else if (act === "petarena") petArena.open(); else if (act === "stargaze") stargaze.open(); else if (act === "postoffice") postOffice.open(); else if (act === "tidepool") tidepool.open(); } });
+  bulletinW = createBulletin({ s, panel, LANTERNS, FAR_QUESTS, NPCS, FISH, kvGet, kvSet, playerName: () => currentProfile()?.name || "Fox", openActivity: (act) => { closePanel(); if (act === "inventory") inventory.open(); else if (act === "museum") museumW.open(); else if (act === "badges") badges.open(); else if (act === "roulette") roulette.open(); else if (act === "tavern") tavern.open(); else if (act === "keno") keno.open(); else if (act === "exchange") exchange.open(); else if (act === "quiz") quiz.open(); else if (act === "petarena") petArena.open(); else if (act === "stargaze") stargaze.open(); else if (act === "postoffice") postOffice.open(); else if (act === "tidepool") tidepool.open(); } });
   botanical = createBotanical({ s, panel, toast, ping, save, hud, addRenown: (n) => tale.addRenown(n) });
   pyro = createFireworks({ s, panel, toast, ping, save, hud, fireworks: (opt) => { fireworks = 8; if (opt?.color) burst({ x: s.x, y: s.y - 40 }, 36); }, addRenown: (n) => tale.addRenown(n) });
   luckySpin = createLuckySpin({ s, panel, toast, ping, save, hud, addRenown: (n) => tale.addRenown(n) });

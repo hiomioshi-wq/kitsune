@@ -67,7 +67,33 @@ export function createAgency(o) {
     };
     box.__case = { x, a, go: (t) => { tab = t; paint(); } }; paint();
   }
-  function board() { const n = next(), dailyDone = st.day.d === dayKey(), solvedCount = Object.keys(st.solved).length; panel("Foxglove Detective Agency", `<p class="muted">${rank()} · ${st.rep} reputation${n ? `, ${n[0] - st.rep} to ${n[1]}` : ""} · ${st.solvedN} solved, ${st.cold} cold.</p>${st.cur ? `<button class="btn btn-accent" type="button" data-resume>Resume ${esc(CASES.find((c) => c[0] === st.cur.theme)?.[1] || "case")}</button>` : ""}<div class="px-row"><button class="btn" type="button" data-daily ${dailyDone ? "disabled" : ""}>${dailyDone ? "Daily case done" : "Daily case (+100 mon)"}</button>${LEVELS.map((l, i) => `<button class="btn" type="button" data-free="${i}">Random: ${l}</button>`).join("")}</div><h4>Casebook ${solvedCount}/${CASES.length}</h4><div class="px-grid">${CASES.map((c, i) => { const open = i <= solvedCount; return open ? `<button type="button" class="px-tile" data-case="${c[0]}"><strong>${esc(c[1])}</strong><small>${LEVELS[levelFor(i)]}${st.solved[c[0]] ? ` · ${"★".repeat(st.solved[c[0]])}` : ""}</small></button>` : `<div class="px-tile off"><strong>Locked</strong><small>Solve the case before it</small></div>`; }).join("")}</div>`, (e) => { const go = (k, id) => { if (st.cur && !confirm("Drop your open case and start this one?")) return; start(k, id); }; e.querySelector("[data-resume]")?.addEventListener("click", play); e.querySelector("[data-daily]")?.addEventListener("click", () => go("daily")); e.querySelectorAll("[data-free]").forEach((b) => (b.onclick = () => go("free", +b.dataset.free))); e.querySelectorAll("[data-case]").forEach((b) => (b.onclick = () => go("story", b.dataset.case))); }); }
+  function board() {
+    const n = next(), dailyDone = st.day.d === dayKey(), solvedCount = Object.keys(st.solved).length;
+    const forgeries = s.raffle?.forgeries || [];
+    const forgeHtml = forgeries.length
+      ? `<h4>🎩 Night Market Forgery Appraisal (${forgeries.length})</h4><div class="px-list" style="margin-bottom:10px">${forgeries.map((f, i) => `<div class="px-li"><span><strong>${esc(f.name)}</strong><small>Craft quality: ${f.quality}% · Pass threshold: 65%</small></span><button class="btn btn-sm btn-accent" type="button" data-appraise="${i}">Appraise</button></div>`).join("")}</div>`
+      : "";
+    panel("Foxglove Detective Agency", `<p class="muted">${rank()} · ${st.rep} reputation${n ? `, ${n[0] - st.rep} to ${n[1]}` : ""} · ${st.solvedN} solved, ${st.cold} cold.</p>${st.cur ? `<button class="btn btn-accent" type="button" data-resume>Resume ${esc(CASES.find((c) => c[0] === st.cur.theme)?.[1] || "case")}</button>` : ""}<div class="px-row"><button class="btn" type="button" data-daily ${dailyDone ? "disabled" : ""}>${dailyDone ? "Daily case done" : "Daily case (+100 mon)"}</button>${LEVELS.map((l, i) => `<button class="btn" type="button" data-free="${i}">Random: ${l}</button>`).join("")}</div>${forgeHtml}<h4>Casebook ${solvedCount}/${CASES.length}</h4><div class="px-grid">${CASES.map((c, i) => { const open = i <= solvedCount; return open ? `<button type="button" class="px-tile" data-case="${c[0]}"><strong>${esc(c[1])}</strong><small>${LEVELS[levelFor(i)]}${st.solved[c[0]] ? ` · ${"★".repeat(st.solved[c[0]])}` : ""}</small></button>` : `<div class="px-tile off"><strong>Locked</strong><small>Solve the case before it</small></div>`; }).join("")}</div>`, (e) => {
+      const go = (k, id) => { if (st.cur && !confirm("Drop your open case and start this one?")) return; start(k, id); };
+      e.querySelectorAll("[data-appraise]").forEach((b) => (b.onclick = () => {
+        const idx = +b.dataset.appraise;
+        const item = s.raffle?.forgeries?.splice(idx, 1)[0];
+        if (!item) return;
+        if (item.quality >= 65) {
+          s.mon += 95;
+          st.rep += 2;
+          ping("done");
+          toast(`Agency ruled “${item.name}” (${item.quality}%) good enough to sell! +95 mon & +2 Rep.`);
+        } else {
+          st.rep += 1;
+          ping("close");
+          toast(`Agency spotted crooked stitching on “${item.name}” (${item.quality}%) and confiscated it! +1 Rep.`);
+        }
+        save(); hud(); board();
+      }));
+      e.querySelector("[data-resume]")?.addEventListener("click", play); e.querySelector("[data-daily]")?.addEventListener("click", () => go("daily")); e.querySelectorAll("[data-free]").forEach((b) => (b.onclick = () => go("free", +b.dataset.free))); e.querySelectorAll("[data-case]").forEach((b) => (b.onclick = () => go("story", b.dataset.case)));
+    });
+  }
   return { board, start, state: st, build };
 }
 

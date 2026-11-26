@@ -16,10 +16,24 @@ export function createWeatherBell(o) {
       `<button type="button" class="chip${s.time === k ? " on" : ""}" data-tm="${k}">${l}</button>`
     ).join("");
 
+    const seasons = [
+      ["starfall", "✨ Starfall Week", "Falling Stars, Meteor Shower, Aurora Blooms & Foxfire Swarm"],
+      ["lantern", "🏮 Lantern Breeze", "Drifting Lanterns, Lantern Parade, Regatta & Kite Regatta"],
+      ["gale", "🌬️ Desert & Gale", "Bead Storm, Mirrorshards, Nightjar Courier & Foxfire Storm"],
+      ["tide", "🦀 Tide & Ledger", "Tidepool Tag, Moth Migration, Ledger Rain & Golden Fox"],
+    ];
+    const activeSeason = st.season && st.season.until > Date.now() ? st.season : null;
+    const daysLeft = activeSeason ? Math.max(1, Math.ceil((activeSeason.until - Date.now()) / 86400000)) : 0;
+    const canSeason = !activeSeason;
+
     panel("Weather & Time Shrine", `
-      <p class="muted">Adjust the sky over Kitsune World, ring the shrine bell for celebratory foxfire, and claim your daily forecast blessing.</p>
+      <p class="muted">Adjust the sky over Kitsune World, ring the shrine bell for celebratory foxfire, and ring the <strong>Seasonal Weather Bell</strong> once a week to shift which world events spawn for 7 days.</p>
       <div style="margin:10px 0"><strong>Time of Day:</strong><div class="chips" style="margin-top:6px">${times}</div></div>
       <div class="se-mkt" style="margin-top:12px">
+        <div class="se-good">
+          <span><strong>🔔 Seasonal Weather Bell</strong><small>${activeSeason ? `${activeSeason.name} active (${daysLeft}d left)` : "Ring once a week to shift world event spawns for 7 days"}</small></span>
+          <button type="button" class="btn btn-sm btn-accent" id="wb-sn" ${canSeason ? "" : "disabled"}>${canSeason ? "Ring Weekly Bell" : `${daysLeft}d Left`}</button>
+        </div>
         <div class="se-good">
           <span><strong>🎆 Ring Foxfire Sky-Bell</strong><small>Launch celebratory fireworks across the sky</small></span>
           <button type="button" class="btn btn-sm btn-accent" id="wb-fw">Ring Bell</button>
@@ -30,6 +44,16 @@ export function createWeatherBell(o) {
         </div>
       </div>
     `, (e) => {
+      e.querySelector("#wb-sn").onclick = () => {
+        if (st.season && st.season.until > Date.now()) return;
+        const idx = st.season ? (seasons.findIndex((q) => q[0] === st.season.id) + 1) % seasons.length : 0;
+        const pick = seasons[idx];
+        st.season = { id: pick[0], name: pick[1], until: Date.now() + 7 * 86400000 };
+        fireworks?.();
+        ping("done");
+        toast(`Town bell rings! ${pick[1]} begins for 7 days (${pick[2]}).`);
+        save(); open();
+      };
       e.querySelectorAll("[data-tm]").forEach((b) => {
         b.onclick = () => {
           s.time = b.dataset.tm;
