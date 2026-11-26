@@ -194,15 +194,19 @@ export async function render(view, _n, params = []) {
   const MINESHAFT = { x: 46, y: 18 }; for (let y = MINESHAFT.y - 1; y <= MINESHAFT.y + 1; y++) for (let x = MINESHAFT.x - 1; x <= MINESHAFT.x + 1; x++) { const i = y * W + x; if (map.g[i] !== TILE.water) { if (map.solid[i]) map.g[i] = TILE.plaza; map.solid[i] = 0; map.reach[i] = 1; } }
   const NEXUSSPIRE = { x: 66, y: 30 }; for (let y = NEXUSSPIRE.y - 1; y <= NEXUSSPIRE.y + 1; y++) for (let x = NEXUSSPIRE.x - 1; x <= NEXUSSPIRE.x + 1; x++) { const i = y * W + x; if (map.g[i] !== TILE.water) { if (map.solid[i]) map.g[i] = TILE.plaza; map.solid[i] = 0; map.reach[i] = 1; } }
   const gates = isKids() ? [] : GATES; if (gates.length) applyGates(map); s.realm ||= {}; let realm = null;
-  const realmActors = isKids() ? [] : buildOverworldRealmActors((c) => cast?.(c), map, W, H, blocked);
+  const blockedTile = (x, y) => x < 0 || y < 0 || x >= W || y >= H || map.solid[y * W + x];
+  const blocked = (x, y) => [[-9, 2], [9, 2], [-9, 13], [9, 13]].some(([a, b]) => blockedTile(Math.floor((x + a) / T), Math.floor((y + b) / T)));
+  if (blocked(s.x, s.y)) { s.x = (SPAWN[0] + .5) * T; s.y = (SPAWN[1] + .5) * T; }
+  const realmPortrait = (n, ser) => {
+    const d = (n?.cast && cast?.[`${ser}:${n.cast}`]) || n?.look || { c: "#3a3744", a: "#d8d2c4", st: 3, sk: 1, h: "#26222c", e: "#222", f: "casual" };
+    return characterSvg(n?.cast || n?.name || "Resident", d, n?.mood || "calm").replace('width="100%" height="100%"', 'width="300" height="420"');
+  };
+  const realmActors = isKids() ? [] : buildOverworldRealmActors(realmPortrait, map, W, H, blocked);
   const REGS = { ...REGIONS, foxhold: ["Road to Foxhold", 49.5, 43.5], ...(winter ? { winter: ["Winterfest Village", VILLAGE.cx, VILLAGE.cy] } : {}), ...Object.fromEntries(gates.map((p) => ["gate-" + p.id, [p.name, p.cx, p.cy + 1]])) }, regKey = (x, y) => { if (Math.abs(x - 49.5) < 3 && Math.abs(y - 43) < 3) return "foxhold"; const q = gates.find((p) => Math.abs(x - p.cx) < 5 && Math.abs(y - p.cy) < 4); return q ? "gate-" + q.id : winter && inVillage(x, y) ? "winter" : regionAt(x, y); };
   s.far = { took: {}, lit: {}, done: 0, ...(s.far || {}) }; s.ride = !!s.ride;
   s.win = { deer: {}, took: 0, done: 0, day: "", round: {}, swap: 0, ...(s.win || {}) }; if (winter && s.win.day !== today()) { s.win.day = today(); s.win.round = {}; s.win.swap = 0; }
   const deer = winter ? deerSpots(map) : [], svgImg = (u) => { const i = new Image(); i.src = u; return i; }, deerImg = winter ? svgImg(petUrl("fawn", 2, "happy")) : null, brackenImg = winter ? svgImg(petUrl("fawn", 3, "happy")) : null, BR = { x: BRACKEN.x * T, y: BRACKEN.y * T };
   const roundIds = () => { let h = 7; for (const c of s.win.day) h = (h * 31 + c.charCodeAt(0)) >>> 0; const out = []; for (let i = 0; out.length < 3 && i < 40; i++) { const id = NPCS[(h + i * 7) % NPCS.length][0]; if (!out.includes(id)) out.push(id); } return out; }, wantsGift = (id) => winter && roundIds().includes(id) && !s.win.round[id];
-  const blockedTile = (x, y) => x < 0 || y < 0 || x >= W || y >= H || map.solid[y * W + x];
-  const blocked = (x, y) => [[-9, 2], [9, 2], [-9, 13], [9, 13]].some(([a, b]) => blockedTile(Math.floor((x + a) / T), Math.floor((y + b) / T)));
-  if (blocked(s.x, s.y)) { s.x = (SPAWN[0] + .5) * T; s.y = (SPAWN[1] + .5) * T; }
   const people = NPCS.map((n, i) => { const [x, y] = npcPos(n), d = cast["kitsune:" + n[1]] || n[8] || { c: "#6b6d78", a: "#e8dcc0", st: 2, sk: 1, h: "#3a2a20", e: "#222", f: "casual" }, svg = characterSvg(n[1], d, "calm"), img = new Image(); img.src = "data:image/svg+xml," + encodeURIComponent(svg.replace('width="100%" height="100%"', 'width="300" height="420"')); return { n, id: n[0], x: (x + .5) * T, y: (y + .5) * T, d, img, tw: i * 1.3, line: 0 }; });
   const save = () => kvSet("world", s), lamps = [...LANTERNS, FINAL_LANTERN].map((l) => ({ l, x: (l.x + .5) * T, y: (l.y + .5) * T }));
   let wp = null, petImg = null, petKey = "", orbReach = 26; const refreshPet = () => { wp = winter ? activePet() : null; const st = wp ? petStage(petLevel(wp).level) : 0, k = wp ? wp.sp + st : ""; orbReach = winter && wp ? 26 + Math.min(20, petLevel(wp).level) * 1.5 : 26; if (k === petKey) return; petKey = k; petImg = wp ? svgPet(wp.sp, st) : null; }, svgPet = (sp, st) => { const i = new Image(); i.src = petUrl(sp, st, "happy"); return i; }; refreshPet(); let petX = s.x - 34, petY = s.y + 6;

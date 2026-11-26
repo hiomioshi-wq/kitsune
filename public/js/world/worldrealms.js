@@ -34,7 +34,7 @@ export function buildOverworldRealmActors(castFn, map, W, H, blocked) {
     if (!r) continue;
     const seenNames = new Set();
     const npcs = [];
-    for (const area of Object.values(r.areas || {})) {
+    for (const area of Object.values(r.scenes || r.areas || {})) {
       for (const n of area.npcs || []) {
         if (!n.name || seenNames.has(n.name)) continue;
         seenNames.add(n.name);
@@ -45,7 +45,7 @@ export function buildOverworldRealmActors(castFn, map, W, H, blocked) {
     npcs.slice(0, 8).forEach((n, idx) => {
       const [x, y] = findOpen(gate.cx, gate.cy + 1.5, taken);
       const img = new Image();
-      const svg = castFn?.(n.cast);
+      const svg = typeof castFn === "function" ? castFn(n, r.series || gate.id) : "";
       if (svg) img.src = "data:image/svg+xml;utf8," + encodeURIComponent(svg);
       actors.push({
         id: `${gate.id}:${n.id || idx}`,
