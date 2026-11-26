@@ -46,7 +46,6 @@ import { createExchange } from "../world/exchange.js";
 import { createQuiz } from "../world/quiz.js";
 import { createTarot } from "../world/tarot.js";
 import { createExplorer } from "../world/explore.js";
-import { enterReptileHouse } from "../world/reptilehouse.js";
 import { createInventory } from "../world/inventory.js";
 import { createMuseum } from "../world/museum.js";
 import { createPetArena } from "../world/petarena.js";
@@ -148,29 +147,37 @@ export async function render(view, _n, params = []) {
   });
   const leafPiles = realSeason === "autumn" ? [0, 1, 2, 3].map((i) => ({ id: i, x: (45 + i * 3) * T, y: (46 + (i % 2) * 2) * T, taken: false })) : [];
   const civicSpot = { x: 47 * T, y: 42 * T }, monitorSpot = { x: 53 * T, y: 46 * T };
-  function enterReptile() {
+  async function enterReptile() {
     if (realm) return;
     closeTalk();
     if (!panelEl.hidden) closePanel();
     keys.clear();
-    realm = { close() {} };
-    const off = enterReptileHouse({
-      root,
-      s,
-      drawFox,
-      fur,
-      tailsN: s.final ? 9 : tailsN,
-      toast,
-      ping,
-      save,
-      hud: () => { hud(); refreshPet(); },
-      onLeave: () => {
-        realm = null;
-        if (location.hash === "#world/reptilehouse") history.replaceState(null, "", "#world");
-        root.focus({ preventScroll: true });
-      },
-    });
-    realm = { close: off };
+    let closed = false, innerOff = null;
+    realm = { close() { closed = true; innerOff?.(); } };
+    try {
+      const { enterReptileHouse } = await import("../world/reptilehouse.js");
+      if (closed || !alive) return;
+      innerOff = enterReptileHouse({
+        root,
+        s,
+        drawFox,
+        fur,
+        tailsN: s.final ? 9 : tailsN,
+        toast,
+        ping,
+        save,
+        hud: () => { hud(); refreshPet(); },
+        onLeave: () => {
+          realm = null;
+          if (location.hash === "#world/reptilehouse") history.replaceState(null, "", "#world");
+          root.focus({ preventScroll: true });
+        },
+      });
+    } catch (err) {
+      console.error(err);
+      realm = null;
+      toast("Couldn't open the Reptile House — try reloading.");
+    }
   }
   if (winter) applyVillage(map);
   const delves = DELVE_SITES.map((d) => ({ ...d, x: REGIONS[d.region][1] - 7, y: REGIONS[d.region][2] + 1 })); for (const d of delves) for (let y = d.y - 2; y <= d.y + 2; y++) for (let x = d.x - 2; x <= d.x + 2; x++) { const i = y * W + x; if (map.g[i] === TILE.water || map.g[i] === TILE.lava) map.g[i] = TILE.plaza; else if (map.solid[i]) map.g[i] = TILE.plaza; map.solid[i] = 0; map.reach[i] = 1; }

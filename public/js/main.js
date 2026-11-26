@@ -36,54 +36,67 @@ const NAV_ALL = [
 ];
 const TABBAR_ALL = ["home", "library", "discover", "books", "link"];
 
-const routes = {
-  home: () => import("./views/home.js"),
-  library: () => import("./views/library.js"),
-  item: () => import("./views/library.js"),
-  series: () => import("./views/library.js"),
-  discover: () => import("./views/discover.js"),
-  comics: () => import("./views/comics.js"),
-  web: () => import("./views/web.js"),
-  feeds: () => import("./views/feeds.js"),
-  manga: () => import("./views/discover.js"),
-  books: () => import("./views/books.js"),
-  gutenberg: () => import("./views/books.js"),
-  scan: () => import("./views/books.js"),
-  loc: () => import("./views/books.js"),
-  audiobook: () => import("./views/books.js"),
-  link: () => import("./views/link.js"),
-  stats: () => import("./views/stats.js"),
-  tools: () => import("./views/tools.js"),
-  story: () => import("./views/story.js"),
-  vn: () => import("./views/vn.js"),
-  shrine: () => import("./views/shrine.js"),
-  plus: () => import("./views/plus.js"),
-  world: () => import("./views/world.js"),
-  town: () => import("./views/town.js"),
-  xmas: () => import("./views/xmas.js"),
-  den: () => import("./views/den.js"),
-  atlas: () => import("./views/atlas.js"),
-  notebook: () => import("./views/notebook.js"),
-  list: () => import("./views/list.js"),
-  studio: () => import("./views/studio.js"),
-  sources: () => import("./views/sources.js"),
-  find: () => import("./views/find.js"),
-  accounts: () => import("./views/accounts.js"),
-  create: () => import("./views/create.js"),
-  ai: () => import("./views/ai.js"),
-  panels: () => import("./views/panels.js"),
-  write: () => import("./views/write.js"),
-  wiki: () => import("./views/wiki.js"),
-  lore: () => import("./views/lore.js"),
-  search: () => import("./views/search.js"),
-  own: () => import("./views/own.js"),
-  settings: () => import("./views/settings.js"),
-  sanctuary: () => import("./views/sanctuary.js"),
-  constellations: () => import("./views/constellations.js"),
-  mythic: () => import("./xmas/mythic.js"),
-  thanksgiving: () => import("./views/thanksgiving.js"),
-  bingo: () => import("./views/bingo.js"),
+const ROUTE_MODS = {
+  home: "./views/home.js",
+  library: "./views/library.js",
+  item: "./views/library.js",
+  series: "./views/library.js",
+  discover: "./views/discover.js",
+  comics: "./views/comics.js",
+  web: "./views/web.js",
+  feeds: "./views/feeds.js",
+  manga: "./views/discover.js",
+  books: "./views/books.js",
+  gutenberg: "./views/books.js",
+  scan: "./views/books.js",
+  loc: "./views/books.js",
+  audiobook: "./views/books.js",
+  link: "./views/link.js",
+  stats: "./views/stats.js",
+  tools: "./views/tools.js",
+  story: "./views/story.js",
+  vn: "./views/vn.js",
+  shrine: "./views/shrine.js",
+  plus: "./views/plus.js",
+  world: "./views/world.js",
+  town: "./views/town.js",
+  xmas: "./views/xmas.js",
+  den: "./views/den.js",
+  atlas: "./views/atlas.js",
+  notebook: "./views/notebook.js",
+  list: "./views/list.js",
+  studio: "./views/studio.js",
+  sources: "./views/sources.js",
+  find: "./views/find.js",
+  accounts: "./views/accounts.js",
+  create: "./views/create.js",
+  ai: "./views/ai.js",
+  panels: "./views/panels.js",
+  write: "./views/write.js",
+  wiki: "./views/wiki.js",
+  lore: "./views/lore.js",
+  search: "./views/search.js",
+  own: "./views/own.js",
+  settings: "./views/settings.js",
+  sanctuary: "./views/sanctuary.js",
+  constellations: "./views/constellations.js",
+  mythic: "./xmas/mythic.js",
+  thanksgiving: "./views/thanksgiving.js",
+  bingo: "./views/bingo.js",
 };
+const routes = Object.fromEntries(Object.entries(ROUTE_MODS).map(([k, p]) => [k, () => import(p)]));
+async function purgeAppCaches() {
+  try {
+    if ("caches" in window) {
+      const ks = await caches.keys();
+      await Promise.all(ks.filter((k) => k.startsWith("kitsune-v")).map((k) => caches.delete(k)));
+    }
+    if ("serviceWorker" in navigator) {
+      const regs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map((r) => r.update().catch(() => {})));
+    }
+  } catch {}
+}
 
 const KIDS_HIDDEN = new Set(["discover", "manga", "ai", "feeds"]);
 function profileChip() {
@@ -152,7 +165,18 @@ async function route() {
     return;
   }
   try {
-    const mod = await loader();
+    let mod;
+    try {
+      mod = await loader();
+    } catch (loadErr) {
+      if (/module script|dynamically imported module|error loading|failed to fetch/i.test(loadErr?.message || "")) {
+        await purgeAppCaches();
+        const mp = ROUTE_MODS[name] || ROUTE_MODS.home;
+        mod = await import(mp + "?v=" + Date.now());
+      } else {
+        throw loadErr;
+      }
+    }
     try { sessionStorage.removeItem("kitsune_mod_retry"); } catch {}
     if (seq !== renderSeq) return;
     const draw = async () => {
@@ -173,7 +197,8 @@ async function route() {
     }
   } catch (e) {
     console.error(e);
-    if (/module script|dynamically imported module|error loading/i.test(e?.message || "")) {
+    if (/module script|dynamically imported module|error loading|failed to fetch/i.test(e?.message || "")) {
+      await purgeAppCaches();
       try {
         if (!sessionStorage.getItem("kitsune_mod_retry")) {
           sessionStorage.setItem("kitsune_mod_retry", "1");
@@ -182,7 +207,12 @@ async function route() {
         }
       } catch {}
     }
-    view.innerHTML = `<div class="empty"><svg class="empty-fox"><use href="#fox"/></svg><p><strong>This page didn't load.</strong> ${esc(e.message)}</p><div style="display:flex;gap:8px;justify-content:center"><button class="btn" type="button" onclick="location.reload()">Reload</button><a class="btn" href="#home">Go home</a></div></div>`;
+    view.innerHTML = `<div class="empty"><svg class="empty-fox"><use href="#fox"/></svg><p><strong>This page didn't load.</strong> ${esc(e.message)}</p><div style="display:flex;gap:8px;justify-content:center"><button class="btn" type="button" id="mod-reload">Reload</button><a class="btn" href="#home">Go home</a></div></div>`;
+    $("#mod-reload", view)?.addEventListener("click", async () => {
+      try { sessionStorage.removeItem("kitsune_mod_retry"); } catch {}
+      await purgeAppCaches();
+      location.reload();
+    });
   }
   if (seq === renderSeq) updateNowPill().catch(() => {});
   if (seq === renderSeq) import("./xmas/fx.js").then((x) => x.decorate(name)).catch(() => {});
@@ -256,6 +286,9 @@ document.addEventListener("drop", async (e) => {
 });
 
 async function start() {
+  if ("serviceWorker" in navigator && location.protocol === "https:") {
+    navigator.serviceWorker.register("/sw.js").then((r) => r.update().catch(() => {})).catch(() => {});
+  }
   const P = await import("./privacy.js");
   P.startLock();
   await loadSettings();
@@ -273,7 +306,6 @@ async function start() {
   import("./xmas/fx.js").then((x) => x.startXmas()).catch(() => {});
   import("./plus/shell.js").then((x) => x.startShell()).catch(() => {});
   const stickers = () => import("./plus/make.js").then((m) => m.paintStickers()).catch(() => {}); addEventListener("hashchange", () => { setTimeout(stickers, 450); setTimeout(stickers, 1300); }); setTimeout(stickers, 700); setTimeout(stickers, 1500);
-  if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("/sw.js").catch(() => {});
   // Files opened with the installed app (desktop "Open with Kitsune").
   if ("launchQueue" in window) window.launchQueue.setConsumer(async (params) => {
     if (!params.files?.length) return;
