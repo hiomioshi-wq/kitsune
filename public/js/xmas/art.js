@@ -64,9 +64,33 @@ function monitorSvg(id, name, rar, c, b, a, tl, stage, mood, size) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 124" ${size ? `width="${size}" height="${size}"` : ""} role="img" aria-label="${name}">${glow}<g transform="translate(${60 - 60 * scale} ${124 - 122 * scale}) scale(${scale})"><ellipse cx="60" cy="116" rx="34" ry="4.5" fill="#000" opacity=".16"/>${tailPath}<path d="M34 84L22 96L28 102L40 92Z" fill="${c}"/><path d="M86 84L98 96L92 102L80 92Z" fill="${c}"/><path d="M38 102L26 112L34 115L46 106Z" fill="${c}"/><path d="M82 102L94 112L86 115L74 106Z" fill="${c}"/><path d="M22 96l-3 4M25 99l-2 4M98 96l3 4M95 99l2 4M26 112l-3 3M94 112l3 3" stroke="#222" stroke-width="1.6" stroke-linecap="round"/><ellipse cx="60" cy="88" rx="24" ry="20" fill="${c}"/><ellipse cx="60" cy="92" rx="15" ry="14" fill="${b}"/>${pat}<path d="M46 66Q60 76 74 66Q70 58 60 58Q50 58 46 66Z" fill="${b}"/>${snout}<ellipse cx="60" cy="58" rx="14" ry="9" fill="${b}" opacity=".9"/><circle cx="54" cy="30" r="1.5" fill="#181a24" opacity=".65"/><circle cx="66" cy="30" r="1.5" fill="#181a24" opacity=".65"/><ellipse cx="38" cy="53" rx="4.5" ry="2.6" fill="#ff8fa8" opacity=".5"/><ellipse cx="82" cy="53" rx="4.5" ry="2.6" fill="#ff8fa8" opacity=".5"/>${mEyes}${tongue}${scarf}${hat}</g></svg>`;
 }
 
+function fwcSvg(id, name, rar, c, b, a, tl, stage, mood, size) {
+  const scale = stage === 1 ? .85 : stage === 2 ? .92 : 1;
+  const glow = rar === "l" ? `<circle cx="60" cy="64" r="54" fill="${a}" opacity=".16"/>` : "";
+  const ruby = id === "fwc_truehypo" || id === "fwc_lavender" || id === "fwc_patternless";
+  const eyeCol = ruby ? "#9e2448" : "#181920";
+  const fEyes = mood === "sleepy"
+    ? `<path d="M43 44q4 4 9 0M68 44q4 4 9 0" stroke="${eyeCol}" stroke-width="2.5" fill="none" stroke-linecap="round"/>`
+    : mood === "love"
+    ? `<path d="M47 47l-4 -4a2.5 2.5 0 0 1 4 -2.5a2.5 2.5 0 0 1 4 2.5ZM73 47l-4 -4a2.5 2.5 0 0 1 4 -2.5a2.5 2.5 0 0 1 4 2.5Z" fill="#e0343e"/>`
+    : `<circle cx="47" cy="44" r="5" fill="${eyeCol}"/><circle cx="73" cy="44" r="5" fill="${eyeCol}"/><circle cx="48.6" cy="42.4" r="1.7" fill="#fff"/><circle cx="74.6" cy="42.4" r="1.7" fill="#fff"/>${mood === "sad" ? `<path d="M41 37l8 -2M79 37l-8 -2" stroke="${eyeCol}" stroke-width="2"/>` : ""}`;
+  const eyeMask = tl === "patternless"
+    ? ""
+    : `<path d="M35 44L44 43L40 53L32 51Z" fill="${a}" opacity=".85"/><path d="M85 44L76 43L80 53L88 51Z" fill="${a}" opacity=".85"/>`;
+  const saddles = tl === "patternless"
+    ? `<path d="M34 94Q60 88 86 94" stroke="#ffffff" stroke-width="2" fill="none" opacity=".35"/>`
+    : `<path d="M26 88Q36 80 46 88M52 84Q60 77 68 84M74 88Q84 80 94 88M34 102Q46 95 58 102M64 102Q76 95 88 102" stroke="${a}" stroke-width="4.5" stroke-linecap="round" fill="none" opacity=".88"/>`;
+  const tongue = mood === "sad" ? "" : `<path d="M60 60L60 69M60 69L56 73M60 69L64 73" stroke="#ff6e8a" stroke-width="2.2" stroke-linecap="round" fill="none"/>`;
+  const scarf = stage >= 2 ? `<path d="M42 64Q60 73 78 64L80 71Q60 80 40 71Z" fill="#d3312f"/>` : "";
+  const hat = stage >= 3 ? `<g><path d="M44 26Q54 6 74 12Q80 16 80 28Q62 20 44 26Z" fill="#d3312f"/><path d="M40 28Q60 20 82 28" stroke="#fff" stroke-width="5.5" stroke-linecap="round" fill="none"/><circle cx="82" cy="14" r="5" fill="#fff"/></g>` : "";
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 124" ${size ? `width="${size}" height="${size}"` : ""} role="img" aria-label="${name}">${glow}<g transform="translate(${60 - 60 * scale} ${124 - 122 * scale}) scale(${scale})"><ellipse cx="60" cy="116" rx="38" ry="5" fill="#000" opacity=".16"/><path d="M84 104C106 102 114 88 104 76C98 70 90 76 94 84" stroke="${c}" stroke-width="8" stroke-linecap="round" fill="none"/><ellipse cx="60" cy="96" rx="34" ry="16" fill="${c}"/><ellipse cx="60" cy="100" rx="25" ry="10" fill="${b}" opacity=".9"/><ellipse cx="60" cy="86" rx="28" ry="13" fill="${c}"/>${saddles}<path d="M38 66C32 54 34 42 46 38L74 38C86 42 88 54 82 66Q60 74 38 66Z" fill="${c}"/><path d="M46 66Q60 73 74 66Q70 54 60 54Q50 54 46 66Z" fill="${b}"/><ellipse cx="60" cy="45" rx="22" ry="16" fill="${c}"/>${eyeMask}<ellipse cx="60" cy="54" rx="14" ry="8" fill="${b}" opacity=".92"/><ellipse cx="40" cy="51" rx="4" ry="2.4" fill="#ff8fa8" opacity=".48"/><ellipse cx="80" cy="51" rx="4" ry="2.4" fill="#ff8fa8" opacity=".48"/>${fEyes}${tongue}${scarf}${hat}</g></svg>`;
+}
+
 export function petSvg(id, stage = 1, mood = "happy", { size } = {}) {
   const x = species(id); if (!x) return ""; const [, name, rar, c, b, a, ear, tl] = x;
   if (ear === "monitor") return monitorSvg(id, name, rar, c, b, a, tl, stage, mood, size);
+  if (ear === "fwc") return fwcSvg(id, name, rar, c, b, a, tl, stage, mood, size);
   const beak = ["penguin", "robin", "owl", "ptarmigan"].includes(id), scale = stage === 1 ? .82 : stage === 2 ? .92 : 1, mouth = beak ? `<path d="M54 63h12l-6 8Z" fill="${a}"/>` : mood === "sad" ? `<path d="M55 70q5 -4 10 0" stroke="#1b1d33" stroke-width="2.2" fill="none"/>` : `<ellipse cx="60" cy="63" rx="3" ry="2.2" fill="#1b1d33"/><path d="M54 67q3 3 6 0q3 3 6 0" stroke="#1b1d33" stroke-width="2" fill="none"/>`;
   const scarf = stage >= 2 ? `<path d="M36 80Q60 92 84 80L86 88Q60 100 34 88Z" fill="#d3312f"/><path d="M72 88l10 20l-10 -2l-6 -14Z" fill="#b52228"/><path d="M42 84v6M52 88v5M62 89v5M72 87v5" stroke="#fff" stroke-width="2"/>` : "";
   const top = stage >= 3 ? (id === "spirit" ? `<circle cx="60" cy="60" r="56" fill="#ffd27a" opacity=".16"/>` : `<g><path d="M40 34Q52 8 78 14Q88 18 88 36Q64 26 40 34Z" fill="#d3312f"/><path d="M36 36Q62 26 90 36" stroke="#fff" stroke-width="7" stroke-linecap="round" fill="none"/><circle cx="90" cy="16" r="6" fill="#fff"/></g>`) : "";

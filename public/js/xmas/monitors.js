@@ -18,6 +18,12 @@ export const MONITOR_META = {
   crocmonitor: ["Varanus salvadorii", "High Papuan Canopy (Hatch/Mastery)"],
   blackdragon: ["Varanus salvator (Melanistic Morph)", "Rare Water Monitor Variant"],
   komodo: ["Varanus komodoensis", "Sunlit Volcanic Isles (Hatch/Mastery)"],
+  fwc_normal: ["Hydrodynastes gigas (Normal)", "South American Wetlands"],
+  fwc_hypo: ["Hydrodynastes gigas (Hypo)", "Selectively Bred Morph"],
+  fwc_superhypo: ["Hydrodynastes gigas (Super Hypo)", "Honey-Apricot Morph"],
+  fwc_truehypo: ["Hydrodynastes gigas (True Hypo)", "Recessive Hypo (Hatch Only)"],
+  fwc_lavender: ["Hydrodynastes gigas (Lavender)", "Chase Morph (~1-in-2,000)"],
+  fwc_patternless: ["Hydrodynastes gigas (Patternless Lavender)", "Rarest of the Rare (~1-in-20,000)"],
 };
 
 export const MONITOR_IDS = Object.keys(MONITOR_META);
@@ -32,8 +38,12 @@ function adoptMonitor(X) {
     for (let i = 0; i < w; i++) weighted.push(id);
   }
   let pick = weighted[Math.floor(Math.random() * weighted.length)];
-  // 0.4% rare chase variant (~1 in 2,080 adoptions): rolling an Asian Water Monitor can produce the melanistic Black Dragon morph!
+  // ~1-in-2,080 chase variant for Black Dragon (Water Monitor morph)
   if (pick === "watermonitor" && Math.random() < 0.004) pick = "blackdragon";
+  // ~1-in-2,000 chase variant for Lavender FWC, with a 10% (~1-in-20,000) ultra-rare Patternless Lavender roll on top!
+  if (pick.startsWith("fwc_") && Math.random() < 0.00175) {
+    pick = Math.random() < 0.10 ? "fwc_patternless" : "fwc_lavender";
+  }
   const sp = species(pick);
   if (s.pets[pick]) {
     s.pets[pick].xp = (s.pets[pick].xp || 0) + 50;

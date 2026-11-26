@@ -21,6 +21,8 @@ export const KITS = {
   nilemonitor: ["wild", ["River Sprint", 1.9, "hit"], ["Chevron Lash", 2.2, "all"]], watermonitor: ["frost", ["Harbor Splash", 1.8, "chill"], ["Tidal Tail Sweep", 2.2, "chillall"]], argusmonitor: ["wild", ["Tripod Strike", 2.0, "stun"], ["Horizon Ambush", 2.3, "all"]],
   lacemonitor: ["wild", ["Canopy Climb", 2.0, "hit"], ["Lace Band Storm", 2.4, "all"]], perentie: ["ember", ["Desert Charge", 2.1, "burn"], ["Goliath Whip", 2.4, "all"]], treemonitor: ["wild", ["Emerald Coil", 1.9, "stun"], ["Canopy Chorus", 2.2, "rally"]], bluemonitor: ["frost", ["Cobalt Flick", 2.0, "chill"], ["Sapphire Lash", 2.4, "all"]],
   crocmonitor: ["ember", ["Canopy Fang", 2.6, "burn"], ["Salvadorii Whip", 2.8, "all"]], blackdragon: ["star", ["Obsidian Tide", 2.6, "hit"], ["Golden Eye Eclipse", 2.8, "all"]], komodo: ["ember", ["Armored Clamp", 2.7, "stun"], ["Island Sovereign", 3.0, "all"]],
+  fwc_normal: ["wild", ["Hood Flare", 1.7, "guard"], ["Bandit Strike", 2.0, "hit"]], fwc_hypo: ["ember", ["Caramel Coil", 1.8, "stun"], ["Sunlit Hood", 2.1, "all"]], fwc_superhypo: ["ember", ["Apricot Dash", 2.0, "burn"], ["Honey Cobra Sweep", 2.3, "all"]],
+  fwc_truehypo: ["star", ["Pastel Hood", 2.4, "rally"], ["Recessive Radiance", 2.7, "healall"]], fwc_lavender: ["star", ["Smoky Coil", 2.6, "stun"], ["Lavender Mirage", 2.9, "all"]], fwc_patternless: ["star", ["Velvet Hood", 2.9, "hit"], ["Pure Lilac Eclipse", 3.1, "all"]],
 };
 // name, hp, attack, element, shape, colour, move pattern
 const F = (name, hp, atk, el, shape, color, moves) => ({ name, hp, atk, el, shape, color, moves });
