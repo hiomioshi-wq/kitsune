@@ -56,7 +56,7 @@ export const spotDoor = (p) => [(p.x + p.w / 2) * T, (p.y + p.h + .45) * T];
 
 export function applyVillage(map) {
   const { g, solid, reach, orbs } = map, V = VILLAGE;
-  for (let y = V.y0; y <= V.y1; y++) for (let x = V.x0; x <= V.x1; x++) { const i = y * W + x; g[i] = y === V.cy || y === 35 || y === 27 || y === 24 || y === 21 || y === 18 || y === 15 || y === 12 || y === 30 || x === 79 && y >= 12 && y <= 35 || x === 84 && y >= 30 && y <= 35 || (x === V.cx || x === V.cx + 1) && y >= 35 ? TILE.plaza : TILE.snow; solid[i] = 0; reach[i] = 1; }
+  for (let y = V.y0; y <= V.y1; y++) for (let x = V.x0; x <= V.x1; x++) { const i = y * W + x; if (g[i] === TILE.water) continue; g[i] = y === V.cy || y === 35 || y === 27 || y === 24 || y === 21 || y === 18 || y === 15 || y === 12 || y === 30 || x === 79 && y >= 12 && y <= 35 || x === 84 && y >= 30 && y <= 35 || (x === V.cx || x === V.cx + 1) && y >= 35 ? TILE.plaza : TILE.snow; solid[i] = 0; reach[i] = 1; }
   for (const p of SPOTS) for (let y = p.y; y < p.y + p.h; y++) for (let x = p.x; x < p.x + p.w; x++) { const i = y * W + x; solid[i] = 1; reach[i] = 0; }
   for (const o of orbs) { const p = SPOTS.find((q) => o.x >= q.x && o.x < q.x + q.w && o.y >= q.y && o.y < q.y + q.h); if (p) { o.x = p.x; o.y = p.y + p.h; } }
 }

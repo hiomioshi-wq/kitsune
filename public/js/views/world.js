@@ -141,10 +141,12 @@ export async function render(view, _n, params = []) {
   const groveTrees = finishedBooks.slice(0, 12).map((it, i) => {
     const gtxt = [it.title, it.type, ...(it.genres || []), ...(it.tags || [])].join(" ").toLowerCase();
     const color = /horror|mystery|dark/.test(gtxt) ? "#4a395c" : /romance|drama/.test(gtxt) ? "#ff92b8" : it.type === "manga" ? "#ffcf6e" : "#4ca866";
-    return { title: it.title, color, x: (VILLAGE.cx + 5 + (i % 4) * 2) * T, y: (VILLAGE.cy - 5 + Math.floor(i / 4) * 2) * T };
+    let tx = 44 + (i % 4) * 2, ty = 40 + Math.floor(i / 4) * 2;
+    while (map.solid[ty * W + tx] && ty < 52) ty++;
+    return { title: it.title, color, x: (tx + 0.5) * T, y: (ty + 0.5) * T };
   });
-  const leafPiles = realSeason === "autumn" ? [0, 1, 2, 3].map((i) => ({ id: i, x: (VILLAGE.cx - 4 + i * 3) * T, y: (VILLAGE.cy + 4 + (i % 2) * 2) * T, taken: false })) : [];
-  const civicSpot = { x: (VILLAGE.cx - 3) * T, y: (VILLAGE.cy + 1) * T };
+  const leafPiles = realSeason === "autumn" ? [0, 1, 2, 3].map((i) => ({ id: i, x: (45 + i * 3) * T, y: (46 + (i % 2) * 2) * T, taken: false })) : [];
+  const civicSpot = { x: 47 * T, y: 42 * T };
   if (winter) applyVillage(map);
   const delves = DELVE_SITES.map((d) => ({ ...d, x: REGIONS[d.region][1] - 7, y: REGIONS[d.region][2] + 1 })); for (const d of delves) for (let y = d.y - 2; y <= d.y + 2; y++) for (let x = d.x - 2; x <= d.x + 2; x++) { const i = y * W + x; if (map.g[i] === TILE.water || map.g[i] === TILE.lava) map.g[i] = TILE.plaza; else if (map.solid[i]) map.g[i] = TILE.plaza; map.solid[i] = 0; map.reach[i] = 1; }
   const trials = TRIALS.map((t) => ({ ...t, x: REGIONS[t.region][1], y: REGIONS[t.region][2] + 3 })); for (const t of trials) for (let y = t.y - 1; y <= t.y + 2; y++) for (let x = t.x - 1; x <= t.x + 2; x++) { const i = y * W + x; if (map.solid[i] || map.g[i] === TILE.water) map.g[i] = TILE.plaza; map.solid[i] = 0; map.reach[i] = 1; }
@@ -171,9 +173,9 @@ export async function render(view, _n, params = []) {
   if (blocked(s.x, s.y)) { s.x = (SPAWN[0] + .5) * T; s.y = (SPAWN[1] + .5) * T; }
   const people = NPCS.map((n, i) => { const [x, y] = npcPos(n), d = cast["kitsune:" + n[1]] || n[8] || { c: "#6b6d78", a: "#e8dcc0", st: 2, sk: 1, h: "#3a2a20", e: "#222", f: "casual" }, svg = characterSvg(n[1], d, "calm"), img = new Image(); img.src = "data:image/svg+xml," + encodeURIComponent(svg.replace('width="100%" height="100%"', 'width="300" height="420"')); return { n, id: n[0], x: (x + .5) * T, y: (y + .5) * T, d, img, tw: i * 1.3, line: 0 }; });
   const save = () => kvSet("world", s), lamps = [...LANTERNS, FINAL_LANTERN].map((l) => ({ l, x: (l.x + .5) * T, y: (l.y + .5) * T }));
-  let wp = null, petImg = null, petKey = "", orbReach = 26; const refreshPet = () => { wp = activePet(); const st = wp ? petStage(petLevel(wp).level) : 0, k = wp ? wp.sp + st : ""; orbReach = winter && wp ? 26 + Math.min(20, petLevel(wp).level) * 1.5 : 26; if (k === petKey) return; petKey = k; petImg = wp ? svgPet(wp.sp, st) : null; }, svgPet = (sp, st) => { const i = new Image(); i.src = petUrl(sp, st, "happy"); return i; }; refreshPet(); let petX = s.x - 34, petY = s.y + 6;
+  let wp = null, petImg = null, petKey = "", orbReach = 26; const refreshPet = () => { wp = winter ? activePet() : null; const st = wp ? petStage(petLevel(wp).level) : 0, k = wp ? wp.sp + st : ""; orbReach = winter && wp ? 26 + Math.min(20, petLevel(wp).level) * 1.5 : 26; if (k === petKey) return; petKey = k; petImg = wp ? svgPet(wp.sp, st) : null; }, svgPet = (sp, st) => { const i = new Image(); i.src = petUrl(sp, st, "happy"); return i; }; refreshPet(); let petX = s.x - 34, petY = s.y + 6;
   const giftImg = new Image(); giftImg.src = "data:image/svg+xml," + encodeURIComponent(giftSvg().replace("<svg ", '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" '));
-  const presents = winter ? map.orbs.filter((_, i) => i % 3 === 1).slice(0, 25) : [], TREE = { x: 64 * T, y: 47 * T }; s.gifts ||= {};
+  const presents = winter ? map.orbs.filter((_, i) => i % 2 === 1).slice(0, 25) : [], TREE = { x: 64 * T, y: 47 * T }; s.gifts ||= {};
   let dir = "down", step = 0, moving = false, alive = true, raf = 0, last = performance.now(), cw = 0, ch = 0, zoom = 1, camX = 0, camY = 0, target = null, region = "", bannerT = 0, fishing = null, fireworks = 0, sparks = [], weather = [], joy = null, saveT = 0, miniT = 0;
   const keys = new Set(), overlay = document.createElement("canvas"), og = overlay.getContext("2d"), busy = () => !!realm || !talkEl.hidden || !panelEl.hidden;
 
@@ -617,15 +619,15 @@ export async function render(view, _n, params = []) {
       things.push([civicSpot.y + 12, () => { g.fillStyle = "#5a3c22"; g.fillRect(civicSpot.x - 14, civicSpot.y - 24, 28, 28); g.fillStyle = "#ffd84d"; g.font = "800 9.5px system-ui"; g.textAlign = "center"; g.fillText("CIVIC", civicSpot.x, civicSpot.y - 6); }]);
     }
     if (s.civic?.reno?.roads) {
-      const rx = (VILLAGE.cx - 2) * T, ry = (VILLAGE.cy + 1) * T;
+      const rx = 48 * T, ry = 42 * T;
       if (Math.abs(rx - s.x) < vw && Math.abs(ry - s.y) < vh) things.push([ry - 20, () => { g.fillStyle = "rgba(216,204,186,.55)"; g.fillRect(rx - 40, ry - 20, 180, 72); }]);
     }
     if (s.civic?.reno?.lamps) {
-      const lx = (VILLAGE.cx + 2) * T, ly = (VILLAGE.cy + 2) * T;
+      const lx = 51 * T, ly = 43 * T;
       if (Math.abs(lx - s.x) < vw && Math.abs(ly - s.y) < vh) things.push([ly + 14, () => { g.fillStyle = "#2b2b36"; g.fillRect(lx - 2, ly - 26, 4, 34); g.fillStyle = "#ffe58f"; g.beginPath(); g.arc(lx, ly - 28, 6, 0, 7); g.fill(); }]);
     }
-    if (s.civic?.statue && Math.abs(VILLAGE.cx * T - s.x) < vw && Math.abs(VILLAGE.cy * T - s.y) < vh) {
-      const sx = (VILLAGE.cx + 0.5) * T, sy = (VILLAGE.cy - 1) * T;
+    if (s.civic?.statue && Math.abs(49 * T - s.x) < vw && Math.abs(42 * T - s.y) < vh) {
+      const sx = 49.5 * T, sy = 42 * T;
       things.push([sy + 14, () => { g.fillStyle = "#7a7268"; g.fillRect(sx - 16, sy + 2, 32, 12); drawFox(g, sx, sy - 6, "down", 0, "#d4af37", 9, s.civic.statue.hat || "", 0, false); }]);
     }
     for (const gt of groveTrees) if (Math.abs(gt.x - s.x) < vw && Math.abs(gt.y - s.y) < vh) {
