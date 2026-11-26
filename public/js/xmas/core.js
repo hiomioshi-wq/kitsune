@@ -47,7 +47,7 @@ export function claimGoal(k) { const g = goalList().find((x) => x.k === k); if (
 export const giftReady = () => S.lastGift !== today();
 export function dailyGift() { if (!giftReady()) return 0; const y = new Date(); y.setDate(y.getDate() - 1); const ys = today(y); S.streak = S.lastGift === ys ? S.streak + 1 : 1; S.lastGift = today(); const n = 20 + Math.min(7, S.streak) * 5; grant(n); S.treats.cookie = (S.treats.cookie || 0) + 1; save(); return n; }
 
-const CHASE_ONLY = new Set(["blackdragon", "fwc_lavender", "fwc_patternless"]);
+export const CHASE_ONLY = new Set(["blackdragon", "fwc_lavender", "fwc_patternless", "bluepitviper"]);
 const eggFor = (rar) => { const list = SPECIES.filter((x) => x[2] === rar && !CHASE_ONLY.has(x[0])), mine = new Set([...Object.keys(S.pets), ...S.eggs.map((e) => e.sp)]), fresh = list.filter((x) => !mine.has(x[0])), l = rar === "l" ? list : (fresh.length ? fresh : list); return l[Math.floor(Math.random() * l.length)][0]; };
 export function addEgg(rar) { const sp = eggFor(rar), id = "e" + Date.now().toString(36) + Math.floor(Math.random() * 1e4); S.eggs.push({ id, sp, rar, have: 0, need: { c: 20, r: 35, e: 60, l: 90 }[rar] }); return id; }
 export function warmEgg(n) { for (const e of S.eggs) e.have = Math.min(e.need, e.have + n); }

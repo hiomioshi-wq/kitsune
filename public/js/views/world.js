@@ -46,6 +46,7 @@ import { createExchange } from "../world/exchange.js";
 import { createQuiz } from "../world/quiz.js";
 import { createTarot } from "../world/tarot.js";
 import { createExplorer } from "../world/explore.js";
+import { enterReptileHouse } from "../world/reptilehouse.js";
 import { createInventory } from "../world/inventory.js";
 import { createMuseum } from "../world/museum.js";
 import { createPetArena } from "../world/petarena.js";
@@ -147,20 +148,29 @@ export async function render(view, _n, params = []) {
   });
   const leafPiles = realSeason === "autumn" ? [0, 1, 2, 3].map((i) => ({ id: i, x: (45 + i * 3) * T, y: (46 + (i % 2) * 2) * T, taken: false })) : [];
   const civicSpot = { x: 47 * T, y: 42 * T }, monitorSpot = { x: 53 * T, y: 46 * T };
-  function openMonitors() {
-    panel("Monitor Sanctuary Event", `<div id="wd-mon-ev"><p class="muted">Loading Monitor Sanctuary…</p></div>`, async (el) => {
-      const M = await import("../xmas/monitors.js");
-      const box = el.querySelector("#wd-mon-ev");
-      if (!box) return;
-      M.mountMonitorEvent(box, {
-        worldMon: true,
-        mon: () => s.mon,
-        spendMon: (n) => { if (s.mon < n) return false; s.mon -= n; save(); hud(); return true; },
-        addMon: (n) => { s.mon += n; save(); hud(); },
-        ping,
-        hud: () => { hud(); refreshPet(); },
-      });
+  function enterReptile() {
+    if (realm) return;
+    closeTalk();
+    if (!panelEl.hidden) closePanel();
+    keys.clear();
+    realm = { close() {} };
+    const off = enterReptileHouse({
+      root,
+      s,
+      drawFox,
+      fur,
+      tailsN: s.final ? 9 : tailsN,
+      toast,
+      ping,
+      save,
+      hud: () => { hud(); refreshPet(); },
+      onLeave: () => {
+        realm = null;
+        if (location.hash === "#world/reptilehouse") history.replaceState(null, "", "#world");
+        root.focus({ preventScroll: true });
+      },
     });
+    realm = { close: off };
   }
   if (winter) applyVillage(map);
   const delves = DELVE_SITES.map((d) => ({ ...d, x: REGIONS[d.region][1] - 7, y: REGIONS[d.region][2] + 1 })); for (const d of delves) for (let y = d.y - 2; y <= d.y + 2; y++) for (let x = d.x - 2; x <= d.x + 2; x++) { const i = y * W + x; if (map.g[i] === TILE.water || map.g[i] === TILE.lava) map.g[i] = TILE.plaza; else if (map.solid[i]) map.g[i] = TILE.plaza; map.solid[i] = 0; map.reach[i] = 1; }
@@ -429,7 +439,7 @@ export async function render(view, _n, params = []) {
       return { label: `Pay Tanuki Tax Spirit (${due} mon)`, go: () => say(null, `Tanuki Collector: “Quite a heavy purse, fox! Pay ${due} mon to fund ${nextUp.name}.”`, [[`Pay ${due} mon`, () => { if (s.mon < due) return; s.mon -= due; s.taxSettledDay = today(); s.taxUpgrades = [...new Set([...doneUps, nextUp.id])]; tale?.addRenown?.(50); fireworks = 5; save(); hud(); ping("done"); toast(`Paid ${due} mon! Town upgraded: ${nextUp.name} (+50 Renown)!`); }], ["Dodge him", () => { addRumour(s, "tax_dodge"); save(); closeTalk(); toast("Tanuki Collector narrows his eyes and keeps following you..."); }]]) };
     }
     if (Math.hypot(civicSpot.x - s.x, civicSpot.y - s.y) < 46) return { label: "Foxhold Civic Center (Renovate / Statue / Festival)", go: () => civic.open() };
-    if (Math.hypot(monitorSpot.x - s.x, monitorSpot.y - s.y) < 46) return { label: "Enter Monitor Sanctuary Event (12 Varanus Pets)", go: openMonitors };
+    if (Math.hypot(monitorSpot.x - s.x, monitorSpot.y - s.y) < 46) return { label: "Enter Sunscale Reptile House (63 Reptiles)", go: enterReptile };
     for (const lp of leafPiles) if (!lp.taken && Math.hypot(lp.x - s.x, lp.y - s.y) < 40) return { label: "Rustle Autumn Leaf Pile", go: () => { lp.taken = true; s.mon += 12; save(); hud(); ping("done"); toast("Found +12 mon tucked beneath the autumn leaves!"); } };
     for (const gt of groveTrees) if (Math.hypot(gt.x - s.x, gt.y - s.y) < 40) return { label: `Reading Grove: ${gt.title}`, go: () => say(null, `This Reading Grove tree bloomed when you finished “${gt.title}”.${tailInfo.finishedSeries ? ` (${tailInfo.finishedSeries} series vignette${tailInfo.finishedSeries > 1 ? "s" : ""} unlocked!)` : ""}`) };
     if (hauntedGhost && Math.hypot(hauntedGhost.x - s.x, hauntedGhost.y - s.y) < 52) return { label: "Challenge Haunted Past-Self Ghost", go: () => derby.hauntedChallenge(0) };
@@ -635,7 +645,22 @@ export async function render(view, _n, params = []) {
       things.push([civicSpot.y + 12, () => { g.fillStyle = "#5a3c22"; g.fillRect(civicSpot.x - 14, civicSpot.y - 24, 28, 28); g.fillStyle = "#ffd84d"; g.font = "800 9.5px system-ui"; g.textAlign = "center"; g.fillText("CIVIC", civicSpot.x, civicSpot.y - 6); }]);
     }
     if (Math.abs(monitorSpot.x - s.x) < vw && Math.abs(monitorSpot.y - s.y) < vh) {
-      things.push([monitorSpot.y + 12, () => { g.fillStyle = "#2b4d38"; g.strokeStyle = "#b8f23a"; g.lineWidth = 2; g.beginPath(); g.roundRect(monitorSpot.x - 16, monitorSpot.y - 24, 32, 28, 6); g.fill(); g.stroke(); g.font = "15px system-ui"; g.textAlign = "center"; g.fillText("🦎", monitorSpot.x, monitorSpot.y - 5); g.font = "800 9px system-ui"; g.fillStyle = "#d8ffb0"; g.fillText("MONITORS", monitorSpot.x, monitorSpot.y - 28); }]);
+      things.push([monitorSpot.y + 12, () => {
+        g.fillStyle = "#5c3b28";
+        g.beginPath(); g.roundRect(monitorSpot.x - 24, monitorSpot.y - 18, 48, 24, 5); g.fill();
+        g.fillStyle = "#76d6c4";
+        g.strokeStyle = "#ffd27a";
+        g.lineWidth = 2;
+        g.beginPath(); g.roundRect(monitorSpot.x - 22, monitorSpot.y - 34, 44, 22, [14, 14, 3, 3]); g.fill(); g.stroke();
+        g.fillStyle = "#266e3a";
+        g.beginPath(); g.arc(monitorSpot.x - 9, monitorSpot.y - 22, 6, 0, 7); g.arc(monitorSpot.x + 9, monitorSpot.y - 22, 6, 0, 7); g.fill();
+        g.fillStyle = "#ffd84d";
+        g.fillRect(monitorSpot.x - 5, monitorSpot.y - 6, 10, 12);
+        g.font = "13px system-ui"; g.textAlign = "center";
+        g.fillText("🦎", monitorSpot.x, monitorSpot.y - 18);
+        g.font = "800 9px system-ui"; g.fillStyle = "#d8ffb0";
+        g.fillText("REPTILE HOUSE", monitorSpot.x, monitorSpot.y - 39);
+      }]);
     }
     if (s.civic?.reno?.roads) {
       const rx = 48 * T, ry = 42 * T;
@@ -684,7 +709,7 @@ export async function render(view, _n, params = []) {
   root.__game = { state: s, map, people, lamps, talk, blocked };
   root.__game = { ...root.__game, deer, spots: SPOTS, eventPanel, goVillage, bracken, roundIds, gates, enterRealm, extras, wplay, far: FAR_QUESTS, delves, hunts, quests, farm, STAIR, trials, enterTrial, digSpots, digHere, enterCards, derby, siege, sea, enterBay, tale, enterFinale, events, plusW: () => plusW, life: () => life, travel: () => travel, square: () => square, agency: () => agency, apothecary: () => apothecary };
   hud(); drawMini(); $("#wd-load", root).remove(); root.focus({ preventScroll: true }); raf = requestAnimationFrame(frame);
-  if (params[0] === "town") enterFoxhold(); else if (params[0] === "nexus") enterNexus(); else if (gates.some((p) => p.id === params[0])) askGate(gates.find((p) => p.id === params[0])); else if (winter && params[0] === "village") goVillage(); else if (params[0] === "xmas") location.replace("#xmas" + (params[1] ? "/" + params[1] : ""));
+  if (params[0] === "town") enterFoxhold(); else if (params[0] === "nexus") enterNexus(); else if (params[0] === "reptilehouse") enterReptile(); else if (gates.some((p) => p.id === params[0])) askGate(gates.find((p) => p.id === params[0])); else if (winter && params[0] === "village") goVillage(); else if (params[0] === "xmas") location.replace("#xmas" + (params[1] ? "/" + params[1] : ""));
   if (!saved?.x) setTimeout(() => { if (alive && !busy()) say(people[0], "You're awake. Good. Every lantern in the country went out last night. Walk over and talk to me when you're ready: W A S D or arrows to move, E to talk.", [["Got it", closeTalk]].slice(0, 0)); }, 500);
   return () => { alive = false; jukebox?.stop(); extras.destroy(); realm?.close(); realm = null; stopEmbed(); offBells?.(); if (winter && XCore.worldLive) XCore.worldLive.fn = null; cancelAnimationFrame(raf); if (fishing) cancelAnimationFrame(fishing.raf); ro.disconnect(); document.removeEventListener("keydown", onKey, true); document.removeEventListener("keyup", onUp, true); removeEventListener("blur", onBlur); if (document.fullscreenElement === root) document.exitFullscreen().catch(() => {}); save(); kvFlush(); };
 }

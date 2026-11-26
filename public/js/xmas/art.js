@@ -1,5 +1,6 @@
 // Winterfest art: every pet at three growth stages, eggs, ornaments and the tree. All drawn here, no image files.
 import { species, RARITY, ORNAMENTS, TREE_SLOTS } from "./data.js";
+import { REPTILE_FAMILIES, reptileSvg } from "./reptileart.js";
 
 const ears = (k, c, a, b) => ({
   fox: `<path d="M36 44L30 14L56 32Z" fill="${c}"/><path d="M84 44L90 14L64 32Z" fill="${c}"/><path d="M38 36L35 22L49 32Z" fill="${a}"/><path d="M82 36L85 22L71 32Z" fill="${a}"/>`,
@@ -91,6 +92,7 @@ export function petSvg(id, stage = 1, mood = "happy", { size } = {}) {
   const x = species(id); if (!x) return ""; const [, name, rar, c, b, a, ear, tl] = x;
   if (ear === "monitor") return monitorSvg(id, name, rar, c, b, a, tl, stage, mood, size);
   if (ear === "fwc") return fwcSvg(id, name, rar, c, b, a, tl, stage, mood, size);
+  if (REPTILE_FAMILIES.has(ear)) return reptileSvg(id, name, rar, c, b, a, ear, tl, stage, mood, size);
   const beak = ["penguin", "robin", "owl", "ptarmigan"].includes(id), scale = stage === 1 ? .82 : stage === 2 ? .92 : 1, mouth = beak ? `<path d="M54 63h12l-6 8Z" fill="${a}"/>` : mood === "sad" ? `<path d="M55 70q5 -4 10 0" stroke="#1b1d33" stroke-width="2.2" fill="none"/>` : `<ellipse cx="60" cy="63" rx="3" ry="2.2" fill="#1b1d33"/><path d="M54 67q3 3 6 0q3 3 6 0" stroke="#1b1d33" stroke-width="2" fill="none"/>`;
   const scarf = stage >= 2 ? `<path d="M36 80Q60 92 84 80L86 88Q60 100 34 88Z" fill="#d3312f"/><path d="M72 88l10 20l-10 -2l-6 -14Z" fill="#b52228"/><path d="M42 84v6M52 88v5M62 89v5M72 87v5" stroke="#fff" stroke-width="2"/>` : "";
   const top = stage >= 3 ? (id === "spirit" ? `<circle cx="60" cy="60" r="56" fill="#ffd27a" opacity=".16"/>` : `<g><path d="M40 34Q52 8 78 14Q88 18 88 36Q64 26 40 34Z" fill="#d3312f"/><path d="M36 36Q62 26 90 36" stroke="#fff" stroke-width="7" stroke-linecap="round" fill="none"/><circle cx="90" cy="16" r="6" fill="#fff"/></g>`) : "";

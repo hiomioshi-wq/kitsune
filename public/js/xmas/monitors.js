@@ -1,134 +1,133 @@
-// Monitor Sanctuary Event: Crocodile Monitor, Ackie Monitor, Argus Monitor & 9 more Varanus pets with Cricket Catch minigame & Field Guide.
+// Sunscale Reptile House Hub: 63 reptiles across 5 tiers, exact drop probabilities, Terrarium Egg Pods, and Cricket Catch.
 import { esc, today } from "../util.js";
-import { species, RARITY } from "./data.js";
+import { species } from "./data.js";
 import { petSvg } from "./art.js";
 import { xs, loadXmas, save as saveXmas, earn, grant, isSeason } from "./core.js";
 import { settings } from "../store.js";
+import {
+  REPTILE_TIERS,
+  HABITATS,
+  REPTILE_LIST,
+  REPTILE_META,
+  REPTILE_IDS,
+  DAILY_POD_CAP,
+  DAILY_CRICKET_CAP,
+  ensureSanctuary,
+  rollReptilePod,
+} from "./reptiledata.js";
 
-export const MONITOR_META = {
-  savannahmonitor: ["Varanus exanthematicus", "Sub-Saharan Savanna"],
-  ackiemonitor: ["Varanus acanthurus", "Australian Outback"],
-  nilemonitor: ["Varanus niloticus", "Riverbanks & Reeds"],
-  watermonitor: ["Varanus salvator", "Mangroves & Lagoons"],
-  argusmonitor: ["Varanus panoptes", "Northern Grasslands"],
-  lacemonitor: ["Varanus varius", "Eucalyptus Canopy"],
-  perentie: ["Varanus giganteus", "Red Desert Outcrops"],
-  treemonitor: ["Varanus prasinus", "Emerald Rainforest"],
-  bluemonitor: ["Varanus doreanus", "Papuan River Forests"],
-  crocmonitor: ["Varanus salvadorii", "High Papuan Canopy (Hatch/Mastery)"],
-  blackdragon: ["Varanus salvator (Melanistic Morph)", "Rare Water Monitor Variant"],
-  komodo: ["Varanus komodoensis", "Sunlit Volcanic Isles (Hatch/Mastery)"],
-  fwc_normal: ["Hydrodynastes gigas (Normal)", "South American Wetlands"],
-  fwc_hypo: ["Hydrodynastes gigas (Hypo)", "Selectively Bred Morph"],
-  fwc_superhypo: ["Hydrodynastes gigas (Super Hypo)", "Honey-Apricot Morph"],
-  fwc_truehypo: ["Hydrodynastes gigas (True Hypo)", "Recessive Hypo (Hatch Only)"],
-  fwc_lavender: ["Hydrodynastes gigas (Lavender)", "Chase Morph (~1-in-2,000)"],
-  fwc_patternless: ["Hydrodynastes gigas (Patternless Lavender)", "Rarest of the Rare (~1-in-20,000)"],
-};
-
-export const MONITOR_IDS = Object.keys(MONITOR_META);
-const ADOPT_POOL = MONITOR_IDS.filter((id) => species(id)?.[2] !== "l");
-
-function adoptMonitor(X) {
-  const s = X.xs();
-  const weighted = [];
-  for (const id of ADOPT_POOL) {
-    const r = species(id)?.[2] || "c";
-    const w = r === "c" ? 6 : r === "r" ? 3 : 1;
-    for (let i = 0; i < w; i++) weighted.push(id);
-  }
-  let pick = weighted[Math.floor(Math.random() * weighted.length)];
-  // ~1-in-2,080 chase variant for Black Dragon (Water Monitor morph)
-  if (pick === "watermonitor" && Math.random() < 0.004) pick = "blackdragon";
-  // ~1-in-2,000 chase variant for Lavender FWC, with a 10% (~1-in-20,000) ultra-rare Patternless Lavender roll on top!
-  if (pick.startsWith("fwc_") && Math.random() < 0.00175) {
-    pick = Math.random() < 0.10 ? "fwc_patternless" : "fwc_lavender";
-  }
-  const sp = species(pick);
-  if (s.pets[pick]) {
-    s.pets[pick].xp = (s.pets[pick].xp || 0) + 50;
-    s.pets[pick].joy = 100;
-    X.save();
-    return { dupe: true, sp };
-  }
-  s.pets[pick] = { sp: pick, name: sp[1], xp: 0, hunger: 90, joy: 95, at: Date.now(), born: today() };
-  if (!s.active) s.active = pick;
-  X.save();
-  return { dupe: false, sp };
-}
+export { REPTILE_TIERS, HABITATS, REPTILE_LIST, REPTILE_META, REPTILE_IDS, rollReptilePod };
+export const MONITOR_META = REPTILE_META;
+export const MONITOR_IDS = REPTILE_IDS;
 
 export async function mountMonitorEvent(host, ui = {}) {
   await loadXmas().catch(() => {});
   const X = { xs, save: saveXmas, earn, grant, isSeason };
   let playing = false;
   let lastRes = "";
-
-  function ensureSanctuary(s) {
-    const sc = (s.sanctuary ||= { day: "", plays: 0, freeDay: "", adopts: 0 });
-    if (sc.day !== today()) { sc.day = today(); sc.plays = 0; sc.adopts = 0; }
-    return sc;
-  }
+  let filterTier = "all";
 
   function render() {
     const s = xs();
-    if (!s) { host.innerHTML = `<p class="muted">Could not load Monitor Sanctuary.</p>`; return; }
+    if (!s) {
+      host.innerHTML = `<p class="muted">Could not load Sunscale Reptile House.</p>`;
+      return;
+    }
     const sc = ensureSanctuary(s);
-    const owned = MONITOR_IDS.filter((id) => !!s.pets[id]);
-    const allDone = owned.length === MONITOR_IDS.length;
-    if (allDone && !s.monitorChamp) {
-      s.monitorChamp = 1;
-      grant(500);
+    const owned = REPTILE_IDS.filter((id) => !!s.pets[id]);
+    const allDone = owned.length === REPTILE_IDS.length;
+    if (allDone && !s.herpChamp) {
+      s.herpChamp = 1;
+      grant(1000);
       saveXmas();
-      lastRes = "👑 Grand Monitor Keeper! Collected all 12 Varanus forms: +500 Snowbells!";
+      lastRes = "👑 Grand Herpetologist! Collected all 63 Sunscale Reptile House pets: +1,000 Snowbells!";
     }
 
-    const cards = MONITOR_IDS.map((id) => {
-      const sp = species(id);
-      const got = s.pets[id];
-      const [sci, hab] = MONITOR_META[id];
-      const rar = RARITY[sp[2]];
-      return `<article class="xm-petcard" style="padding:10px;border:1px solid ${got ? rar[1] : "rgba(255,255,255,.14)"};border-radius:12px;opacity:${got ? 1 : 0.72}">
-        <div style="display:flex;gap:10px;align-items:center">
-          <div style="width:76px;height:76px;flex:0 0 76px">${petSvg(id, got ? 2 : 1, got ? "happy" : "sleepy", { size: 76 })}</div>
-          <div style="min-width:0">
-            <strong>${esc(sp[1])}</strong>
-            <div><span class="pill" style="color:${rar[1]}">${rar[0]}</span> <small class="muted"><i>${esc(sci)}</i></small></div>
-            <small class="muted" style="display:block;margin-top:3px">${esc(hab)}</small>
-            <small style="display:block;margin-top:3px">${got ? "In your Sanctuary ✓" : sp[2] === "l" ? "Legendary — Egg Hatch / Rare Morph" : esc(sp[8])}</small>
+    const filtered = filterTier === "all" ? REPTILE_LIST : REPTILE_LIST.filter((r) => r.tier === filterTier);
+    const cards = filtered.map((r) => {
+      const sp = species(r.id);
+      const got = s.pets[r.id];
+      const t = REPTILE_TIERS[r.tier];
+      const hab = HABITATS[r.zone];
+      return `
+        <article class="xm-petcard" style="padding:10px;border:1px solid ${got ? t.color : "rgba(255,255,255,.14)"};border-radius:12px;opacity:${got ? 1 : 0.78}">
+          <div style="display:flex;gap:10px;align-items:center">
+            <div style="width:76px;height:76px;flex:0 0 76px">${petSvg(r.id, got ? 2 : 1, got ? "happy" : "sleepy", { size: 76 })}</div>
+            <div style="min-width:0">
+              <strong>${esc(sp[1])}</strong>
+              <div>
+                <span class="pill" style="color:${t.color};border-color:${t.color}66">${esc(t.label)} · ${esc(r.chance)}</span>
+              </div>
+              <small class="muted" style="display:block;margin-top:3px"><i>${esc(r.sci)}</i> · ${hab.badge} ${esc(hab.name)}</small>
+              <small style="display:block;margin-top:3px">${got ? "In your Herpetarium ✓" : esc(sp[8])}</small>
+            </div>
           </div>
-        </div>
-      </article>`;
+        </article>`;
     }).join("");
 
-    const playsLeft = Math.max(0, 3 - sc.plays);
-    const adoptsLeft = Math.max(0, 10 - (sc.adopts || 0));
+    const playsLeft = Math.max(0, DAILY_CRICKET_CAP - (sc.plays || 0));
+    const adoptsLeft = Math.max(0, DAILY_POD_CAP - (sc.adopts || 0));
     const freeLeft = sc.freeDay !== today();
+
+    const tierCount = (k) => REPTILE_LIST.filter((r) => r.tier === k).length;
 
     host.innerHTML = `
       <div class="xm-card" style="margin-bottom:12px">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
           <div>
-            <h2 style="margin:0">🦎 Monitor Sanctuary Event (${owned.length}/${MONITOR_IDS.length})</h2>
-            <p class="muted" style="margin:4px 0 0">Adopt Common–Epic Varanus monitors (~1-in-2,000 chase chance for the melanistic Black Dragon morph! · ${adoptsLeft}/10 adoptions left today). Crocodile Monitor &amp; Komodo Dragon are hatch-only Legendaries. Cricket Catch: ${playsLeft}/3 rewarded runs today${freeLeft ? " · Free adoption ready at 12+!" : ""}.</p>
+            <h2 style="margin:0">🦎 Sunscale Reptile House (${owned.length}/${REPTILE_IDS.length})</h2>
+            <p class="muted" style="margin:4px 0 0">Hatch glass Terrarium Pods for 63 faithful reptiles across 5 tiers (${adoptsLeft}/${DAILY_POD_CAP} hatches left today). Cricket Catch: ${playsLeft}/${DAILY_CRICKET_CAP} rewarded runs today${freeLeft ? " · Free pod ready at 12+!" : ""}.</p>
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button type="button" class="btn btn-accent" id="mn-adopt" ${playing || !adoptsLeft || s.bells < 50 ? "disabled" : ""}>Adopt Monitor (50 Snowbells)</button>
-            ${ui.worldMon ? `<button type="button" class="btn btn-accent" id="mn-adopt-mon" ${playing || !adoptsLeft || ui.mon() < 75 ? "disabled" : ""}>Adopt Monitor (75 mon)</button>` : ""}
+            ${ui.enterHouse
+              ? `<button type="button" class="btn btn-accent" id="mn-walk">Walk Inside Reptile House</button>`
+              : `<a class="btn btn-accent" href="#world/reptilehouse">Walk Inside Reptile House</a>`}
+            <button type="button" class="btn" id="mn-adopt" ${playing || !adoptsLeft || s.bells < 50 ? "disabled" : ""}>Hatch Pod (50 Snowbells)</button>
+            ${ui.worldMon ? `<button type="button" class="btn" id="mn-adopt-mon" ${playing || !adoptsLeft || ui.mon() < 75 ? "disabled" : ""}>Hatch Pod (75 mon)</button>` : ""}
             <button type="button" class="btn" id="mn-game">${playing ? "Close Cricket Catch" : "Play Cricket Catch"}</button>
           </div>
         </div>
         ${lastRes ? `<p class="xm-res" style="margin-top:8px">${esc(lastRes)}</p>` : ""}
         <div id="mn-stage" ${playing ? "" : "hidden"} style="margin-top:12px"></div>
+        <details style="margin-top:10px">
+          <summary style="cursor:pointer">Drop Probabilities (Exact 100% Terrarium Pod Odds Table)</summary>
+          <table class="xm-odds" style="margin-top:8px;width:100%">
+            ${Object.values(REPTILE_TIERS).map((t) => `
+              <tr>
+                <th style="color:${t.color}">${esc(t.label)} (${tierCount(t.key)})</th>
+                <td><strong>${esc(t.totalPct)}</strong></td>
+                <td>${esc(t.note)}</td>
+              </tr>
+            `).join("")}
+          </table>
+        </details>
+      </div>
+      <div class="chips" style="margin-bottom:10px">
+        <button type="button" class="chip${filterTier === "all" ? " on" : ""}" data-rt="all">All (${REPTILE_IDS.length})</button>
+        ${Object.values(REPTILE_TIERS).map((t) => `<button type="button" class="chip${filterTier === t.key ? " on" : ""}" data-rt="${t.key}" style="color:${t.color}">${esc(t.label)} · ${esc(t.totalPct)} (${tierCount(t.key)})</button>`).join("")}
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px">${cards}</div>
     `;
 
+    host.querySelectorAll("[data-rt]").forEach((btn) => {
+      btn.onclick = () => {
+        filterTier = btn.dataset.rt;
+        render();
+      };
+    });
+
+    const walkBtn = host.querySelector("#mn-walk");
+    if (walkBtn) walkBtn.onclick = () => ui.enterHouse?.();
+
     host.querySelector("#mn-adopt").onclick = () => {
-      if (playing || (sc.adopts || 0) >= 10 || s.bells < 50) return;
+      if (playing || (sc.adopts || 0) >= DAILY_POD_CAP || s.bells < 50) return;
       s.bells -= 50;
       sc.adopts = (sc.adopts || 0) + 1;
-      const r = adoptMonitor(X);
-      lastRes = r.dupe ? `${r.sp[1]} duplicate → +50 XP & full joy!` : `Adopted ${r.sp[1]} (${RARITY[r.sp[2]][0]})!`;
+      const r = rollReptilePod(X);
+      const t = REPTILE_TIERS[r.tier];
+      lastRes = r.dupe
+        ? `${r.sp[1]} (${t.label} · ${r.meta[3]}) duplicate → +60 XP & full joy!`
+        : `Hatched ${r.sp[1]} (${t.label} · ${r.meta[3]})!`;
       ui.ping?.("done");
       ui.hud?.();
       render();
@@ -137,10 +136,13 @@ export async function mountMonitorEvent(host, ui = {}) {
     const monBtn = host.querySelector("#mn-adopt-mon");
     if (monBtn) {
       monBtn.onclick = () => {
-        if (playing || (sc.adopts || 0) >= 10 || !ui.spendMon?.(75)) return;
+        if (playing || (sc.adopts || 0) >= DAILY_POD_CAP || !ui.spendMon?.(75)) return;
         sc.adopts = (sc.adopts || 0) + 1;
-        const r = adoptMonitor(X);
-        lastRes = r.dupe ? `${r.sp[1]} duplicate → +50 XP & full joy!` : `Adopted ${r.sp[1]} (${RARITY[r.sp[2]][0]})!`;
+        const r = rollReptilePod(X);
+        const t = REPTILE_TIERS[r.tier];
+        lastRes = r.dupe
+          ? `${r.sp[1]} (${t.label} · ${r.meta[3]}) duplicate → +60 XP & full joy!`
+          : `Hatched ${r.sp[1]} (${t.label} · ${r.meta[3]})!`;
         ui.ping?.("done");
         ui.hud?.();
         render();
@@ -181,7 +183,11 @@ export async function mountMonitorEvent(host, ui = {}) {
     };
     const hopT = setInterval(hop, unhurried ? 1600 : 1050);
     const secT = setInterval(() => {
-      if (!stageEl.isConnected || !playing) { clearInterval(hopT); clearInterval(secT); return; }
+      if (!stageEl.isConnected || !playing) {
+        clearInterval(hopT);
+        clearInterval(secT);
+        return;
+      }
       left--;
       const el = stageEl.querySelector("#mn-tm");
       if (el) el.textContent = `${left}s`;
@@ -190,8 +196,9 @@ export async function mountMonitorEvent(host, ui = {}) {
         clearInterval(secT);
         const s = xs();
         const sc = ensureSanctuary(s);
-        let bells = 0, bonusMon = 0;
-        if (sc.plays < 3) {
+        let bells = 0;
+        let bonusMon = 0;
+        if (sc.plays < DAILY_CRICKET_CAP) {
           sc.plays++;
           bells = earn(Math.min(40, 8 + score * 2), { bonus: false });
           bonusMon = ui.worldMon ? Math.min(35, 10 + score) : 0;
@@ -200,8 +207,8 @@ export async function mountMonitorEvent(host, ui = {}) {
         let msg = `Cricket Catch over! ${score} caught${bells || bonusMon ? `: +${bells} Snowbells${bonusMon ? ` & +${bonusMon} mon` : ""}` : " (daily reward cap reached)"}.`;
         if (score >= 12 && sc.freeDay !== today()) {
           sc.freeDay = today();
-          const r = adoptMonitor(X);
-          msg += ` Daily Bonus: ${r.dupe ? `${r.sp[1]} +50 XP` : `Adopted ${r.sp[1]}!`}!`;
+          const r = rollReptilePod(X);
+          msg += ` Daily Bonus: ${r.dupe ? `${r.sp[1]} +60 XP` : `Hatched ${r.sp[1]}!`}!`;
         }
         saveXmas();
         lastRes = msg;
