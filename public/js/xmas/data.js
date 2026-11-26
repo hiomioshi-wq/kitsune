@@ -71,7 +71,7 @@ export const SPECIES = [
   ["treemonitor", "Emerald Tree Monitor", "e", "#28b862", "#a8f0b8", "#186e3b", "monitor", "curl", "Vivid jade-green canopy acrobat with a curled prehensile tail."],
   ["bluemonitor", "Blue-Tailed Monitor", "e", "#2b3242", "#c8d8f0", "#3b8cff", "monitor", "bluetail", "Flicks a bright sky-blue tongue and trails an electric cobalt tail."],
   ["crocmonitor", "Crocodile Monitor", "l", "#262b26", "#cde888", "#b8f23a", "monitor", "croctail", "Papuan canopy legend with chartreuse spots and the longest banded tail."],
-  ["blackdragon", "Black Dragon Monitor", "l", "#181a20", "#2d303c", "#ffb830", "monitor", "whip", "Jet-black melanistic water monitor with gleaming golden-amber eyes."],
+  ["blackdragon", "Black Dragon (Water Monitor)", "l", "#181a20", "#2d303c", "#ffb830", "monitor", "whip", "Ultra-rare melanistic morph of the Asian Water Monitor with gleaming golden-amber eyes."],
   ["komodo", "Komodo Dragon", "l", "#6e685c", "#bfb4a0", "#d89c48", "monitor", "heavy", "Armored island sovereign — surprisingly affectionate when offered snacks."],
 ];
 export const species = (id) => SPECIES.find((x) => x[0] === id);
