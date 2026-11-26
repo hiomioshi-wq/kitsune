@@ -174,3 +174,83 @@ export function rollReptilePod(X) {
   X.save();
   return { dupe: false, id, sp, tier, meta };
 }
+
+const FWC_SIG = {
+  kind: "hood",
+  tag: "Hood Flare",
+  btn: "Flare Hood!",
+  desc: "Spreads its neck ribs horizontally into a wide, flat Hydrodynastes cobra hood!",
+};
+const BTS_SIG = {
+  kind: "bluetongue",
+  tag: "Blue Tongue Flash",
+  btn: "Flash Blue Tongue!",
+  desc: "Gapes wide and flashes a broad ultraviolet-cobalt warning tongue!",
+};
+const CHAM_SIG = {
+  kind: "chromashift",
+  tag: "Mood Colour Shift",
+  btn: "Shift Mood Colours!",
+  desc: "Shifts chromatophore pigments across Calm, Fired-Up Love, Sleepy Pastel & Stressed Dark!",
+};
+
+export const SIGNATURE_BEHAVIOURS = {
+  hognose: {
+    kind: "playdead",
+    tag: "Plays Dead",
+    btn: "Startle (Play Dead!)",
+    desc: "Rolls belly-up with mouth agape and forked tongue hanging limp when startled!",
+  },
+  fwc_normal: FWC_SIG,
+  fwc_hypo: FWC_SIG,
+  fwc_superhypo: FWC_SIG,
+  fwc_truehypo: FWC_SIG,
+  fwc_lavender: FWC_SIG,
+  fwc_patternless: FWC_SIG,
+  frilledlizard: {
+    kind: "frillrun",
+    tag: "Frill & Bipedal Run",
+    btn: "Pop Frill & Run!",
+    desc: "Snaps open its pleated sunburst collar and bolts upright on its two hind legs!",
+  },
+  bluetongueskink: BTS_SIG,
+  shingleback: BTS_SIG,
+  armadillolizard: {
+    kind: "tailring",
+    tag: "Tail-Bite Ring",
+    btn: "Bite Tail & Roll!",
+    desc: "Clamps its spiny tail in its jaws to form an armored ouroboros wheel and rolls!",
+  },
+  leaftailgecko: {
+    kind: "leafcamo",
+    tag: "Leaf Camouflage",
+    btn: "Blend into Leaves!",
+    desc: "Vanishes into veined dead autumn foliage until you spot its slit eye!",
+  },
+  alligatorsnapper: {
+    kind: "wormlure",
+    tag: "Worm-Lure Tongue",
+    btn: "Wiggle Worm Lure!",
+    desc: "Rests motionless with hooked beak wide open, wriggling its pink worm-shaped tongue lure!",
+  },
+  matamata: {
+    kind: "suctiongulp",
+    tag: "Suction-Gulp",
+    btn: "Suction-Gulp Feed!",
+    desc: "Drops its fringed throat like a bellows to vacuum-gulp water and prey in milliseconds!",
+  },
+  pantherchameleon: CHAM_SIG,
+  veiledchameleon: CHAM_SIG,
+};
+
+export const BEHAVIOUR_SHOWCASE = [
+  "hognose",
+  "fwc_normal",
+  "frilledlizard",
+  "bluetongueskink",
+  "armadillolizard",
+  "leaftailgecko",
+  "alligatorsnapper",
+  "matamata",
+  "pantherchameleon",
+];

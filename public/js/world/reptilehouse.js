@@ -11,6 +11,8 @@ import {
   REPTILE_LIST,
   REPTILE_META,
   REPTILE_IDS,
+  SIGNATURE_BEHAVIOURS,
+  BEHAVIOUR_SHOWCASE,
   DAILY_POD_CAP,
   DAILY_CRICKET_CAP,
   ensureSanctuary,
@@ -19,12 +21,12 @@ import {
 
 const BAY_SPECIES = {
   mesa: ["beardeddragon", "leopardgecko", "uromastyx", "radiatedtortoise", "gilamonster", "spiderviper"],
-  canopy: ["pantherchameleon", "veiledchameleon", "emeraldtreeboa", "bluepitviper", "leaftailgecko", "boomslang"],
-  lagoon: ["gharial", "pignoseturtle", "matamata", "alligatorsnapper", "fwc_lavender", "spectacledcaiman"],
-  outback: ["crocmonitor", "ackiemonitor", "komodo", "blackdragon", "frilledlizard", "bluetongueskink"],
+  canopy: ["pantherchameleon", "leaftailgecko", "emeraldtreeboa", "veiledchameleon", "bluepitviper", "boomslang"],
+  lagoon: ["matamata", "alligatorsnapper", "fwc_lavender", "gharial", "pignoseturtle", "spectacledcaiman"],
+  outback: ["crocmonitor", "frilledlizard", "bluetongueskink", "ackiemonitor", "komodo", "blackdragon"],
 };
 
-const AMBASSADORS = ["leopardgecko", "crestedgecko", "boxturtle", "ackiemonitor"];
+const AMBASSADORS = ["hognose", "frilledlizard", "armadillolizard", "bluetongueskink", "fwc_normal", "pantherchameleon"];
 
 export function enterReptileHouse(o) {
   const { root, s, drawFox, fur, tailsN, toast, ping, save, hud, onLeave } = o;
@@ -41,6 +43,7 @@ export function enterReptileHouse(o) {
           <span class="pill" id="rh-bells">0 Bells</span>
         </div>
         <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+          <button type="button" class="btn btn-sm btn-accent" id="rh-beh-btn">🍂 Behaviours &amp; Leaf Hunt</button>
           <button type="button" class="btn btn-sm" id="rh-codex-btn">Odds &amp; 63 Codex</button>
           <button type="button" class="btn btn-sm" id="rh-out">Exit (Esc)</button>
         </div>
@@ -67,18 +70,32 @@ export function enterReptileHouse(o) {
   const imgCache = new Map();
   let roamers = [];
   let cricketCleanup = null;
+  let leafStreak = 0;
 
-  const sprite = (id) => {
-    if (!imgCache.has(id)) {
+  const sprite = (id, mood = "happy", act = "") => {
+    const key = `${id}:${mood}:${act}`;
+    if (!imgCache.has(key)) {
       const im = new Image();
-      im.src = petUrl(id, 2, "happy");
-      imgCache.set(id, im);
+      im.src = petUrl(id, 2, mood, act);
+      imgCache.set(key, im);
     }
-    return imgCache.get(id);
+    return imgCache.get(key);
   };
 
-  // Warm showcase tank sprites immediately
-  Object.values(BAY_SPECIES).flat().forEach(sprite);
+  // Warm showcase & signature animation sprites immediately
+  Object.values(BAY_SPECIES).flat().forEach((id) => {
+    sprite(id);
+    if (SIGNATURE_BEHAVIOURS[id]) sprite(id, "happy", "signature");
+  });
+  sprite("leaftailgecko", "happy", "camo");
+  for (const cm of ["happy", "love", "sleepy", "sad"]) {
+    sprite("pantherchameleon", cm, "");
+    sprite("veiledchameleon", cm, "");
+  }
+  AMBASSADORS.forEach((id) => {
+    sprite(id);
+    sprite(id, "happy", "signature");
+  });
 
   function refreshHeader() {
     const xsState = xs();
@@ -91,12 +108,18 @@ export function enterReptileHouse(o) {
   function rebuildRoamers() {
     const xsState = xs();
     const owned = xsState ? REPTILE_IDS.filter((id) => !!xsState.pets?.[id]) : [];
-    const list = (owned.length ? owned.slice(0, 8) : AMBASSADORS);
+    const sigOwned = owned.filter((id) => !!SIGNATURE_BEHAVIOURS[id]);
+    const list = [];
+    for (const id of [...sigOwned, ...owned, ...AMBASSADORS]) {
+      if (!list.includes(id)) list.push(id);
+      if (list.length >= 8) break;
+    }
     roamers = list.map((id, i) => {
       const ang = (i / list.length) * Math.PI * 2;
       const rx = 380 + Math.cos(ang) * 105;
       const ry = 232 + Math.sin(ang) * 70;
       sprite(id);
+      if (SIGNATURE_BEHAVIOURS[id]) sprite(id, "happy", "signature");
       return {
         id,
         owned: owned.includes(id),
@@ -106,6 +129,12 @@ export function enterReptileHouse(o) {
         vy: ((i + 1) % 2 ? 1 : -1) * (11 + (i % 4) * 3),
         pause: 0.4 * (i % 3),
         facing: i % 2 ? 1 : -1,
+        act: "",
+        actTimer: 0,
+        cool: 0,
+        mood: "happy",
+        spin: 0,
+        bubble: "",
       };
     });
   }
@@ -414,6 +443,250 @@ export function enterReptileHouse(o) {
     });
   }
 
+  function showBehaviourModal(initialTab = "showcase") {
+    let tab = initialTab;
+    const bhState = new Map();
+    const xsState = xs();
+
+    function renderModal() {
+      const sc = xsState ? ensureSanctuary(xsState) : { leafDay: "" };
+      if (tab === "hunt") {
+        const gx = 16 + Math.random() * 68;
+        const gy = 20 + Math.random() * 60;
+        const gang = Math.round((Math.random() - 0.5) * 48);
+        const leafCols = ["#5e2d1f", "#7a3e2e", "#9c5634", "#4b2419", "#b56c3b", "#6e3626"];
+        const leaves = Array.from({ length: 22 }, (_, i) => {
+          const lx = 8 + ((i * 23 + Math.random() * 14) % 84);
+          const ly = 14 + ((i * 31 + Math.random() * 18) % 72);
+          const ang = Math.round((Math.random() - 0.5) * 140);
+          const sc0 = (0.85 + Math.random() * 0.45).toFixed(2);
+          const col = leafCols[i % leafCols.length];
+          const fringe = i % 5 === 0;
+          return `<button type="button" data-decoy="${i}" aria-label="Autumn leaf" style="position:absolute;left:${lx}%;top:${ly}%;transform:translate(-50%,-50%) rotate(${ang}deg) scale(${sc0});background:none;border:none;padding:0;width:72px;height:48px;cursor:pointer;z-index:${fringe ? 3 : 1};${fringe ? "pointer-events:none;opacity:.62" : ""}"><svg viewBox="0 0 72 48" width="72" height="48"><path d="M6 26C18 8 44 6 66 24C48 42 22 44 6 26Z" fill="${col}" stroke="#341810" stroke-width="1.6"/><path d="M10 25L60 23M24 18l5 6M38 16l5 7M50 18l4 6M28 32l5 -6M42 33l5 -7" stroke="#c88a68" stroke-width="1.4" opacity=".65"/></svg></button>`;
+        }).join("");
+        const dailyReady = sc.leafDay !== today();
+
+        openModal(`
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+            <div>
+              <h2 style="margin:0">🍂 Spot the Satanic Leaf-Tailed Gecko</h2>
+              <small class="muted">Find the camouflaged <i>Uroplatus phantasticus</i> hidden in dead leaves! Streak: <strong id="rh-lh-stk">${leafStreak}</strong>${dailyReady ? " · Daily bonus: +20 mon &amp; +12 Snowbells!" : " · Daily bonus claimed (practice for fun)"}</small>
+            </div>
+            <button type="button" class="btn btn-sm" id="rh-mclose">Close</button>
+          </div>
+          <div class="chips" style="margin-bottom:10px">
+            <button type="button" class="chip" data-btab="showcase">🎭 All 9 Signature Behaviours</button>
+            <button type="button" class="chip on" data-btab="hunt">🍂 Spot the Leaf-Tailed Gecko</button>
+          </div>
+          <div id="rh-lh-bed" style="position:relative;height:255px;border-radius:12px;border:2px solid #9be36d;background:radial-gradient(circle at 35% 30%,#4e2a1e,#2c160f);overflow:hidden">
+            ${leaves}
+            <button type="button" id="rh-lh-gecko" aria-label="Hidden Satanic Leaf-Tailed Gecko" style="position:absolute;left:${gx}%;top:${gy}%;transform:translate(-50%,-50%) rotate(${gang}deg);background:none;border:none;padding:0;width:82px;height:82px;cursor:pointer;z-index:2">${petSvg("leaftailgecko", 2, "happy", { size: 82, act: "camo" })}</button>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap">
+            <p id="rh-lh-msg" class="muted" style="margin:0">Scan for tiny brow horns, dark crimson slit eyes, or a notched dead-leaf tail…</p>
+            <button type="button" class="btn btn-sm" id="rh-lh-new">Shuffle Leaves</button>
+          </div>
+        `, (el) => {
+          el.querySelector("#rh-mclose").onclick = closeModal;
+          el.querySelectorAll("[data-btab]").forEach((b) => (b.onclick = () => { tab = b.dataset.btab; renderModal(); }));
+          el.querySelector("#rh-lh-new").onclick = () => renderModal();
+          el.querySelectorAll("[data-decoy]").forEach((lf) => {
+            lf.onclick = () => {
+              lf.style.transition = "transform .2s, opacity .25s";
+              lf.style.opacity = "0.22";
+              lf.style.pointerEvents = "none";
+              el.querySelector("#rh-lh-msg").textContent = "Just a dry autumn leaf! Look closer for brow horns or a slit eye…";
+              ping?.("blip");
+            };
+          });
+          const gBtn = el.querySelector("#rh-lh-gecko");
+          let spotted = false;
+          gBtn.onclick = () => {
+            if (spotted) return;
+            spotted = true;
+            leafStreak++;
+            gBtn.style.zIndex = "5";
+            gBtn.style.transform = "translate(-50%,-50%) scale(1.22)";
+            gBtn.style.filter = "drop-shadow(0 0 12px #ffd84d)";
+            gBtn.innerHTML = petSvg("leaftailgecko", 2, "happy", { size: 92, act: "signature" });
+            let bonusText = "";
+            if (xsState && sc.leafDay !== today()) {
+              sc.leafDay = today();
+              s.mon += 20;
+              save();
+              const bells = earn(12, { bonus: false });
+              saveXmas();
+              refreshHeader();
+              hud?.();
+              bonusText = ` +20 mon${bells ? ` & +${bells} Snowbells` : ""}!`;
+            }
+            const stkEl = el.querySelector("#rh-lh-stk");
+            if (stkEl) stkEl.textContent = String(leafStreak);
+            el.querySelector("#rh-lh-msg").innerHTML = `<strong style="color:#9effa8">Spotted! The Satanic Leaf-Tailed Gecko licks its eyeball hello!${esc(bonusText)}</strong>`;
+            ping?.("done");
+          };
+        });
+        return;
+      }
+
+      openModal(`
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+          <div>
+            <h2 style="margin:0">🎭 Signature Reptile Behaviours (9 Theatres)</h2>
+            <small class="muted">Includes Morphs &amp; Twins: all 6 False Water Cobras (Hood Flare), Shingleback (Blue Tongue), and Veiled Chameleon (Mood Shift)!</small>
+          </div>
+          <button type="button" class="btn btn-sm" id="rh-mclose">Close</button>
+        </div>
+        <div class="chips" style="margin-bottom:10px">
+          <button type="button" class="chip on" data-btab="showcase">🎭 All 9 Signature Behaviours</button>
+          <button type="button" class="chip" data-btab="hunt">🍂 Spot the Leaf-Tailed Gecko</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px">
+          ${BEHAVIOUR_SHOWCASE.map((id) => {
+            const sp = species(id);
+            const sig = SIGNATURE_BEHAVIOURS[id];
+            const st = bhState.get(id) || { act: "signature", mood: "happy" };
+            const isCham = id === "pantherchameleon" || id === "veiledchameleon";
+            return `
+              <div style="padding:10px;border-radius:12px;border:1px solid rgba(155,227,109,.45);background:rgba(255,255,255,.04);display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;gap:10px;align-items:center">
+                  <div data-bhart="${id}" style="width:92px;height:92px;flex:0 0 92px;background:rgba(0,0,0,.22);border-radius:10px">${petSvg(id, 2, st.mood, { size: 92, act: st.act })}</div>
+                  <div style="min-width:0">
+                    <strong>${esc(sp[1])}</strong>
+                    <div><span class="pill" style="color:#ffd84d;font-size:10px">🎭 ${esc(sig.tag)}</span></div>
+                    <small class="muted" style="display:block;margin-top:4px">${esc(sig.desc)}</small>
+                  </div>
+                </div>
+                ${isCham ? `<div class="chips">${[["happy", "Calm"], ["love", "Fired-Up"], ["sleepy", "Sleepy"], ["sad", "Stressed"], ["shift", "Shift"]].map(([mk, ml]) => `<button type="button" class="chip" data-bhcham="${id}:${mk}">${ml}</button>`).join("")}</div>` : `<button type="button" class="btn btn-sm btn-accent" data-bhtog="${id}">${esc(sig.btn)}</button>`}
+              </div>`;
+          }).join("")}
+        </div>
+      `, (el) => {
+        el.querySelector("#rh-mclose").onclick = closeModal;
+        el.querySelectorAll("[data-btab]").forEach((b) => (b.onclick = () => { tab = b.dataset.btab; renderModal(); }));
+        el.querySelectorAll("[data-bhtog]").forEach((btn) => {
+          btn.onclick = () => {
+            const id = btn.dataset.bhtog;
+            const prev = bhState.get(id) || { act: "signature", mood: "happy" };
+            const nextAct = id === "leaftailgecko" ? (prev.act === "camo" ? "signature" : "camo") : (prev.act === "signature" ? "" : "signature");
+            const next = { ...prev, act: nextAct };
+            bhState.set(id, next);
+            const art = el.querySelector(`[data-bhart="${id}"]`);
+            if (art) art.innerHTML = petSvg(id, 2, next.mood, { size: 92, act: next.act });
+            btn.textContent = id === "leaftailgecko" ? (nextAct === "camo" ? "Reveal Eye-Lick!" : "Blend into Leaves!") : (nextAct ? "Calm / Reset" : SIGNATURE_BEHAVIOURS[id].btn);
+            ping?.("blip");
+          };
+        });
+        el.querySelectorAll("[data-bhcham]").forEach((btn) => {
+          btn.onclick = () => {
+            const [id, mk] = btn.dataset.bhcham.split(":");
+            const next = mk === "shift" ? { act: "signature", mood: "happy" } : { act: "", mood: mk };
+            bhState.set(id, next);
+            const art = el.querySelector(`[data-bhart="${id}"]`);
+            if (art) art.innerHTML = petSvg(id, 2, next.mood, { size: 92, act: next.act });
+            ping?.("blip");
+          };
+        });
+      });
+    }
+
+    renderModal();
+  }
+
+  function triggerRoamerBehaviour(rm, source = "interact") {
+    const sig = SIGNATURE_BEHAVIOURS[rm.id];
+    const sp = species(rm.id);
+    if (!sig) return false;
+    if (rm.id === "hognose") {
+      if (rm.act === "signature" && source === "interact") {
+        rm.act = "";
+        rm.bubble = "🐍 ...wait";
+        setTimeout(() => {
+          if (!alive) return;
+          rm.act = "signature";
+          rm.actTimer = 4.6;
+          rm.bubble = "💀 *playing dead!*";
+        }, 220);
+        toast("Western Hognose dramatically flips right back upside-down with its tongue out!");
+      } else {
+        rm.act = "signature";
+        rm.actTimer = 4.6;
+        rm.pause = 4.6;
+        rm.bubble = "💀 *playing dead!*";
+        rm.cool = 8;
+        if (source === "interact") toast("Western Hognose plays dead, belly up & forked tongue out!");
+      }
+      return true;
+    }
+    if (rm.id.startsWith("fwc_")) {
+      rm.act = "signature";
+      rm.actTimer = 3.4;
+      rm.pause = 2.2;
+      rm.bubble = "🐍 *hood flare!*";
+      rm.cool = 7;
+      if (source === "interact") toast(`${sp[1]} flattens a wide cobra hood!`);
+      return true;
+    }
+    if (rm.id === "frilledlizard") {
+      rm.act = "signature";
+      rm.actTimer = 3.2;
+      rm.pause = 0;
+      const dx = rm.x - px || 1;
+      const dy = rm.y - py || 1;
+      const m = Math.hypot(dx, dy);
+      rm.vx = (dx / m) * 92;
+      rm.vy = (dy / m) * 92;
+      rm.facing = rm.vx < 0 ? -1 : 1;
+      rm.bubble = "🦎 *frill sprint!*";
+      rm.cool = 7;
+      if (source === "interact") toast("Frilled Lizard pops its sunburst collar and sprints upright on two legs!");
+      return true;
+    }
+    if (rm.id === "armadillolizard") {
+      rm.act = "signature";
+      rm.actTimer = 3.8;
+      rm.pause = 0;
+      rm.vx = (rm.facing || 1) * 78;
+      rm.vy = 22;
+      rm.bubble = "🛡️ *tail-bite roll!*";
+      rm.cool = 7;
+      if (source === "interact") toast("Armadillo Girdled Lizard bites its own spiny tail and rolls in a ring!");
+      return true;
+    }
+    if (rm.id === "bluetongueskink" || rm.id === "shingleback") {
+      rm.act = "signature";
+      rm.actTimer = 3.2;
+      rm.bubble = "💙 *blue tongue!*";
+      rm.cool = 5;
+      toast(`${sp[1]} flashes its vibrant UV-cobalt blue tongue!`);
+      return true;
+    }
+    if (rm.id === "pantherchameleon" || rm.id === "veiledchameleon") {
+      const cycle = ["happy", "love", "sleepy", "sad"];
+      if (rm.act === "signature") {
+        rm.act = "";
+        rm.mood = "happy";
+      } else {
+        const idx = cycle.indexOf(rm.mood) + 1;
+        if (idx < cycle.length) {
+          rm.mood = cycle[idx];
+        } else {
+          rm.act = "signature";
+          rm.mood = "happy";
+        }
+      }
+      rm.actTimer = 4.2;
+      const labels = { happy: "🎨 Calm!", love: "💘 Fired-Up!", sleepy: "😴 Pastel!", sad: "⛈️ Stressed!" };
+      rm.bubble = rm.act === "signature" ? "🌈 *colour shift!*" : labels[rm.mood];
+      toast(`${sp[1]} shifts pigment: ${rm.bubble}`);
+      return true;
+    }
+    rm.act = "signature";
+    rm.actTimer = 3.2;
+    rm.bubble = `✨ *${sig.tag}!*`;
+    return true;
+  }
+
   const leave = () => {
     if (!alive) return;
     alive = false;
@@ -427,6 +700,7 @@ export function enterReptileHouse(o) {
 
   box.querySelector("#rh-out").onclick = leave;
   box.querySelector("#rh-codex-btn").onclick = () => showCodex();
+  box.querySelector("#rh-beh-btn").onclick = () => showBehaviourModal("showcase");
 
   cv.addEventListener("pointerdown", (e) => {
     if (!modalEl.hidden) return;
@@ -443,6 +717,7 @@ export function enterReptileHouse(o) {
     { id: "lagoon", x: 140, y: 280, r: 62, label: "Inspect Sunlit Mangrove Lagoon", go: () => showHabitatModal("lagoon") },
     { id: "outback", x: 620, y: 280, r: 62, label: "Inspect Outback Varanid Pavilion", go: () => showHabitatModal("outback") },
     { id: "keeper", x: 380, y: 120, r: 54, label: "Rarity Odds Board & 63-Species Codex", go: () => showCodex() },
+    { id: "leafhunt", x: 497, y: 124, r: 46, label: "🍂 Spot the Leaf-Tailed Gecko & Behaviours", go: () => showBehaviourModal("hunt") },
     { id: "cricket", x: 266, y: 124, r: 46, label: "Play Cricket Catch Feeder Table", go: showCricketModal },
     { id: "door", x: 380, y: 428, r: 34, label: "Exit Reptile House to Kitsune World", go: leave },
   ];
@@ -460,21 +735,27 @@ export function enterReptileHouse(o) {
     if (best) return best;
     for (const rm of roamers) {
       const d = Math.hypot(rm.x - px, rm.y - py);
-      if (d < 46 && d < bd) {
+      if (d < 48 && d < bd) {
         bd = d;
         const sp = species(rm.id);
+        const sig = SIGNATURE_BEHAVIOURS[rm.id];
         best = {
-          label: `Pet ${sp ? sp[1] : rm.id}${rm.owned ? "" : " (House Ambassador)"}`,
+          label: rm.id === "hognose" && rm.act === "signature"
+            ? "Flip Hognose upright (still playing dead)"
+            : sig
+            ? `${sp[1]} — ${sig.btn}${rm.owned ? "" : " (Ambassador)"}`
+            : `Pet ${sp ? sp[1] : rm.id}${rm.owned ? "" : " (House Ambassador)"}`,
           go: () => {
             hearts.push({ x: rm.x, y: rm.y - 18, vy: -32, life: 1 });
             ping?.("blip");
+            const didSig = triggerRoamerBehaviour(rm, "interact");
             const xsState = xs();
             if (rm.owned && xsState?.pets?.[rm.id]) {
               xsState.pets[rm.id].joy = Math.min(100, (xsState.pets[rm.id].joy || 0) + 4);
               xsState.pets[rm.id].xp = (xsState.pets[rm.id].xp || 0) + 2;
               saveXmas();
-              toast(`${sp[1]} basks happily (+2 XP)!`);
-            } else {
+              if (!didSig) toast(`${sp[1]} basks happily (+2 XP)!`);
+            } else if (!didSig) {
               toast(`${sp ? sp[1] : "Little reptile"} flicks a cheerful tongue hello!`);
             }
           },
@@ -551,10 +832,21 @@ export function enterReptileHouse(o) {
       g.fillRect(x + 20, y + 48, w - 40, 20);
     }
 
-    // Showcase live SVG sprites basking inside the tank
+    // Showcase live animated SVG sprites basking inside the tank
     const ids = BAY_SPECIES[zoneId].slice(0, 3);
+    const phase = Math.floor(now / 3200);
+    const chamMood = ["happy", "love", "sleepy", "sad"][Math.floor(now / 2600) % 4];
     ids.forEach((id, i) => {
-      const im = sprite(id);
+      let mood = "happy";
+      let act = "";
+      if (id === "pantherchameleon" || id === "veiledchameleon") {
+        mood = chamMood;
+      } else if (id === "leaftailgecko") {
+        act = phase % 2 === 0 ? "camo" : "signature";
+      } else if (SIGNATURE_BEHAVIOURS[id] && (phase + i) % 3 === 1) {
+        act = "signature";
+      }
+      const im = sprite(id, mood, act);
       const sx = x + 12 + i * 50;
       const sy = y + 20 + Math.sin(now / 900 + i * 2) * 2;
       if (im.complete && im.naturalWidth) g.drawImage(im, sx, sy, 44, 44);
@@ -613,8 +905,33 @@ export function enterReptileHouse(o) {
         step += dt * 12;
       }
 
-      // Move wandering reptiles gently around aisles
+      // Move wandering reptiles gently around aisles & trigger startle/signature behaviours
       for (const rm of roamers) {
+        if (rm.cool > 0) rm.cool = Math.max(0, rm.cool - dt);
+        if (rm.actTimer > 0) {
+          rm.actTimer -= dt;
+          if (rm.id === "armadillolizard" && rm.act === "signature") {
+            rm.spin += dt * 4.8;
+          }
+          if (rm.actTimer <= 0) {
+            rm.act = "";
+            rm.bubble = "";
+            rm.spin = 0;
+            const bvx = Math.sign(rm.vx || 1) * 18;
+            const bvy = Math.sign(rm.vy || 1) * 12;
+            rm.vx = bvx;
+            rm.vy = bvy;
+          }
+        }
+        if (
+          moving &&
+          !rm.act &&
+          rm.cool <= 0 &&
+          (rm.id === "hognose" || rm.id.startsWith("fwc_") || rm.id === "frilledlizard" || rm.id === "armadillolizard") &&
+          Math.hypot(rm.x - px, rm.y - py) < 54
+        ) {
+          triggerRoamerBehaviour(rm, "startle");
+        }
         rm.pause -= dt;
         if (rm.pause <= 0) {
           const nx = rm.x + rm.vx * dt;
@@ -630,7 +947,7 @@ export function enterReptileHouse(o) {
             rm.y = ny;
           }
           rm.facing = rm.vx < 0 ? -1 : 1;
-          if (Math.random() < 0.008) rm.pause = 0.8 + Math.random() * 1.4;
+          if (!rm.act && Math.random() < 0.008) rm.pause = 0.8 + Math.random() * 1.4;
         }
       }
     }
@@ -755,6 +1072,17 @@ export function enterReptileHouse(o) {
     g.font = "700 10px system-ui";
     g.fillText("🦗 CRICKETS", 267, 94);
 
+    // Leaf-Litter Camouflage & Behaviour Theatre Bench
+    g.fillStyle = "#5c3622";
+    g.beginPath();
+    g.roundRect(462, 76, 70, 28, 6);
+    g.fill();
+    g.strokeStyle = "#ffd84d";
+    g.stroke();
+    g.fillStyle = "#fff";
+    g.font = "700 10px system-ui";
+    g.fillText("🍂 LEAF HUNT", 497, 94);
+
     // 4 Live Glass Terrarium Exhibits
     drawTerrariumBay(54, 72, 170, 80, HABITATS.mesa, "mesa", now);
     drawTerrariumBay(536, 72, 170, 80, HABITATS.canopy, "canopy", now);
@@ -776,17 +1104,36 @@ export function enterReptileHouse(o) {
     const ents = [];
     for (const rm of roamers) {
       ents.push([rm.y, () => {
-        const im = sprite(rm.id);
+        const im = sprite(rm.id, rm.mood, rm.act);
         g.fillStyle = "rgba(0,0,0,.16)";
         g.beginPath();
         g.ellipse(rm.x, rm.y + 12, 13, 5, 0, 0, Math.PI * 2);
         g.fill();
         if (im.complete && im.naturalWidth) {
           g.save();
-          g.translate(rm.x, rm.y + Math.sin(now / 180 + rm.x) * 1.6);
-          if (rm.facing < 0) g.scale(-1, 1);
-          g.drawImage(im, -18, -22, 36, 36);
+          const hop = rm.act === "signature" && rm.id === "frilledlizard"
+            ? Math.abs(Math.sin(now / 65)) * 5
+            : Math.sin(now / 180 + rm.x) * 1.6;
+          g.translate(rm.x, rm.y - hop);
+          if (rm.id === "armadillolizard" && rm.act === "signature") {
+            g.rotate(rm.spin);
+          } else {
+            if (rm.facing < 0) g.scale(-1, 1);
+            if (rm.id === "frilledlizard" && rm.act === "signature") g.rotate(Math.sin(now / 52) * 0.16);
+          }
+          g.drawImage(im, -19, -23, 38, 38);
           g.restore();
+        }
+        if (rm.bubble) {
+          g.font = "700 9.5px system-ui";
+          g.textAlign = "center";
+          const tw = g.measureText(rm.bubble).width + 12;
+          g.fillStyle = "rgba(18,24,20,.88)";
+          g.beginPath();
+          g.roundRect(rm.x - tw / 2, rm.y - 38, tw, 16, 6);
+          g.fill();
+          g.fillStyle = "#ffe896";
+          g.fillText(rm.bubble, rm.x, rm.y - 26);
         }
       }]);
     }

@@ -4,6 +4,7 @@ import { settings } from "../store.js";
 import { setCrumbs } from "../main.js";
 import * as X from "../xmas/core.js";
 import { SPECIES, species, RARITY, TREATS, CATALOG, ORNAMENTS, ADVENT, WISH_COST, PITY, ODDS, TREE_SLOTS } from "../xmas/data.js";
+import { SIGNATURE_BEHAVIOURS } from "../xmas/reptiledata.js";
 import { petSvg, eggSvg, treeSvg, ornSwatch, bellIcon, giftSvg, petUrl } from "../xmas/art.js";
 import { applyXmas } from "../xmas/fx.js";
 
@@ -48,16 +49,35 @@ export async function render(view, _n, params = [], opts = {}) {
     $$("[data-q]", b).forEach((x) => (x.onclick = () => { if (X.claimQuest(x.dataset.q)) { confetti(); quests(); } }));
     $$("[data-g]", b).forEach((x) => (x.onclick = () => { if (X.claimGoal(x.dataset.g)) { confetti(); quests(); } }));
   }
-  function pets(sel) {
+  function pets(sel, preview = {}) {
     const mine = Object.values(s.pets); sel = sel && s.pets[sel] ? sel : s.active || mine[0]?.sp; const p = sel ? s.pets[sel] : null, L = p ? X.petLevel(p) : null, sp = p ? species(p.sp) : null;
+    const baseMood = p ? (p.hunger < 28 ? "sad" : p.joy > 88 ? "love" : "happy") : "happy";
+    let curMood = preview.mood || baseMood, curAct = preview.act || "";
+    const sig = p ? SIGNATURE_BEHAVIOURS[p.sp] : null, isCham = p && (p.sp === "pantherchameleon" || p.sp === "veiledchameleon");
+    const sigBtnLabel = !sig ? "" : p.sp === "leaftailgecko" ? (curAct === "camo" ? "🍂 Reveal Gecko" : curAct === "signature" ? "Calm" : sig.btn) : curAct === "signature" ? "Reset Pose" : sig.btn;
     b.innerHTML = `${s.eggs.length ? `<h2 class="h3">The nest</h2><div class="xm-eggs">${s.eggs.map((e) => { const r = e.have / e.need; return `<article><div class="xm-egg ${r >= 1 ? "wob" : ""}">${eggSvg(e.rar, r)}</div><small style="color:${RARITY[e.rar][1]}">${RARITY[e.rar][0]}</small>${bar(e.have, e.need)}${r >= 1 ? `<button class="btn btn-accent btn-sm" type="button" data-h="${e.id}">Hatch!</button>` : `<button class="btn btn-sm" type="button" data-w="${e.id}" ${s.treats.cocoa ? "" : "disabled"} title="Uses a hot cocoa">Warm with cocoa</button>`}</article>`; }).join("")}</div><p class="hint">Every page or minute you read warms all your eggs.</p>` : ""}
-      ${p ? `<article class="xm-card xm-petcard"><button class="xm-big" type="button" id="xm-pat" aria-label="Pet ${esc(p.name)}">${petSvg(p.sp, X.petStage(L.level), p.hunger < 28 ? "sad" : p.joy > 88 ? "love" : "happy")}<span id="xm-heart"></span></button><div class="xm-pinfo"><input class="field" id="xm-name" value="${esc(p.name)}" maxlength="18" aria-label="Pet name"><p><span class="pill" style="color:${RARITY[sp[2]][1]}">${RARITY[sp[2]][0]}</span> ${esc(sp[1])} · Level ${L.level}${L.level >= 20 ? " (max)" : ""}</p><p class="muted">${esc(sp[8])}</p><label>Full ${bar(p.hunger, 100, "h")}</label><label>Happy ${bar(p.joy, 100, "j")}</label><label>Growth ${bar(L.into, L.need)}</label><div class="xm-treats">${Object.entries(TREATS).map(([k, t]) => `<button class="btn btn-sm" type="button" data-f="${k}" ${s.treats[k] ? "" : "disabled"}>${t[0]} × ${s.treats[k] || 0}</button>`).join("")}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">${s.active === p.sp ? `<span class="pill">Your companion</span>` : `<button class="btn btn-accent btn-sm" type="button" id="xm-act">Make companion</button>`}<a class="btn btn-sm" href="#xmas/catch">Play Snow Catch</a></div><p class="hint">Grows at level 5 and level 12. A happy, fed pet earns its full Snowbell bonus. Pets never get ill or run away.</p></div></article>` : ""}
+      ${p ? `<article class="xm-card xm-petcard"><button class="xm-big" type="button" id="xm-pat" aria-label="Pet ${esc(p.name)}">${petSvg(p.sp, X.petStage(L.level), curMood, { act: curAct })}<span id="xm-heart"></span></button><div class="xm-pinfo"><input class="field" id="xm-name" value="${esc(p.name)}" maxlength="18" aria-label="Pet name"><p><span class="pill" style="color:${RARITY[sp[2]][1]}">${RARITY[sp[2]][0]}</span> ${esc(sp[1])} · Level ${L.level}${L.level >= 20 ? " (max)" : ""}</p><p class="muted">${esc(sp[8])}</p>${sig ? `<p class="muted" style="font-size:12px">🎭 <strong>${esc(sig.tag)}:</strong> ${esc(sig.desc)}</p>` : ""}<label>Full ${bar(p.hunger, 100, "h")}</label><label>Happy ${bar(p.joy, 100, "j")}</label><label>Growth ${bar(L.into, L.need)}</label><div class="xm-treats">${Object.entries(TREATS).map(([k, t]) => `<button class="btn btn-sm" type="button" data-f="${k}" ${s.treats[k] ? "" : "disabled"}>${t[0]} × ${s.treats[k] || 0}</button>`).join("")}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">${s.active === p.sp ? `<span class="pill">Your companion</span>` : `<button class="btn btn-accent btn-sm" type="button" id="xm-act">Make companion</button>`}${sig ? `<button class="btn btn-accent btn-sm" type="button" id="xm-sig">🎭 ${esc(sigBtnLabel)}</button>` : ""}<a class="btn btn-sm" href="#xmas/catch">Play Snow Catch</a></div>${isCham ? `<div class="chips" style="margin-top:8px">${[["happy", "Calm"], ["love", "Fired-Up ♥"], ["sleepy", "Sleepy"], ["sad", "Stressed"], ["shift", "Live Shift"]].map(([mk, ml]) => `<button type="button" class="chip${(mk === "shift" ? curAct === "signature" : !curAct && curMood === mk) ? " on" : ""}" data-chmood="${mk}">${ml}</button>`).join("")}</div>` : ""}<p class="hint">Grows at level 5 and level 12. A happy, fed pet earns its full Snowbell bonus. Pets never get ill or run away.</p></div></article>` : ""}
       <h2 class="h3" style="margin-top:18px">Collection ${mine.length}/${SPECIES.length}</h2><div class="xm-dex">${SPECIES.map((x) => { const o = s.pets[x[0]]; return o ? `<button type="button" data-p="${x[0]}" class="${x[0] === sel ? "on" : ""}">${petSvg(x[0], X.petStage(X.petLevel(o).level), "happy")}<small>${esc(o.name)}</small></button>` : `<div class="unk" title="${RARITY[x[2]][0]}"><span style="border-color:${RARITY[x[2]][1]}">?</span><small>${RARITY[x[2]][0]}</small></div>`; }).join("")}</div>`;
     $$("[data-h]", b).forEach((x) => (x.onclick = () => { const r = X.hatch(x.dataset.h); if (!r) return; ping("done"); confetti(); toast(r.dupe ? `Another ${species(r.sp)[1]}! It left you ${r.refund} Snowbells.` : `${species(r.sp)[1]} hatched!`); applyXmas(); pets(r.sp); }));
     $$("[data-w]", b).forEach((x) => (x.onclick = () => { if (!s.treats.cocoa) return; s.treats.cocoa--; const e = s.eggs.find((q) => q.id === x.dataset.w); e.have = Math.min(e.need, e.have + 10); X.save(); pets(sel); }));
     $$("[data-p]", b).forEach((x) => (x.onclick = () => pets(x.dataset.p)));
     if (!p) return;
     $("#xm-pat", b).onclick = () => { if (X.pat(p.sp)) { const h = $("#xm-heart", b); h.textContent = "♥"; h.className = ""; void h.offsetWidth; h.className = "pop"; ping("blip"); } };
+    const sigBtn = $("#xm-sig", b);
+    if (sigBtn) {
+      sigBtn.onclick = () => {
+        const nextAct = p.sp === "leaftailgecko" ? (curAct === "" ? "camo" : curAct === "camo" ? "signature" : "") : (curAct === "signature" ? "" : "signature");
+        ping("choice");
+        pets(sel, { mood: curMood, act: nextAct });
+      };
+    }
+    $$("[data-chmood]", b).forEach((btn) => {
+      btn.onclick = () => {
+        const mk = btn.dataset.chmood;
+        ping("blip");
+        pets(sel, mk === "shift" ? { mood: baseMood, act: "signature" } : { mood: mk, act: "" });
+      };
+    });
     $("#xm-name", b).onchange = (e) => { p.name = e.target.value.trim().slice(0, 18) || sp[1]; X.save(); pets(sel); };
     $$("[data-f]", b).forEach((x) => (x.onclick = () => { if (X.feed(p.sp, x.dataset.f)) { ping("choice"); pets(sel); } }));
     const act = $("#xm-act", b); if (act) act.onclick = () => { s.active = p.sp; X.save(); applyXmas(); pets(sel); };

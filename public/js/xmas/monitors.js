@@ -10,6 +10,7 @@ import {
   REPTILE_LIST,
   REPTILE_META,
   REPTILE_IDS,
+  SIGNATURE_BEHAVIOURS,
   DAILY_POD_CAP,
   DAILY_CRICKET_CAP,
   ensureSanctuary,
@@ -26,6 +27,7 @@ export async function mountMonitorEvent(host, ui = {}) {
   let playing = false;
   let lastRes = "";
   let filterTier = "all";
+  const cardState = new Map();
 
   function render() {
     const s = xs();
@@ -43,23 +45,31 @@ export async function mountMonitorEvent(host, ui = {}) {
       lastRes = "👑 Grand Herpetologist! Collected all 63 Sunscale Reptile House pets: +1,000 Snowbells!";
     }
 
-    const filtered = filterTier === "all" ? REPTILE_LIST : REPTILE_LIST.filter((r) => r.tier === filterTier);
+    const filtered =
+      filterTier === "all" ? REPTILE_LIST
+      : filterTier === "behaviours" ? REPTILE_LIST.filter((r) => !!SIGNATURE_BEHAVIOURS[r.id])
+      : REPTILE_LIST.filter((r) => r.tier === filterTier);
     const cards = filtered.map((r) => {
       const sp = species(r.id);
       const got = s.pets[r.id];
       const t = REPTILE_TIERS[r.tier];
       const hab = HABITATS[r.zone];
+      const sig = SIGNATURE_BEHAVIOURS[r.id];
+      const st = cardState.get(r.id) || { act: "", mood: got ? "happy" : "sleepy" };
+      const previewMood = sig ? st.mood : (got ? "happy" : "sleepy");
+      const previewStage = got ? 2 : 1;
       return `
-        <article class="xm-petcard" style="padding:10px;border:1px solid ${got ? t.color : "rgba(255,255,255,.14)"};border-radius:12px;opacity:${got ? 1 : 0.78}">
+        <article class="xm-petcard" style="padding:10px;border:1px solid ${got ? t.color : "rgba(255,255,255,.14)"};border-radius:12px;opacity:${got ? 1 : 0.85}">
           <div style="display:flex;gap:10px;align-items:center">
-            <div style="width:76px;height:76px;flex:0 0 76px">${petSvg(r.id, got ? 2 : 1, got ? "happy" : "sleepy", { size: 76 })}</div>
-            <div style="min-width:0">
+            <div data-art="${r.id}" style="width:82px;height:82px;flex:0 0 82px">${petSvg(r.id, previewStage, previewMood, { size: 82, act: st.act })}</div>
+            <div style="min-width:0;flex:1">
               <strong>${esc(sp[1])}</strong>
               <div>
                 <span class="pill" style="color:${t.color};border-color:${t.color}66">${esc(t.label)} · ${esc(r.chance)}</span>
               </div>
               <small class="muted" style="display:block;margin-top:3px"><i>${esc(r.sci)}</i> · ${hab.badge} ${esc(hab.name)}</small>
               <small style="display:block;margin-top:3px">${got ? "In your Herpetarium ✓" : esc(sp[8])}</small>
+              ${sig ? `<div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;align-items:center"><button type="button" class="btn btn-sm ${st.act ? "btn-accent" : ""}" data-sig="${r.id}">🎭 ${esc(sig.btn)}</button></div>` : ""}
             </div>
           </div>
         </article>`;
@@ -104,10 +114,43 @@ export async function mountMonitorEvent(host, ui = {}) {
       </div>
       <div class="chips" style="margin-bottom:10px">
         <button type="button" class="chip${filterTier === "all" ? " on" : ""}" data-rt="all">All (${REPTILE_IDS.length})</button>
+        <button type="button" class="chip${filterTier === "behaviours" ? " on" : ""}" data-rt="behaviours">🎭 Behaviours (${Object.keys(SIGNATURE_BEHAVIOURS).length})</button>
         ${Object.values(REPTILE_TIERS).map((t) => `<button type="button" class="chip${filterTier === t.key ? " on" : ""}" data-rt="${t.key}" style="color:${t.color}">${esc(t.label)} · ${esc(t.totalPct)} (${tierCount(t.key)})</button>`).join("")}
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px">${cards}</div>
     `;
+
+    host.querySelectorAll("[data-sig]").forEach((btn) => {
+      btn.onclick = () => {
+        const id = btn.dataset.sig;
+        const got = !!s.pets[id];
+        const prev = cardState.get(id) || { act: "", mood: got ? "happy" : "sleepy" };
+        const moods = ["happy", "love", "sleepy", "sad"];
+        let next;
+        if (id === "pantherchameleon" || id === "veiledchameleon") {
+          if (prev.act === "signature") next = { act: "", mood: "happy" };
+          else {
+            const ni = moods.indexOf(prev.mood) + 1;
+            next = ni < moods.length ? { act: "", mood: moods[ni] } : { act: "signature", mood: "happy" };
+          }
+        } else if (id === "leaftailgecko") {
+          next = { ...prev, act: prev.act === "" ? "camo" : prev.act === "camo" ? "signature" : "" };
+        } else {
+          next = { ...prev, act: prev.act === "signature" ? "" : "signature" };
+        }
+        cardState.set(id, next);
+        const box = host.querySelector(`[data-art="${id}"]`);
+        if (box) box.innerHTML = petSvg(id, got ? 2 : 1, next.mood, { size: 82, act: next.act });
+        const sig = SIGNATURE_BEHAVIOURS[id];
+        btn.classList.toggle("btn-accent", !!(next.act || (id.includes("chameleon") && next.mood !== "happy")));
+        btn.textContent = id === "leaftailgecko"
+          ? `🎭 ${next.act === "camo" ? "Reveal Gecko!" : next.act === "signature" ? "Calm" : sig.btn}`
+          : id.includes("chameleon")
+          ? `🎭 ${next.act === "signature" ? "Reset Chameleon" : `Mood: ${next.mood}`}`
+          : `🎭 ${next.act ? "Reset Pose" : sig.btn}`;
+        ui.ping?.("blip");
+      };
+    });
 
     host.querySelectorAll("[data-rt]").forEach((btn) => {
       btn.onclick = () => {

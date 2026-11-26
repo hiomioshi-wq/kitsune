@@ -1,4 +1,4 @@
-// Clade- and species-accurate cute SVG renderers for all 45 new Sunscale Reptile House species.
+// Clade- and species-accurate cute SVG renderers + signature animated behaviours for all 45 new reptiles.
 // Monitors ("monitor") and False Water Cobras ("fwc") continue using their dedicated renderers in art.js.
 
 export const REPTILE_FAMILIES = new Set([
@@ -42,15 +42,94 @@ const festAcc = (stage, scarfY = 66, hatY = 26) => ({
     : "",
 });
 
-function drawGecko(id, c, b, a, mood, stage) {
+const REPTILE_CSS = `<style>
+@keyframes rkHogRoll{0%{transform:rotate(-8deg) translateY(0)}40%{transform:rotate(5deg) translateY(1px)}100%{transform:rotate(0deg) translateY(0)}}
+@keyframes rkHogTongue{0%,100%{transform:rotate(0deg)}50%{transform:rotate(12deg) scaleY(1.08)}}
+@keyframes rkFrillPop{0%{transform:scale(.58)}50%{transform:scale(1.07)}100%{transform:scale(1)}}
+@keyframes rkFrillSway{0%,100%{transform:rotate(-4deg) translateY(0)}50%{transform:rotate(4deg) translateY(-3px)}}
+@keyframes rkFrillLegL{0%,100%{transform:rotate(24deg)}50%{transform:rotate(-26deg)}}
+@keyframes rkFrillLegR{0%,100%{transform:rotate(-26deg)}50%{transform:rotate(24deg)}}
+@keyframes rkFrillArms{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes rkBtsWave{0%,100%{transform:rotate(-7deg) scaleY(1)}50%{transform:rotate(7deg) scaleY(1.12)}}
+@keyframes rkBtsBlep{0%,62%,100%{transform:scaleY(.62);opacity:.85}75%,90%{transform:scaleY(1.06);opacity:1}}
+@keyframes rkBtsGlint{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:1;transform:scale(1.15)}}
+@keyframes rkOuroSpin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes rkLeafCamo{0%,100%{opacity:.4}50%{opacity:.52}}
+@keyframes rkLeafWave{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(6deg)}}
+@keyframes rkGeckoEyeLick{0%,45%,100%{transform:scaleY(.2);opacity:0}60%,82%{transform:scaleY(1);opacity:1}}
+@keyframes rkSnapWorm{0%,100%{transform:rotate(-16deg) scaleX(.95)}50%{transform:rotate(18deg) scaleX(1.08)}}
+@keyframes rkSnapRipple{0%{opacity:.7;transform:scale(.8)}100%{opacity:0;transform:scale(1.45)}}
+@keyframes rkMataGulp{0%,32%{transform:scale(1,1)}45%{transform:scale(1.22,.82) translateY(3px)}62%{transform:scale(.94,1.12) translateY(-2px)}100%{transform:scale(1,1)}}
+@keyframes rkMataStream{0%{opacity:0;transform:translate(0,0)}45%{opacity:.95}100%{opacity:0;transform:translate(0,18px)}}
+@keyframes rkChamEyeL{0%,100%{transform:translate(0,0)}35%{transform:translate(-2px,-1px)}70%{transform:translate(2px,1px)}}
+@keyframes rkChamEyeR{0%,100%{transform:translate(0,0)}40%{transform:translate(2px,-1.5px)}80%{transform:translate(-1.5px,1.5px)}}
+@keyframes rkChamShiftBody{0%,100%{fill:#1eb8d8}28%{fill:#ff9e1b}56%{fill:#c8f5e4}82%{fill:#62c848}}
+@keyframes rkChamShiftBars{0%,100%{stroke:#ff4858}28%{stroke:#e81c5a}56%{stroke:#cfa0e8}82%{stroke:#248a68}}
+@keyframes rkChamZap{0%,55%,100%{transform:scaleX(.05);opacity:0}65%,85%{transform:scaleX(1);opacity:1}}
+.rk-hog-dead{transform-origin:60px 76px;animation:rkHogRoll 1.4s ease-in-out infinite alternate}
+.rk-hog-tongue{transform-origin:60px 56px;animation:rkHogTongue 1.6s ease-in-out infinite}
+.rk-frill-disk{transform-origin:60px 44px;animation:rkFrillPop .9s ease-out infinite alternate}
+.rk-frill-pop{transform-origin:60px 84px;animation:rkFrillSway .34s ease-in-out infinite}
+.rk-frill-legl{transform-origin:50px 88px;animation:rkFrillLegL .28s linear infinite}
+.rk-frill-legr{transform-origin:70px 88px;animation:rkFrillLegR .28s linear infinite}
+.rk-frill-arms{animation:rkFrillArms .34s ease-in-out infinite}
+.rk-bts-flash{transform-origin:60px 61px;animation:rkBtsWave .5s ease-in-out infinite}
+.rk-bts-blep{transform-origin:60px 61px;animation:rkBtsBlep 2.8s ease-in-out infinite}
+.rk-bts-glint{transform-box:fill-box;transform-origin:center;animation:rkBtsGlint .9s ease-in-out infinite}
+.rk-ouro-wheel{transform-origin:60px 68px;animation:rkOuroSpin 3.2s linear infinite}
+.rk-leaf-camo{animation:rkLeafCamo 2.4s ease-in-out infinite}
+.rk-leaf-sig{transform-origin:80px 88px;animation:rkLeafWave 1.6s ease-in-out infinite}
+.rk-gecko-lick{transform-origin:48px 58px;animation:rkGeckoEyeLick 2.2s ease-in-out infinite}
+.rk-snap-lure{transform-origin:60px 84px;animation:rkSnapWorm .7s ease-in-out infinite}
+.rk-snap-ring{transform-origin:60px 86px;animation:rkSnapRipple 1.6s ease-out infinite}
+.rk-mata-gulp{transform-origin:60px 74px;animation:rkMataGulp 1.5s ease-in-out infinite}
+.rk-mata-in{animation:rkMataStream 1.5s ease-in infinite}
+.rk-cham-eyel{animation:rkChamEyeL 2.6s ease-in-out infinite}
+.rk-cham-eyer{animation:rkChamEyeR 3.1s ease-in-out infinite}
+.rk-cham-sig .rk-cham-body{animation:rkChamShiftBody 3.6s ease-in-out infinite}
+.rk-cham-sig .rk-cham-bars{animation:rkChamShiftBars 3.6s ease-in-out infinite}
+.rk-cham-zap{transform-origin:38px 51px;animation:rkChamZap 2.2s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>`;
+
+const CHAM_PALETTES = {
+  pantherchameleon: {
+    happy: { c: "#1eb8d8", b: "#ffffff", a: "#ff4858", casque: "#169bb8", bar2: "#ffd052" },
+    love: { c: "#ff9e1b", b: "#fff275", a: "#e81c5a", casque: "#ff7228", bar2: "#3df5b0" },
+    sleepy: { c: "#c8f5e4", b: "#fffbe8", a: "#cfa0e8", casque: "#b4e8d4", bar2: "#e8dcf8" },
+    sad: { c: "#2d2236", b: "#bdb4c8", a: "#d96226", casque: "#3e2f4a", bar2: "#7a5c48" },
+  },
+  veiledchameleon: {
+    happy: { c: "#62c848", b: "#f4dc58", a: "#248a68", casque: "#4ca838", bar2: "#9ef27a" },
+    love: { c: "#a4e82c", b: "#ff9428", a: "#1fa8ff", casque: "#28c8a0", bar2: "#ff5ca8" },
+    sleepy: { c: "#dcf5d8", b: "#f7f3ce", a: "#9ad0ae", casque: "#bce6b8", bar2: "#e2f5dc" },
+    sad: { c: "#2e3324", b: "#f2d03b", a: "#6b6428", casque: "#444830", bar2: "#f2d03b" },
+  },
+};
+
+function drawGecko(id, c, b, a, mood, stage, act = "") {
   const leaf = id === "leaftailgecko";
   const crest = id === "crestedgecko";
   const tokay = id === "tokaygecko";
   const leachie = id === "leachianus";
   const leo = id === "leopardgecko";
+  const isCamo = leaf && act === "camo";
+  const isLeafSig = leaf && act === "signature";
+
+  const autumnBed = leaf
+    ? `<g class="rk-leaf-bed">
+        <path d="M12 104C24 84 44 76 62 94C48 112 24 114 12 104Z" fill="#5e2d1f" stroke="#3c1b12" stroke-width="1.5"/>
+        <path d="M16 102L54 94M30 92l6 8M44 90l5 7" stroke="#8f4c30" stroke-width="1.4" opacity=".8"/>
+        <path d="M58 98C72 78 96 74 110 92C96 112 72 114 58 98Z" fill="#703624" stroke="#441f14" stroke-width="1.5"/>
+        <path d="M62 96L104 91M76 89l5 9M90 88l4 8" stroke="#a65a38" stroke-width="1.4" opacity=".8"/>
+        <path d="M18 46C34 26 60 28 64 48C48 64 26 60 18 46Z" fill="#82402b" stroke="#4f2417" stroke-width="1.5"/>
+        <path d="M64 42C78 22 104 26 108 46C94 64 72 60 64 42Z" fill="#632f20" stroke="#3e1c12" stroke-width="1.5"/>
+        <path d="M26 70C46 56 80 56 96 72C80 90 42 90 26 70Z" fill="#8f4a2e" stroke="#4f2417" stroke-width="1.5" opacity=".9"/>
+       </g>`
+    : "";
 
   const tail = leaf
-    ? `<path d="M78 90C96 86 112 72 110 56C108 42 92 48 86 58L94 60L84 68C79 75 76 83 78 90Z" fill="#633223" stroke="#422016" stroke-width="1.8"/><path d="M80 87C91 79 101 67 107 54" stroke="#c88a68" stroke-width="1.6" fill="none"/>`
+    ? `<g class="${isLeafSig ? "rk-leaf-sig" : ""}"><path d="M78 90C96 86 112 72 110 56C108 42 92 48 86 58L94 60L84 68C79 75 76 83 78 90Z" fill="#633223" stroke="#422016" stroke-width="1.8"/><path d="M80 87C91 79 101 67 107 54" stroke="#c88a68" stroke-width="1.6" fill="none"/></g>`
     : leo
     ? `<path d="M76 92C98 96 114 84 106 66C101 56 91 61 90 70C89 77 82 84 74 86Z" fill="#f2e2fa" stroke="${c}" stroke-width="2"/><path d="M90 73q6 4 12 0M86 82q6 4 12 1" stroke="#3a2e38" stroke-width="2" fill="none"/><circle cx="98" cy="70" r="2.2" fill="#3a2e38"/><circle cx="94" cy="81" r="2" fill="#3a2e38"/>`
     : crest
@@ -74,29 +153,39 @@ function drawGecko(id, c, b, a, mood, stage) {
     : crest
     ? `<path d="M43 74l5 3l4 -3l5 3l4 -3l5 3l4 -3M45 34L40 24L48 29L44 21L52 27M75 34L80 24L72 29L76 21L68 27" stroke="${b}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>`
     : leaf
-    ? `<path d="M42 32L34 18L47 28ZM78 32L86 18L73 28Z" fill="${a}"/><path d="M44 76l8 6l8 -6l8 6l8 -6" stroke="${a}" stroke-width="2.2" fill="none" opacity=".75"/>`
+    ? `<path d="M42 32L34 18L47 28ZM78 32L86 18L73 28Z" fill="${isCamo ? "#5e2d1f" : a}"/><path d="M44 76l8 6l8 -6l8 6l8 -6M60 44V104" stroke="${isCamo ? "#a65a38" : a}" stroke-width="2.2" fill="none" opacity=".75"/>`
     : "";
 
-  const irisCol = leaf ? "#d84828" : tokay ? "#ffbe3b" : crest ? "#d97828" : "#222430";
+  const irisCol = leaf ? (isCamo ? "#7a2c1c" : "#e84a28") : tokay ? "#ffbe3b" : crest ? "#d97828" : "#222430";
   const eyeR = leaf || crest ? 6.2 : 5.4;
-  const gEyes = eyesMarkup(mood, 45, 75, 44, eyeR, irisCol, true, "#0b0c12");
+  const gEyes = isCamo
+    ? eyesMarkup(mood, 45, 75, 44, 4.4, "#5c2418", true, "#140806")
+    : eyesMarkup(mood, 45, 75, 44, eyeR, irisCol, true, "#0b0c12");
   const { scarf, hat } = festAcc(stage, 66, 23);
 
-  return `${tail}${feet}
-    <ellipse cx="60" cy="90" rx="${leachie ? 25 : 21}" ry="19" fill="${c}"/>
-    <ellipse cx="60" cy="94" rx="14" ry="13" fill="${b}" opacity=".92"/>
-    <path d="M32 48C32 28 45 22 60 22C75 22 88 28 88 48C88 61 73 69 60 69C47 69 32 61 32 48Z" fill="${c}"/>
-    <ellipse cx="60" cy="59" rx="14" ry="7.5" fill="${b}" opacity=".88"/>
+  const eyeLick = isLeafSig
+    ? `<path class="rk-gecko-lick" d="M55 60Q40 57 42 42Q45 36 51 44Q48 53 58 58Z" fill="#ff7494" stroke="#b83456" stroke-width="1"/>`
+    : "";
+
+  const geckoCore = `<g class="${isCamo ? "rk-leaf-camo" : isLeafSig ? "rk-leaf-sig" : ""}" ${isCamo ? `opacity=".44"` : ""}>
+    ${tail}${feet}
+    <ellipse cx="60" cy="90" rx="${leachie ? 25 : 21}" ry="19" fill="${isCamo ? "#6e3424" : c}"/>
+    <ellipse cx="60" cy="94" rx="14" ry="13" fill="${isCamo ? "#854430" : b}" opacity=".92"/>
+    <path d="M32 48C32 28 45 22 60 22C75 22 88 28 88 48C88 61 73 69 60 69C47 69 32 61 32 48Z" fill="${isCamo ? "#6e3424" : c}"/>
+    <ellipse cx="60" cy="59" rx="14" ry="7.5" fill="${isCamo ? "#854430" : b}" opacity=".88"/>
     ${bodyPat}
-    <ellipse cx="37" cy="54" rx="4.5" ry="2.6" fill="#ff8fa8" opacity=".52"/>
-    <ellipse cx="83" cy="54" rx="4.5" ry="2.6" fill="#ff8fa8" opacity=".52"/>
+    ${isCamo ? "" : `<ellipse cx="37" cy="54" rx="4.5" ry="2.6" fill="#ff8fa8" opacity=".52"/><ellipse cx="83" cy="54" rx="4.5" ry="2.6" fill="#ff8fa8" opacity=".52"/>`}
     ${gEyes}
     <path d="M51 59Q60 65 69 59" stroke="#181a24" stroke-width="2" stroke-linecap="round" fill="none"/>
+    ${eyeLick}
     ${!leaf && mood !== "sad" ? `<path d="M60 62q3 5 0 7q-3 -2 0 -7Z" fill="#ff7694"/>` : ""}
-    ${scarf}${hat}`;
+    ${isCamo ? "" : `${scarf}${hat}`}
+  </g>`;
+
+  return `${autumnBed}${geckoCore}`;
 }
 
-function drawAgamid(id, c, b, a, tl, mood, stage) {
+function drawAgamid(id, c, b, a, tl, mood, stage, act = "") {
   const beardie = id === "beardeddragon";
   const frilled = id === "frilledlizard";
   const uro = id === "uromastyx";
@@ -107,6 +196,58 @@ function drawAgamid(id, c, b, a, tl, mood, stage) {
   const gila = id === "gilamonster";
   const tuatara = id === "tuatara";
 
+  // Signature #5: Armadillo Girdled Lizard bites its own tail & rolls into a spiny ouroboros wheel!
+  if (armadillo && act === "signature") {
+    const spines = Array.from({ length: 12 }, (_, i) => {
+      const ang = i * 30;
+      return `<polygon points="56,31 60,21 64,31" fill="${a}" stroke="#4a3010" stroke-width="1" transform="rotate(${ang} 60 68)"/>`;
+    }).join("");
+    const plates = Array.from({ length: 10 }, (_, i) => {
+      const ang = i * 36;
+      return `<line x1="60" y1="36" x2="60" y2="51" stroke="${a}" stroke-width="2.4" transform="rotate(${ang} 60 68)"/>`;
+    }).join("");
+    return `<g class="rk-ouro-wheel">
+      ${spines}
+      <circle cx="60" cy="68" r="30" fill="none" stroke="${c}" stroke-width="16"/>
+      <circle cx="60" cy="68" r="24" fill="none" stroke="${b}" stroke-width="5" opacity=".75"/>
+      ${plates}
+      <ellipse cx="75" cy="43" rx="14" ry="11" fill="${c}" stroke="#593c18" stroke-width="1.5"/>
+      <path d="M64 46L51 43L61 38Z" fill="${a}"/>
+      <ellipse cx="78" cy="40" rx="4" ry="3.2" fill="#fff"/>
+      <circle cx="79" cy="40" r="2.2" fill="#181a24"/>
+      <path d="M63 45L54 43" stroke="#181a24" stroke-width="2" stroke-linecap="round"/>
+    </g>`;
+  }
+
+  // Signature #3: Frilled Lizard pops full 360 sunburst collar & sprints on hind legs!
+  if (frilled && act === "signature") {
+    const rays = Array.from({ length: 12 }, (_, i) => {
+      const ang = -155 + i * 28;
+      return `<path d="M60 44L54 4L66 4Z" fill="${i % 2 ? a : b}" stroke="${c}" stroke-width="1.2" transform="rotate(${ang} 60 44)"/>`;
+    }).join("");
+    const { scarf, hat } = festAcc(stage, 65, 21);
+    return `<g class="rk-frill-pop">
+      <path d="M76 92C102 98 114 82 108 58" stroke="${c}" stroke-width="7" stroke-linecap="round" fill="none"/>
+      <path class="rk-frill-legl" d="M51 86L38 106L30 112M38 106L42 114" stroke="${c}" stroke-width="6.5" stroke-linecap="round" fill="none"/>
+      <path class="rk-frill-legr" d="M69 86L82 106L90 112M82 106L78 114" stroke="${c}" stroke-width="6.5" stroke-linecap="round" fill="none"/>
+      <g class="rk-frill-disk">
+        <circle cx="60" cy="44" r="40" fill="${c}" stroke="${a}" stroke-width="3"/>
+        ${rays}
+        <circle cx="60" cy="44" r="28" fill="${a}" opacity=".82"/>
+      </g>
+      <ellipse cx="60" cy="80" rx="15" ry="18" fill="${c}"/>
+      <ellipse cx="60" cy="82" rx="9" ry="12" fill="${b}"/>
+      <g class="rk-frill-arms">
+        <path d="M46 72L28 64L23 68M74 72L92 64L97 68" stroke="${c}" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+      </g>
+      <ellipse cx="60" cy="44" rx="19" ry="16" fill="${c}" stroke="#592e14" stroke-width="1.5"/>
+      <ellipse cx="60" cy="54" rx="12" ry="7" fill="#ff7d95" stroke="#181a24" stroke-width="1.8"/>
+      <path d="M53 53q7 -3 14 0" stroke="#ffe49e" stroke-width="2" fill="none"/>
+      ${eyesMarkup(mood, 50, 70, 39, 4.4, "#221810")}
+      ${scarf}${hat}
+    </g>`;
+  }
+
   const tail = uro
     ? `<path d="M74 92C96 96 112 86 108 70C105 62 96 66 96 74" stroke="${c}" stroke-width="13" stroke-linecap="round" fill="none"/><path d="M84 86l3 10M92 84l4 9M100 79l6 6M103 71l7 2" stroke="${a}" stroke-width="2.6" stroke-linecap="round"/>`
     : armadillo
@@ -116,7 +257,7 @@ function drawAgamid(id, c, b, a, tl, mood, stage) {
     : `<path d="M74 92C102 96 114 78 109 50C107 40 100 42 100 49" stroke="${c}" stroke-width="${beardie ? 9 : 7.5}" stroke-linecap="round" fill="none"/>${gIguana || wDragon || frilled ? `<path d="M88 92l2 -5M98 85l4 -4M106 72l5 -3M108 58l5 -2" stroke="${a}" stroke-width="3" stroke-linecap="round"/>` : ""}`;
 
   const frill = frilled
-    ? `<g><path d="M60 44L20 26Q14 48 24 68L60 56Z" fill="${a}" stroke="${c}" stroke-width="2.5"/><path d="M60 44L100 26Q106 48 96 68L60 56Z" fill="${a}" stroke="${c}" stroke-width="2.5"/><path d="M60 46L26 36M60 49L23 50M60 52L27 62M60 46L94 36M60 49L97 50M60 52L93 62" stroke="${b}" stroke-width="2" stroke-linecap="round"/></g>`
+    ? `<g><path d="M40 44C26 42 26 60 39 62Z" fill="${a}" stroke="${c}" stroke-width="2"/><path d="M80 44C94 42 94 60 81 62Z" fill="${a}" stroke="${c}" stroke-width="2"/></g>`
     : "";
 
   const crest = gIguana || wDragon || rhinoIg || tuatara
@@ -168,10 +309,11 @@ function drawAgamid(id, c, b, a, tl, mood, stage) {
     ${scarf}${hat}`;
 }
 
-function drawSkink(id, c, b, a, mood, stage) {
+function drawSkink(id, c, b, a, mood, stage, act = "") {
   const bts = id === "bluetongueskink";
   const shingle = id === "shingleback";
   const tegu = id === "argentinetegu";
+  const blueFlash = (bts || shingle) && act === "signature";
 
   const tail = shingle
     ? `<path d="M74 92C92 98 106 94 104 80C102 70 88 73 80 82Z" fill="${c}" stroke="#2d2218" stroke-width="2"/>`
@@ -183,8 +325,19 @@ function drawSkink(id, c, b, a, mood, stage) {
     ? `<path d="M38 78Q60 72 82 78M37 87Q60 81 83 87M40 96Q60 90 80 96" stroke="#f4f4f8" stroke-width="4" stroke-dasharray="3 3" stroke-linecap="round" fill="none"/><ellipse cx="37" cy="54" rx="7" ry="6" fill="#24262c"/><ellipse cx="83" cy="54" rx="7" ry="6" fill="#24262c"/>`
     : `<path d="M39 78Q60 72 81 78M38 88Q60 82 82 88M42 98Q60 92 78 98" stroke="#3c2618" stroke-width="4.5" stroke-linecap="round" fill="none"/>`;
 
-  const tongue = bts || shingle
-    ? `<path d="M55 61Q60 79 65 61Z" fill="#2f7bff" stroke="#1842a8" stroke-width="1.2"/>`
+  // Signature #4: Blue-tongued skink & Shingleback gapes pink & flashes broad UV-cobalt tongue!
+  const tongue = blueFlash
+    ? `<g>
+        <ellipse cx="60" cy="60" rx="10.5" ry="6" fill="#ff9eb5" stroke="#181a24" stroke-width="1.6"/>
+        <g class="rk-bts-flash">
+          <path d="M51 60Q60 88 69 60Z" fill="#1d6bff" stroke="#123aa0" stroke-width="1.5"/>
+          <path d="M56 62Q60 80 64 62Z" fill="#78c0ff" opacity=".85"/>
+        </g>
+        <path class="rk-bts-glint" d="M36 69l2 -4l2 4l4 2l-4 2l-2 4l-2 -4l-4 -2Z" fill="#78d4ff"/>
+        <path class="rk-bts-glint" d="M82 71l1.5 -3l1.5 3l3 1.5l-3 1.5l-1.5 3l-1.5 -3l-3 -1.5Z" fill="#78d4ff"/>
+       </g>`
+    : bts || shingle
+    ? `<path class="rk-bts-blep" d="M55 61Q60 77 65 61Z" fill="#2f7bff" stroke="#1842a8" stroke-width="1.2"/>`
     : mood === "sad"
     ? ""
     : `<path d="M60 62v8M60 70l-3 4M60 70l3 4" stroke="#ff6e8a" stroke-width="2.2" stroke-linecap="round" fill="none"/>`;
@@ -200,34 +353,65 @@ function drawSkink(id, c, b, a, mood, stage) {
     <ellipse cx="38" cy="53" rx="4.2" ry="2.4" fill="#ff8fa8" opacity=".48"/>
     <ellipse cx="82" cy="53" rx="4.2" ry="2.4" fill="#ff8fa8" opacity=".48"/>
     ${eyesMarkup(mood, 46, 74, 44, 4.8, "#181a24")}
-    <path d="M50 58Q60 63 70 58" stroke="#181a24" stroke-width="2" fill="none"/>
+    ${blueFlash ? "" : `<path d="M50 58Q60 63 70 58" stroke="#181a24" stroke-width="2" fill="none"/>`}
     ${tongue}${scarf}${hat}`;
 }
 
-function drawChameleon(id, c, b, a, mood, stage) {
+function drawChameleon(id, c, b, a, mood, stage, act = "") {
   const veiled = id === "veiledchameleon";
+  const pal = (CHAM_PALETTES[id] || CHAM_PALETTES.pantherchameleon)[mood] || CHAM_PALETTES.pantherchameleon.happy;
+  const sig = act === "signature";
+  const bodyCol = pal.c;
+  const bellyCol = pal.b;
+  const barCol = pal.a;
+  const casqueCol = pal.casque;
+
   const casque = veiled
-    ? `<path d="M46 36Q56 6 70 16L74 38Z" fill="${c}" stroke="#206834" stroke-width="2"/>`
-    : `<path d="M46 34Q58 21 72 28Z" fill="${c}"/>`;
-  const bars = `<path d="M42 46Q48 56 44 68M55 44Q60 56 56 72M68 46Q72 57 69 72" stroke="${a}" stroke-width="5" stroke-linecap="round" fill="none" opacity=".88"/><path d="M36 59H78" stroke="${b}" stroke-width="2.5" stroke-linecap="round" opacity=".8"/>`;
+    ? `<path class="rk-cham-body" d="M46 36Q56 6 70 16L74 38Z" fill="${casqueCol}" stroke="#206834" stroke-width="2"/>`
+    : `<path class="rk-cham-body" d="M46 34Q58 21 72 28Z" fill="${casqueCol}"/>`;
+
+  const stressSpots = id === "veiledchameleon" && mood === "sad"
+    ? `<circle cx="48" cy="52" r="2.2" fill="#f2d03b"/><circle cx="62" cy="50" r="2.5" fill="#f2d03b"/><circle cx="71" cy="56" r="2" fill="#f2d03b"/><circle cx="52" cy="64" r="2" fill="#f2d03b"/>`
+    : "";
+
+  const bars = `<path class="rk-cham-bars" d="M42 46Q48 56 44 68M55 44Q60 56 56 72M68 46Q72 57 69 72" stroke="${barCol}" stroke-width="5" stroke-linecap="round" fill="none" opacity=".9"/><path d="M36 59H78" stroke="${bellyCol}" stroke-width="2.5" stroke-linecap="round" opacity=".88"/>${stressSpots}`;
+
+  // Independent swiveling conical turret eyes
+  const cEyes = mood === "sleepy"
+    ? `<path d="M42 43q4 3 8 0M53 43q3 3 7 0" stroke="#30323c" stroke-width="2.2" fill="none" stroke-linecap="round"/>`
+    : mood === "love"
+    ? eyesMarkup("love", 45, 56, 42, 4.4)
+    : `<g>
+        <circle cx="44" cy="42" r="5.2" fill="${pal.bar2}" opacity=".7"/>
+        <circle cx="56" cy="42" r="4.6" fill="${pal.bar2}" opacity=".7"/>
+        <g class="rk-cham-eyel"><circle cx="44" cy="42" r="3" fill="#181a24"/><circle cx="45" cy="40.8" r="1.1" fill="#fff"/></g>
+        <g class="rk-cham-eyer"><circle cx="56" cy="42" r="2.8" fill="#181a24"/><circle cx="57" cy="41" r="1" fill="#fff"/></g>
+       </g>`;
+
+  const zapTongue = sig
+    ? `<g class="rk-cham-zap"><path d="M38 51L10 47" stroke="#ff6c9a" stroke-width="3.6" stroke-linecap="round"/><circle cx="8" cy="47" r="4.2" fill="#ff487c"/></g>`
+    : "";
+
   const { scarf, hat } = festAcc(stage, 72, veiled ? 15 : 22);
 
-  return `
+  return `<g class="${sig ? "rk-cham-sig" : ""}">
     <path d="M12 88Q60 80 108 90" stroke="#6d482a" stroke-width="9" stroke-linecap="round" fill="none"/>
-    <path d="M74 72C94 74 104 60 98 46C92 34 78 40 80 51C82 58 90 58 90 51" stroke="${c}" stroke-width="7.5" stroke-linecap="round" fill="none"/>
-    <ellipse cx="58" cy="58" rx="23" ry="18" fill="${c}"/>
+    <path class="rk-cham-body" d="M74 72C94 74 104 60 98 46C92 34 78 40 80 51C82 58 90 58 90 51" stroke="${bodyCol}" stroke-width="7.5" stroke-linecap="round" fill="none"/>
+    <ellipse class="rk-cham-body" cx="58" cy="58" rx="23" ry="18" fill="${bodyCol}"/>
     ${bars}
-    <path d="M42 73L40 85M46 73L47 85M68 73L66 85M72 73L74 85" stroke="${c}" stroke-width="4.5" stroke-linecap="round"/>
+    <path class="rk-cham-body" d="M42 73L40 85M46 73L47 85M68 73L66 85M72 73L74 85" stroke="${bodyCol}" stroke-width="4.5" stroke-linecap="round"/>
     ${casque}
-    <circle cx="48" cy="43" r="14" fill="${c}"/>
-    <circle cx="48" cy="43" r="9.5" fill="${b}" opacity=".32"/>
-    ${eyesMarkup(mood, 45, 55, 42, 4.6, "#222430", false)}
+    <circle class="rk-cham-body" cx="48" cy="43" r="14" fill="${bodyCol}"/>
+    <circle cx="48" cy="43" r="9.5" fill="${bellyCol}" opacity=".28"/>
+    ${zapTongue}
+    ${cEyes}
     <path d="M38 51Q47 55 55 50" stroke="#181a24" stroke-width="2" stroke-linecap="round" fill="none"/>
     <ellipse cx="40" cy="49" rx="3.4" ry="2" fill="#ff8fa8" opacity=".55"/>
-    ${scarf}${hat}`;
+    ${scarf}${hat}
+  </g>`;
 }
 
-function drawSnake(id, c, b, a, tl, mood, stage) {
+function drawSnake(id, c, b, a, tl, mood, stage, act = "") {
   const perch = tl === "perch";
   const blueViper = id === "bluepitviper";
   const emBoa = id === "emeraldtreeboa";
@@ -239,6 +423,26 @@ function drawSnake(id, c, b, a, tl, mood, stage) {
   const retic = id === "reticpython";
   const rhino = id === "rhinoviper";
   const spider = id === "spiderviper";
+
+  // Signature #1: Western Hognose dramatic upside-down belly-up play-dead + limp hanging tongue!
+  if (hognose && act === "signature") {
+    const { scarf, hat } = festAcc(stage, 60, 26);
+    return `<g class="rk-hog-dead">
+      <path d="M84 92C102 90 108 78 100 68" stroke="${c}" stroke-width="7" stroke-linecap="round" fill="none"/>
+      <ellipse cx="60" cy="84" rx="33" ry="15" fill="#2a2832"/>
+      <ellipse cx="60" cy="81" rx="30" ry="12" fill="${b}"/>
+      <path d="M34 80v8M43 76v10M52 75v11M61 75v11M70 76v10M79 78v9M86 80v7" stroke="#2a2832" stroke-width="2.6" opacity=".82"/>
+      <path d="M36 96Q60 88 84 96" stroke="${c}" stroke-width="8" stroke-linecap="round" fill="none"/>
+      <ellipse cx="60" cy="56" rx="18" ry="14" fill="${b}" stroke="${a}" stroke-width="1.5"/>
+      <path d="M51 66L60 73L69 66Q60 61 51 66Z" fill="${c}" stroke="${a}" stroke-width="1.4"/>
+      <ellipse cx="60" cy="58" rx="9" ry="5.5" fill="#ff8ca4" stroke="#181a24" stroke-width="1.4"/>
+      <g class="rk-hog-tongue">
+        <path d="M60 58C68 62 72 72 79 74M79 74l4 -1M79 74l2 4" stroke="#ff4f7d" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+      </g>
+      <path d="M44 45l6 6M50 45l-6 6M70 45l6 6M76 45l-6 6" stroke="#181a24" stroke-width="2.4" stroke-linecap="round"/>
+      ${scarf}${hat}
+    </g>`;
+  }
 
   if (perch) {
     const tailTip = blueViper
@@ -330,7 +534,7 @@ function drawSnake(id, c, b, a, tl, mood, stage) {
     ${scarf}${hat}`;
 }
 
-function drawChelonian(id, c, b, a, mood, stage) {
+function drawChelonian(id, c, b, a, mood, stage, act = "") {
   const radiated = id === "radiatedtortoise";
   const sulcata = id === "sulcata";
   const box = id === "boxturtle";
@@ -339,6 +543,8 @@ function drawChelonian(id, c, b, a, mood, stage) {
   const mata = id === "matamata";
   const snapper = id === "alligatorsnapper";
   const pignose = id === "pignoseturtle";
+  const snapSig = snapper && act === "signature";
+  const mataSig = mata && act === "signature";
 
   const legsCol = redfoot ? a : c;
   const limbs = pignose
@@ -363,14 +569,34 @@ function drawChelonian(id, c, b, a, mood, stage) {
     ? `<path d="M26 90Q60 96 94 90" stroke="${b}" stroke-width="4" fill="none"/>`
     : "";
 
+  const snapLureMarkup = snapper
+    ? `<path d="M48 77L60 88L72 77Q70 70 60 70Q50 70 48 77Z" fill="${snapSig ? "#26181c" : "#2c2922"}" stroke="#181a24" stroke-width="1.4"/>
+       ${snapSig ? `<circle class="rk-snap-ring" cx="60" cy="86" r="14" fill="none" stroke="#8de8ff" stroke-width="1.5"/>` : ""}
+       <path class="rk-snap-lure" d="M55 83Q60 79 65 83Q62 87 58 84Q54 81 51 85" stroke="#ff5c8d" stroke-width="${snapSig ? 3.2 : 2.3}" stroke-linecap="round" fill="none"/>`
+    : "";
+
+  const mataGulpMarkup = mata
+    ? `<g class="${mataSig ? "rk-mata-gulp" : ""}">
+        <path d="M40 76L50 56L70 56L80 76Q60 88 40 76Z" fill="${b}" stroke="${a}" stroke-width="1.8"/>
+        <path d="M36 74l-5 -3M37 78l-6 1M84 74l5 -3M83 78l6 1" stroke="${b}" stroke-width="2.5" stroke-linecap="round"/>
+        <rect x="58" y="49" width="4" height="8" rx="2" fill="${b}"/>
+        ${mataSig
+          ? `<ellipse cx="60" cy="79" rx="11" ry="7.5" fill="#2c1412" stroke="#180b0a" stroke-width="1.5"/>
+             <path class="rk-mata-in" d="M47 54L56 72M73 54L64 72M54 48L59 70M66 48L61 70" stroke="#7fe8ff" stroke-width="2.2" stroke-linecap="round"/>
+             <circle class="rk-mata-in" cx="56" cy="56" r="2.2" fill="#bfefff"/>
+             <circle class="rk-mata-in" cx="65" cy="54" r="1.8" fill="#bfefff"/>`
+          : `<path d="M48 77Q60 83 72 77" stroke="#2c1810" stroke-width="2" fill="none"/>`}
+       </g>`
+    : "";
+
   const head = mata
-    ? `<path d="M40 76L50 56L70 56L80 76Q60 88 40 76Z" fill="${b}" stroke="${a}" stroke-width="1.8"/><path d="M36 74l-5 -3M37 78l-6 1M84 74l5 -3M83 78l6 1" stroke="${b}" stroke-width="2.5" stroke-linecap="round"/><rect x="58" y="49" width="4" height="8" rx="2" fill="${b}"/><path d="M48 77Q60 83 72 77" stroke="#2c1810" stroke-width="2" fill="none"/>`
+    ? mataGulpMarkup
     : pignose
     ? `<circle cx="60" cy="73" r="14" fill="${c}"/><ellipse cx="60" cy="77" rx="6.5" ry="4.5" fill="${a}"/><circle cx="57.8" cy="77" r="1.4" fill="#3a2024"/><circle cx="62.2" cy="77" r="1.4" fill="#3a2024"/>`
-    : `<ellipse cx="60" cy="74" rx="${galap ? 12 : 14}" ry="13" fill="${redfoot ? c : c}"/><ellipse cx="60" cy="79" rx="10" ry="6" fill="${b}" opacity=".85"/>${redfoot ? `<circle cx="60" cy="68" r="4" fill="${a}"/>` : ""}${snapper ? `<path d="M56 80l4 5l4 -5" fill="#2c2922"/><path d="M58 83q2 4 5 1" stroke="#ff7894" stroke-width="2" stroke-linecap="round" fill="none"/>` : ""}`;
+    : `<ellipse cx="60" cy="74" rx="${galap ? 12 : 14}" ry="${snapSig ? 15 : 13}" fill="${c}"/><ellipse cx="60" cy="79" rx="10" ry="6" fill="${b}" opacity=".85"/>${redfoot ? `<circle cx="60" cy="68" r="4" fill="${a}"/>` : ""}${snapLureMarkup}`;
 
   const tEyeCol = box ? "#e84a28" : "#181a24";
-  const tEyes = eyesMarkup(mood, 51, 69, mata ? 66 : 71, 3.6, tEyeCol);
+  const tEyes = eyesMarkup(mood, 51, 69, mata ? 66 : 70, 3.6, tEyeCol);
   const { scarf, hat } = festAcc(stage, 84, 30);
 
   return `
@@ -378,7 +604,7 @@ function drawChelonian(id, c, b, a, mood, stage) {
     <ellipse cx="60" cy="94" rx="34" ry="8" fill="${b}" opacity=".9"/>
     ${head}
     ${tEyes}
-    <path d="M54 81Q60 85 66 81" stroke="#181a24" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+    ${mataSig || snapSig ? "" : `<path d="M54 81Q60 85 66 81" stroke="#181a24" stroke-width="1.8" stroke-linecap="round" fill="none"/>`}
     ${scarf}${hat}`;
 }
 
@@ -410,17 +636,17 @@ function drawCroc(id, c, b, a, mood, stage) {
     ${scarf}${hat}`;
 }
 
-export function reptileSvg(id, name, rar, c, b, a, ear, tl, stage = 1, mood = "happy", size = 0) {
+export function reptileSvg(id, name, rar, c, b, a, ear, tl, stage = 1, mood = "happy", size = 0, act = "") {
   const scale = stage === 1 ? 0.85 : stage === 2 ? 0.93 : 1;
   const glow = rar === "l" ? `<circle cx="60" cy="64" r="54" fill="${a}" opacity=".15"/>` : "";
   const body =
-    ear === "gecko" ? drawGecko(id, c, b, a, mood, stage)
-    : ear === "agamid" ? drawAgamid(id, c, b, a, tl, mood, stage)
-    : ear === "skink" ? drawSkink(id, c, b, a, mood, stage)
-    : ear === "chameleon" ? drawChameleon(id, c, b, a, mood, stage)
-    : ear === "snake" ? drawSnake(id, c, b, a, tl, mood, stage)
-    : ear === "chelonian" ? drawChelonian(id, c, b, a, mood, stage)
+    ear === "gecko" ? drawGecko(id, c, b, a, mood, stage, act)
+    : ear === "agamid" ? drawAgamid(id, c, b, a, tl, mood, stage, act)
+    : ear === "skink" ? drawSkink(id, c, b, a, mood, stage, act)
+    : ear === "chameleon" ? drawChameleon(id, c, b, a, mood, stage, act)
+    : ear === "snake" ? drawSnake(id, c, b, a, tl, mood, stage, act)
+    : ear === "chelonian" ? drawChelonian(id, c, b, a, mood, stage, act)
     : drawCroc(id, c, b, a, mood, stage);
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 124" ${size ? `width="${size}" height="${size}"` : ""} role="img" aria-label="${name}">${glow}<g transform="translate(${60 - 60 * scale} ${124 - 122 * scale}) scale(${scale})"><ellipse cx="60" cy="116" rx="35" ry="4.5" fill="#000" opacity=".15"/>${body}</g></svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 124" ${size ? `width="${size}" height="${size}"` : ""} role="img" aria-label="${name}">${REPTILE_CSS}${glow}<g transform="translate(${60 - 60 * scale} ${124 - 122 * scale}) scale(${scale})"><ellipse cx="60" cy="116" rx="35" ry="4.5" fill="#000" opacity=".15"/>${body}</g></svg>`;
 }

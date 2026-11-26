@@ -5,6 +5,7 @@ import { lib, getItem, allProgress, progressPct, kvGet } from "../store.js";
 import { isKids } from "../profiles.js";
 import { loadXmas, xs, isSeason, daysToXmas, onXmas, save, earn, startEarning, activePet, petLevel, petStage, petBonus, pat, todaysQuests, giftReady, adventReady } from "./core.js";
 import { petUrl, bellIcon, giftSvg } from "./art.js";
+import { SIGNATURE_BEHAVIOURS } from "./reptiledata.js";
 
 const calm = () => document.documentElement.dataset.motion === "reduce" || matchMedia("(prefers-reduced-motion: reduce)").matches;
 const reading = () => !document.getElementById("reader")?.hidden || !document.getElementById("book")?.hidden;
@@ -35,7 +36,24 @@ function petSync() {
   if (!petRaf) { let last = performance.now(); const walk = (t) => { petRaf = requestAnimationFrame(walk); const dt = Math.min(.1, (t - last) / 1000); last = t; const hide = (reading() && !xs().opts.readers) || route() === "world" || route() === "vn"; petEl.style.display = hide ? "none" : ""; if (hide) return; const max = innerWidth - 90; if (!calm()) { if (P.wait > 0) P.wait -= dt; else { const d = P.to - P.x; if (Math.abs(d) < 3) { P.wait = 2 + Math.random() * 7; P.to = 24 + Math.random() * (max - 24); } else { P.dir = Math.sign(d); P.x += P.dir * 34 * dt; } } } P.x = Math.max(10, Math.min(max, P.x)); const bob = !calm() && P.wait <= 0 ? Math.abs(Math.sin(t / 130)) * 4 : 0; petEl.style.transform = `translate(${Math.round(P.x)}px,${-bob}px) scaleX(${P.dir < 0 ? -1 : 1})`; }; petRaf = requestAnimationFrame(walk); }
 }
 // The pet never sits on top of a button: a click only counts as a pat when nothing else was clicked.
-function onDocClick(e) { if (!petEl || petEl.style.display === "none" || e.target.closest?.("a,button,input,select,textarea,label,[role=button],.card")) return; const r = petEl.getBoundingClientRect(); if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) return; const p = activePet(); if (p && pat(p.sp)) { const h = petEl.querySelector("span"); h.textContent = "♥"; h.className = ""; void h.offsetWidth; h.className = "pop"; } }
+let sigTimer = 0;
+function onDocClick(e) {
+  if (!petEl || petEl.style.display === "none" || e.target.closest?.("a,button,input,select,textarea,label,[role=button],.card")) return;
+  const r = petEl.getBoundingClientRect();
+  if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) return;
+  const p = activePet();
+  if (!p) return;
+  const sig = SIGNATURE_BEHAVIOURS[p.sp];
+  if (sig) {
+    const stage = petStage(petLevel(p).level);
+    const mood = p.hunger < 28 ? "sad" : p.joy > 88 ? "love" : "happy";
+    petEl.querySelector("img").src = petUrl(p.sp, stage, mood, "signature");
+    clearTimeout(sigTimer);
+    sigTimer = setTimeout(() => { petKey = ""; petSync(); }, 3600);
+    toast(`${p.name}: ${sig.tag}!`, { ms: 2000 });
+  }
+  if (pat(p.sp)) { const h = petEl.querySelector("span"); h.textContent = "♥"; h.className = ""; void h.offsetWidth; h.className = "pop"; }
+}
 
 // ---------- surprise gifts ----------
 let dropT = 0;
