@@ -33,7 +33,7 @@ export function createFireworks(o) {
         if (s.mon < 10) return;
         s.mon -= 10;
         st.launched++;
-        fireworks?.();
+        fireworks?.({ color, shape });
         addRenown?.(10);
         ping("done");
         toast(`Launched a ${color} ${shape} shell! +10 Renown.`);

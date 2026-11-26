@@ -73,8 +73,8 @@ export function createAuction(o) {
       e.querySelectorAll("[data-bid]").forEach((b) => {
         b.onclick = () => {
           const lot = st.lots[+b.dataset.bid];
-          if (!lot || lot.sold || lot.mine) return;
-          const next = lot.cur + 10;
+          if (!lot || lot.sold || lot.mine || lot.cur >= lot.buyout - 1) return;
+          const next = Math.min(lot.buyout - 1, lot.cur + 10);
           if (s.mon < next) return toast("Not enough mon.");
           lot.cur = next;
           lot.mine = true;

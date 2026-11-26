@@ -234,7 +234,18 @@ export function breakablesPage(ctx, tab = "arena") {
     e.querySelectorAll("[data-t]").forEach((x) => (x.onclick = () => breakablesPage(ctx, x.dataset.t)));
     const field = e.querySelector("#ps-field"), note = e.querySelector("#ps-note");
     const paint = () => {
-      field.innerHTML = items.map((it) => `<button type="button" class="by-crate" data-br="${it.u}" style="border-color:${it.boss ? "#ffd25a" : z.color}"><span>${it.kind[2]}</span><strong>${esc(it.kind[1])}</strong><small>${Math.max(0, it.hp)} / ${it.max} HP</small><div style="width:100%;height:6px;background:rgba(0,0,0,.25);border-radius:4px;overflow:hidden"><div style="width:${Math.max(0, Math.min(100, (it.hp / it.max) * 100))}%;height:100%;background:${it.boss ? "#ffd25a" : "#67d6a4"}"></div></div></button>`).join("");
+      const ids = items.map((it) => String(it.u)).join(",");
+      if (field.dataset.ids !== ids) {
+        field.dataset.ids = ids;
+        field.innerHTML = items.map((it) => `<button type="button" class="by-crate" data-br="${it.u}" style="border-color:${it.boss ? "#ffd25a" : z.color}"><span>${it.kind[2]}</span><strong>${esc(it.kind[1])}</strong><small>${Math.max(0, it.hp)} / ${it.max} HP</small><div style="width:100%;height:6px;background:rgba(0,0,0,.25);border-radius:4px;overflow:hidden"><div style="width:${Math.max(0, Math.min(100, (it.hp / it.max) * 100))}%;height:100%;background:${it.boss ? "#ffd25a" : "#67d6a4"}"></div></div></button>`).join("");
+      } else {
+        items.forEach((it, idx) => {
+          const btn = field.children[idx];
+          if (!btn) return;
+          btn.querySelector("small").textContent = `${Math.max(0, it.hp)} / ${it.max} HP`;
+          btn.querySelector("div > div").style.width = `${Math.max(0, Math.min(100, (it.hp / it.max) * 100))}%`;
+        });
+      }
       note.textContent = lastNote;
     };
     field.onclick = (ev) => {
@@ -320,8 +331,9 @@ export function forgePage(ctx, tab = "gold") {
       e.querySelectorAll("[data-ptog]").forEach((x) => (x.onclick = () => { const k = x.dataset.ptog; p.potOn[k] = !p.potOn[k]; save(); ping("blip"); forgePage(ctx, "enchants"); }));
       e.querySelectorAll("[data-pbuy]").forEach((x) => (x.onclick = () => { const k = x.dataset.pbuy, c = +x.dataset.pc; if (p.diamonds < c) return; p.diamonds -= c; p.potions[k] = (p.potions[k] || 0) + 2; save(); ping("done"); forgePage(ctx, "enchants"); }));
       e.querySelectorAll("[data-eeq]").forEach((x) => (x.onclick = () => {
-        const k = x.dataset.eeq;
+        const k = x.dataset.eeq, eid = k.split("_")[0];
         if (p.eqEnchants.includes(k)) p.eqEnchants = p.eqEnchants.filter((q) => q !== k);
+        else if (p.eqEnchants.some((q) => q.split("_")[0] === eid)) return say("Only one tier of each enchant can be equipped at once.");
         else if (p.eqEnchants.length < 3) { p.eqEnchants.push(k); addQuestProgress(b, "enchant", 1); }
         else return say("All 3 Enchant slots are full.");
         save(); ping("choice"); checkGoals(); forgePage(ctx, "enchants");
@@ -362,6 +374,8 @@ export function forgePage(ctx, tab = "gold") {
       if (cost && b.shells < cost) return;
       const pool = b.pets.filter((q) => q.sp === sp && (toRainbow ? q.gold && !q.rainbow : !q.gold && !q.rainbow));
       if (pool.length < n) return;
+      const vScore = (q) => (q.huge ? 8 : 0) + (q.eclipse ? 4 : 0) + (q.moon ? 2 : 0) + (q.prism ? 1 : 0);
+      pool.sort((a, c) => vScore(a) - vScore(c));
       if (cost) b.shells -= cost;
       const drop = new Set(pool.slice(0, n - 1).map((q) => q.id));
       const keep = pool[n - 1];

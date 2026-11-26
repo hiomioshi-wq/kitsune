@@ -112,7 +112,7 @@ export function createSong(st, api) {
       return true;
     }
     if (s.enthralled[e.id]) { api.say(e, HUMMING[Math.floor(Math.random() * HUMMING.length)]); return true; }
-    if (s.on && (e.cast || e.look) && !e.relic && !e.boss) { api.say(null, HIJACK[Math.floor(Math.random() * HIJACK.length)]); return true; }
+    if (s.on && settings.world?.mindControl !== false && (e.cast || e.look) && !e.relic && !e.boss) { api.say(null, HIJACK[Math.floor(Math.random() * HIJACK.length)]); return true; }
     return false;
   }
 
@@ -123,6 +123,7 @@ export function createSong(st, api) {
   }
 
   function update(dt) {
+    if (settings.world?.mindControl === false) { if (s.on || s.v > 0) free(); return; }
     const c = calypso();
     if (c && !s.on && Math.hypot((c.x + .5) * T - api.px(), (c.y + .5) * T - api.py()) < 120) add(dt * 3.5);
     else if (!s.on && s.v > 0) s.v = Math.max(0, s.v - dt * .3);
@@ -139,7 +140,7 @@ export function createSong(st, api) {
   }
 
   function pull(px, py) {
-    if (!s.on || pullT <= 0) return [0, 0];
+    if (!s.on || pullT <= 0 || settings.world?.mindControl === false) return [0, 0];
     const c = calypso();
     if (!c) return [0, 0];
     const dx = (c.x + .5) * T - px, dy = (c.y + .5) * T - py, d = Math.hypot(dx, dy);

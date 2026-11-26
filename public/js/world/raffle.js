@@ -17,7 +17,7 @@ export function createRaffle(o) {
     st.draws++;
 
     const roll = Math.random();
-    if (roll < 0.06) {
+    if (roll < 0.02) {
       const won = 200;
       s.mon += won;
       st.wins++;
@@ -29,13 +29,13 @@ export function createRaffle(o) {
         lastRes = `🌟 GRAND PRIZE! +${won} mon!`;
       }
       ping("done");
-    } else if (roll < 0.22) {
+    } else if (roll < 0.07) {
       s.mon += 75;
       st.wins++;
       addRenown?.(20);
       lastRes = "🎉 Second Prize! +75 mon & +20 Renown!";
       ping("done");
-    } else if (roll < 0.52) {
+    } else if (roll < 0.22) {
       s.mon += 30;
       st.wins++;
       addRenown?.(10);

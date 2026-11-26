@@ -73,11 +73,15 @@ export function createMuseum(o) {
 
           const wingDone = EXHIBITS.filter((x) => x.wing === ex.wing).every((x) => st.donated[x.id]);
           const count = EXHIBITS.filter((x) => st.donated[x.id]).length;
-          if (wingDone && !s.furn?.pedestal) {
-            giveFurn?.("pedestal");
+          const gotPedestal = wingDone && !s.furn?.pedestal;
+          const gotBeret = count >= 12 && !s.hats.includes("curatorhat");
+          if (gotPedestal) giveFurn?.("pedestal");
+          if (gotBeret) giveHat?.("curatorhat");
+          if (gotPedestal && gotBeret) {
+            toast(`${ex.wing} Wing complete & 12 Exhibits! +${ex.mon} mon, Display Pedestal & Curator's Beret!`);
+          } else if (gotPedestal) {
             toast(`${ex.wing} Wing complete! +${ex.mon} mon & Display Pedestal for your house!`);
-          } else if (count >= 12 && !s.hats.includes("curatorhat")) {
-            giveHat?.("curatorhat");
+          } else if (gotBeret) {
             toast(`12 Exhibits! +${ex.mon} mon & Curator's Beret!`);
           } else {
             toast(`Donated ${ex.name}! +${ex.mon} mon & +${ex.ren} Renown.`);

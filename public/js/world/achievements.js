@@ -59,6 +59,8 @@ export function createBadges(o) {
     `, (e) => {
       e.querySelector("#bd-daily").onclick = () => {
         if (st.lastDay === today()) return;
+        const yesterday = new Date(Date.now() - 86400000).toDateString();
+        if (st.lastDay && st.lastDay !== yesterday) st.streak = 0;
         st.lastDay = today();
         st.streak = Math.min(7, (st.streak || 0) + 1);
         const pay = 15 + st.streak * 15;

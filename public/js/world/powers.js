@@ -117,6 +117,12 @@ export function createPowers(st, api) {
       if (hist.length > 7) hist.shift();
     }
 
+    // Decay knockback velocity and clean expired keys even if powers are toggled off
+    vx *= Math.max(0, 1 - dt * 5);
+    vy *= Math.max(0, 1 - dt * 5);
+    if (Math.hypot(vx, vy) < 6) vx = vy = 0;
+    for (const k of Object.keys(active)) if (active[k] <= t) delete active[k];
+
     // Autonomous casting by nearby powered students
     if (settings.world?.blackwoodPowers === false) return;
     const npcs = api.scene().npcs || [];
@@ -136,14 +142,6 @@ export function createPowers(st, api) {
         winds[n.id] = t + 0.95;
       }
     }
-
-    // Decay knockback velocity
-    vx *= Math.max(0, 1 - dt * 5);
-    vy *= Math.max(0, 1 - dt * 5);
-    if (Math.hypot(vx, vy) < 6) vx = vy = 0;
-
-    // Clean expired keys
-    for (const k of Object.keys(active)) if (active[k] <= t) delete active[k];
   }
 
   function steer(ax, ay, dt) {

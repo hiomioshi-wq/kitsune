@@ -13,7 +13,7 @@ export const EVENTS = {
   aurora: { name: "Aurora Blooms", blurb: "Gather the drifting aurora motes before they dissolve", time: 35, tiers: [9, 15, 22], unit: "motes" },
   lanterns: { name: "Drifting Lanterns", blurb: "Catch the floating paper lanterns before they rise away", time: 40, tiers: [7, 12, 18], unit: "lanterns" },
   moths: { name: "Moth Migration", blurb: "Moths swarm the sky, twice the foxfire's glow — catch them before they scatter", time: 35, tiers: [14, 24, 34], unit: "moths" },
-  storm: { name: "Foxfire Storm", blurb: "Gilt embers rain down — every catch banks mon at +25%", time: 35, tiers: [7, 12, 18], unit: "embers" },
+  storm: { name: "Foxfire Storm", blurb: "Gilt embers rain down — every catch banks 5 mon", time: 35, tiers: [7, 12, 18], unit: "embers" },
   regatta: { name: "Lantern Regatta", blurb: "Paper boats drift the shore — each pays mon, some carry wishes", time: 40, tiers: [5, 9, 13], unit: "boats" },
   kites: { name: "Lantern Kite Regatta", blurb: "The Kite Yard's kites slipped their strings — every catch banks mon", time: 40, tiers: [6, 10, 15], unit: "kites" },
   beads: { name: "Bead Storm", blurb: "Glass Desert wind strews beads — catch them as they land, gold pays a bonus", time: 35, tiers: [6, 11, 16], unit: "beads" },

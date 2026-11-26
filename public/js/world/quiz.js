@@ -1,5 +1,5 @@
 // Lantern Quiz Hall: 5-question trivia rounds covering Kitsune World, Blackwood University, and Originals lore.
-import { esc } from "../util.js";
+import { esc, today } from "../util.js";
 
 const QUESTIONS = [
   ["How many country lanterns must be lit before the Lantern Shrine accepts the ninth?", ["Six", "Eight", "Nine", "Twelve"], 1],
@@ -17,7 +17,7 @@ const QUESTIONS = [
   ["What do you press in Kitsune World to dig for buried treasure?", ["E", "G", "B", "R"], 1],
   ["What is the name of the abyssal vehicle at the southern shore?", ["Starlight Airship", "Diving Bell", "Moonwake Ferry", "Bottomless Stair"], 1],
   ["In Incarnate, what is the name of the prophecy's corruption virus?", ["Corruption-027", "Shadow-14", "Mire-99", "Seam-01"], 0],
-  ["Who is the Student Council President at Blackwood University?", ["Yuki", "Lux", "Becca", "Mina"], 1],
+  ["Who is the Student Council President at Blackwood University?", ["Yuki", "Greta Vance", "Becca", "Mina"], 1],
   ["What boosts your fishing reel bar width in Kitsune World?", ["Lucky Ripples", "Heavy Boots", "Iron Ores", "Snowballs"], 0],
   ["Which building in Kitsune World lets you browse your real reading library?", ["Foxfire Goods", "The Great Shelf", "Lantern Guild", "Your House"], 1],
 ];
@@ -38,13 +38,15 @@ export function createQuiz(o) {
   }
 
   function open() {
+    if (st.quizDay !== today()) { st.quizDay = today(); st.quizN = 0; }
+    const canQuiz = (st.quizN || 0) < 5;
     if (!round) {
       panel("Lantern Quiz Hall", `
-        <p class="muted">Answer 5 rapid-fire questions about Kitsune World and Originals lore. Each correct answer pays <strong>15 mon</strong> and <strong>+8 Renown</strong>. A 5/5 sweep earns a bonus and the Scholar's Mortarboard!</p>
-        <p>Games played: <strong>${st.plays}</strong> · Best score: <strong>${st.best}/5</strong> · Perfect rounds: <strong>${st.perfects}</strong></p>
-        <button type="button" class="btn btn-accent" id="qz-start">Start 5-Question Quiz</button>
+        <p class="muted">Answer 5 rapid-fire questions about Kitsune World and Originals lore. Each correct answer pays <strong>15 mon</strong> and <strong>+8 Renown</strong> (up to 5 rounds/day).</p>
+        <p>Games played: <strong>${st.plays}</strong> · Best score: <strong>${st.best}/5</strong> · Perfect rounds: <strong>${st.perfects}</strong> · Today: <strong>${st.quizN}/5</strong></p>
+        <button type="button" class="btn btn-accent" id="qz-start" ${canQuiz ? "" : "disabled"}>${canQuiz ? "Start 5-Question Quiz" : "Quiz Hall Closed Today"}</button>
       `, (e) => {
-        e.querySelector("#qz-start").onclick = startRound;
+        e.querySelector("#qz-start").onclick = () => { if (canQuiz) startRound(); };
       });
       return;
     }
@@ -54,6 +56,7 @@ export function createQuiz(o) {
       const bonus = sc === 5 ? 50 : 0;
       const pay = sc * 15 + bonus;
       st.plays++;
+      st.quizN = (st.quizN || 0) + 1;
       st.best = Math.max(st.best, sc);
       if (sc === 5) st.perfects++;
       s.mon += pay;

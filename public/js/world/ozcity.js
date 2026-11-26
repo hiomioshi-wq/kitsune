@@ -33,21 +33,25 @@ export function createOzCity(o) {
   const rollDay = () => { const d = DAY(); if (st.day?.d !== d) st.day = { d, court: 0, color: 0, attic: 0, meadow: 0, weather: 0 }; return st.day; };
 
   function bank() {
-    const dep = st.bank ||= { dep: 0, at: 0 };
-    const hrs = dep.dep ? Math.min(8, (Date.now() - (dep.at || Date.now())) / 36e5) : 0;
-    const owed = Math.round(dep.dep * (1 + .1 * hrs));
+    const dep = st.bank ||= { dep: 0, at: 0, lots: [] };
+    if (!dep.lots) dep.lots = dep.dep ? [{ amt: dep.dep, at: dep.at || Date.now() }] : [];
+    const now = Date.now();
+    const totalDep = dep.lots.reduce((a, l) => a + l.amt, 0);
+    dep.dep = totalDep;
+    const owed = Math.round(dep.lots.reduce((a, l) => a + l.amt * (1 + 0.1 * Math.min(8, Math.max(0, (now - l.at) / 36e5))), 0));
+    const avgPct = totalDep ? Math.round(((owed - totalDep) / totalDep) * 100) : 0;
     panel("The Melody Bank", `<p class="muted">The vault hums behind the wall. Hengist, a copper-colored clockwork clerk, files everything by what it is for, and your hum is filed under H, for Honest.</p>
       <div class="se-mkt">
-        <div class="se-good"><span><strong>On deposit</strong><small>${dep.dep ? `${dep.dep} mon, wound on a spool since ${new Date(dep.at).toLocaleDateString()}` : "No melody deposited yet"}</small></span><em>${dep.dep ? `${owed} mon with interest` : "—"}</em></div>
-        <div class="se-good"><span><strong>Interest</strong><small>Ten percent per hour, paid in harmonies, up to eight hours. Songs know more than we file.</small></span><em>${dep.dep ? `${Math.round(.1 * hrs * 100)}%` : "0%"}</em></div>
+        <div class="se-good"><span><strong>On deposit</strong><small>${totalDep ? `${totalDep} mon across ${dep.lots.length} deposit${dep.lots.length === 1 ? "" : "s"}` : "No melody deposited yet"}</small></span><em>${totalDep ? `${owed} mon with interest` : "—"}</em></div>
+        <div class="se-good"><span><strong>Interest</strong><small>Ten percent per hour, paid in harmonies, up to eight hours per deposit.</small></span><em>${totalDep ? `${avgPct}%` : "0%"}</em></div>
       </div>
       <div class="sg-acts" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:10px">
         ${[10, 25, 50].map((n) => `<button class="btn" type="button" data-dep="${n}" ${s.mon >= n ? "" : "disabled"}>Deposit ${n} mon</button>`).join("")}
-        ${dep.dep ? `<button class="btn btn-accent" type="button" data-collect>Withdraw ${owed} mon</button>` : ""}
+        ${totalDep ? `<button class="btn btn-accent" type="button" data-collect>Withdraw ${owed} mon</button>` : ""}
       </div>
       <p class="muted" style="margin-top:10px">"Coins forget their owner the moment they are spent," says the teller. "A song never does. That is the difference between our vault and the other banks."</p>`, (p) => {
-      p.querySelectorAll("[data-dep]").forEach((b) => (b.onclick = () => { const n = +b.dataset.dep; if (s.mon < n) return; s.mon -= n; dep.dep += n; if (!dep.at) dep.at = Date.now(); ping("choice"); save(); hud(); bank(); }));
-      const c = p.querySelector("[data-collect]"); if (c) c.onclick = () => { if (!dep.dep) return; s.mon += owed; dep.dep = 0; dep.at = 0; ping("done"); toast(`The lullaby pays out: +${owed} mon in harmonies.`); save(); hud(); bank(); };
+      p.querySelectorAll("[data-dep]").forEach((b) => (b.onclick = () => { const n = +b.dataset.dep; if (s.mon < n) return; s.mon -= n; dep.lots.push({ amt: n, at: Date.now() }); dep.dep += n; if (!dep.at) dep.at = Date.now(); ping("choice"); save(); hud(); bank(); }));
+      const c = p.querySelector("[data-collect]"); if (c) c.onclick = () => { if (!totalDep) return; s.mon += owed; dep.dep = 0; dep.at = 0; dep.lots = []; ping("done"); toast(`The lullaby pays out: +${owed} mon in harmonies.`); save(); hud(); bank(); };
     });
   }
 
@@ -61,11 +65,11 @@ export function createOzCity(o) {
       ${landed ? `<p class="hint" style="font-weight:800">Your booked ${st.booked.kind} arrived this morning. The Office considers the debt settled.</p>` : ""}
       <div class="se-mkt"><div class="se-good"><span><strong>Book a personal weather</strong><small>One booking a day, delivered tomorrow morning: 40 mon on arrival, plus the memory.</small></span><em>${day.weather ? "Booked today" : "20 mon"}</em></div></div>
       <div class="sg-acts" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:10px">
-        ${["Drizzle", "Breeze", "Sun-shower", "Snow-fitting"].map((k) => `<button class="btn" type="button" data-w="${k}" ${!day.weather && s.mon >= 20 ? "" : "disabled"}>${k}</button>`).join("")}
+        ${["Drizzle", "Breeze", "Sun-shower", "Snow-fitting"].map((k) => `<button class="btn" type="button" data-w="${k}" ${!day.weather && !st.booked && s.mon >= 20 ? "" : "disabled"}>${k}</button>`).join("")}
         ${st.booked && st.booked.d !== day.d ? `<button class="btn btn-accent" type="button" data-claim>Collect your booked ${st.booked.kind} (+40 mon)</button>` : ""}
       </div>
       <p class="muted" style="margin-top:10px">"It is never the rain's fault," says a small card under the counter glass. "CHECK YOUR PAPERWEIGHTS."</p>`, (p) => {
-      p.querySelectorAll("[data-w]").forEach((b) => (b.onclick = () => { if (day.weather || s.mon < 20) return; s.mon -= 20; day.weather = 1; st.booked = { kind: b.dataset.w, d: day.d, arrive: new Date(Date.now() + 864e5).toDateString() }; ping("choice"); toast(`Booked: one ${st.booked.kind.toLowerCase()}, tomorrow morning, wherever you are.`); save(); hud(); weather(); }));
+      p.querySelectorAll("[data-w]").forEach((b) => (b.onclick = () => { if (day.weather || st.booked || s.mon < 20) return; s.mon -= 20; day.weather = 1; st.booked = { kind: b.dataset.w, d: day.d, arrive: new Date(Date.now() + 864e5).toDateString() }; ping("choice"); toast(`Booked: one ${st.booked.kind.toLowerCase()}, tomorrow morning, wherever you are.`); save(); hud(); weather(); }));
       const cl = p.querySelector("[data-claim]"); if (cl) cl.onclick = () => { if (!st.booked) return; s.mon += 40; st.booked = null; ping("done"); toast(`Your booked weather arrived overnight: +40 mon, and the smell of rain on a warm road.`); save(); hud(); weather(); };
     });
   }

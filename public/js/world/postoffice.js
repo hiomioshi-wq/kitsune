@@ -43,9 +43,10 @@ export function createPostOffice(o) {
     }).join("");
 
     const giftCost = 20;
+    const heartsMap = extras?.state ? (extras.state.hearts ||= {}) : null;
     const giftRows = people.slice(0, 8).map((p) => {
-      const hrt = extras?.state?.hearts?.[p.id] || 0;
-      return `<button type="button" class="btn btn-sm" data-gift="${p.id}" ${s.mon < giftCost || hrt >= 5 ? "disabled" : ""}>🎁 ${esc(p.n[2])} (${hrt}/5 ♥)</button>`;
+      const hrt = heartsMap?.[p.id] || 0;
+      return `<button type="button" class="btn btn-sm" data-gift="${p.id}" ${!heartsMap || s.mon < giftCost || hrt >= 5 ? "disabled" : ""}>🎁 ${esc(p.n[2])} (${hrt}/5 ♥)</button>`;
     }).join("");
 
     panel(`Foxhold Post Office · ${st.done} Delivered`, `

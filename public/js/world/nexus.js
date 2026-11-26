@@ -111,10 +111,13 @@ export function mountNexus(host, api) {
 
   function extractRift(wonFloor = false) {
     const st = nexusStats(s);
-    const bonusMotes = Math.round(runBag.motes * (1 + st.motes / 100));
-    const bonusMon = Math.round(runBag.mon * (1 + st.mon / 100));
+    const keep = wonFloor ? 1 : 0.5;
+    const bonusMotes = Math.round(runBag.motes * keep * (1 + st.motes / 100));
+    const bonusMon = Math.round(runBag.mon * keep * (1 + st.mon / 100));
     if (bonusMotes > 0) nx.motes += bonusMotes;
     if (bonusMon > 0) api.addMon(bonusMon);
+    runBag.motes = 0;
+    runBag.mon = 0;
     if (wonFloor) nx.clears++;
     api.save();
     mode = "citadel";
@@ -208,6 +211,8 @@ export function mountNexus(host, api) {
         const y = pendingCaravanYield(s);
         if (!y.mon && !y.motes) return;
         nx.lastClaim = Date.now();
+        nx.pendingMon = 0;
+        nx.pendingMotes = 0;
         if (y.mon) api.addMon(y.mon);
         if (y.motes) nx.motes += y.motes;
         api.save(); api.ping("done"); syncHud(); sayToast(`Collected +${y.mon} Mon & +${y.motes} Astral Motes!`); caravanPage();
@@ -219,7 +224,10 @@ export function mountNexus(host, api) {
         if (lv >= 5) return;
         const cost = lv === 0 ? r[2] : Math.round(r[2] * (1 + lv * 0.75));
         if (api.mon() < cost) return;
-        if (Object.keys(nx.routes).length === 0) nx.lastClaim = Date.now();
+        const y = pendingCaravanYield(s);
+        nx.pendingMon = y.mon;
+        nx.pendingMotes = y.motes;
+        nx.lastClaim = Date.now();
         api.addMon(-cost);
         nx.routes[r[0]] = lv + 1;
         api.save(); api.ping("done"); syncHud(); caravanPage();

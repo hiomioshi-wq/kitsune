@@ -41,7 +41,8 @@ export function createObservatory(o) {
         </div>`;
     } else {
       const rows = DIALS.map((label, i) => {
-        const diff = Math.abs(scope.dials[i] - scope.target[i]);
+        const raw = Math.abs(scope.dials[i] - scope.target[i]);
+        const diff = Math.min(raw, 5 - raw);
         const hint = diff === 0 ? "Locked ✓" : diff === 1 ? "Warm" : "Cold";
         return `<div class="se-good">
           <span><strong>🔭 ${esc(label)}: ${scope.dials[i]}</strong> <small>${hint}</small></span>

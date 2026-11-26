@@ -84,7 +84,7 @@ export function mountDesert(host, api) {
         if (Math.random() < dt * (1.1 + t * .04)) { const l = Math.floor(Math.random() * 3), bead = Math.random() < .3, d = document.createElement("b"); d.textContent = bead ? "🔷" : (Math.random() < .5 ? "🪨" : "🌵"); d.style.left = `${l * 33.33 + 16.66}%`; box.appendChild(d); rocks.push({ l, y: -8, bead, d }); }
         for (const r of rocks) { r.y += v * dt; r.d.style.top = `${r.y}%`; if (!r.hit && r.y > 72 && r.y < 88 && r.l === lane) { r.hit = true; r.d.remove(); if (r.bead) { const val = payBeads(2); beads += val; api.ping("choice"); } else { hp--; api.ping("close"); e.querySelector("#sf-h").textContent = "♥".repeat(Math.max(0, hp)); } e.querySelector("#sf-b").textContent = `🔷 ${beads}`; } if (r.y > 104) r.d.remove(); }
         rocks = rocks.filter((r) => !r.hit && r.y <= 104);
-        if (hp <= 0) { done = true; window.removeEventListener("keydown", key, true); save(); api.ping("done"); st.beads += beads; hud(); return page("Run over", `<p class="by-big">🔷 ${beads} beads gathered</p><button class="btn btn-accent" type="button" id="again">Ride again</button>`, (q) => { q.querySelector("#again").onclick = () => surf(); }); }
+        if (hp <= 0) { done = true; window.removeEventListener("keydown", key, true); save(); api.ping("done"); hud(); return page("Run over", `<p class="by-big">🔷 ${beads} beads gathered</p><button class="btn btn-accent" type="button" id="again">Ride again</button>`, (q) => { q.querySelector("#again").onclick = () => surf(); }); }
         raf2 = requestAnimationFrame(tick);
       };
       raf2 = requestAnimationFrame(tick);
@@ -121,7 +121,7 @@ export function mountDesert(host, api) {
 
   function oasis() {
     const ready = !st.cool || st.cool < Date.now();
-    page("Oasis Teahouse", `<p class="muted">The teahouse serves cold tea on purpose — the cold is the whole point. A rest in the shade makes the desert generous: for ten minutes, the Glassworks and Sand-Surf pay half again.</p><div class="by-list"><div class="${cooled() ? "ok" : ""}"><i>🧊</i><span><strong>Cooled rest</strong><small>${cooled() ? `Generosity flowing · ${Math.ceil((st.cool - Date.now()) / 60000)} min left` : "Grants +50% beads for 10 minutes"}</small></span><button class="btn btn-accent" type="button" id="dz-rest" ${ready ? "" : "disabled"}>${ready ? "Rest" : "Rested recently"}</button></div></div>`, (e) => {
+    page("Oasis Teahouse", `<p class="muted">The teahouse serves cold tea on purpose — the cold is the whole point. A rest in the shade makes the desert generous: for ten minutes, the Glassworks, Sand-Surf, and Buried City pay half again.</p><div class="by-list"><div class="${cooled() ? "ok" : ""}"><i>🧊</i><span><strong>Cooled rest</strong><small>${cooled() ? `Generosity flowing · ${Math.ceil((st.cool - Date.now()) / 60000)} min left` : "Grants +50% beads for 10 minutes"}</small></span><button class="btn btn-accent" type="button" id="dz-rest" ${ready ? "" : "disabled"}>${ready ? "Rest" : "Rested recently"}</button></div></div>`, (e) => {
       e.querySelector("#dz-rest").onclick = () => { st.cool = Date.now() + 10 * 60 * 1000; save(); api.ping("done"); say("The tea is cold and the shade is deep. The desert approves."); oasis(); };
     });
   }

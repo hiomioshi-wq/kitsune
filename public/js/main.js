@@ -153,6 +153,7 @@ async function route() {
   }
   try {
     const mod = await loader();
+    try { sessionStorage.removeItem("kitsune_mod_retry"); } catch {}
     if (seq !== renderSeq) return;
     const draw = async () => {
       view.innerHTML = "";
@@ -172,7 +173,16 @@ async function route() {
     }
   } catch (e) {
     console.error(e);
-    view.innerHTML = `<div class="empty"><svg class="empty-fox"><use href="#fox"/></svg><p><strong>This page didn't load.</strong> ${esc(e.message)}</p><a class="btn" href="#home">Go home</a></div>`;
+    if (/module script|dynamically imported module|error loading/i.test(e?.message || "")) {
+      try {
+        if (!sessionStorage.getItem("kitsune_mod_retry")) {
+          sessionStorage.setItem("kitsune_mod_retry", "1");
+          location.reload();
+          return;
+        }
+      } catch {}
+    }
+    view.innerHTML = `<div class="empty"><svg class="empty-fox"><use href="#fox"/></svg><p><strong>This page didn't load.</strong> ${esc(e.message)}</p><div style="display:flex;gap:8px;justify-content:center"><button class="btn" type="button" onclick="location.reload()">Reload</button><a class="btn" href="#home">Go home</a></div></div>`;
   }
   if (seq === renderSeq) updateNowPill().catch(() => {});
   if (seq === renderSeq) import("./xmas/fx.js").then((x) => x.decorate(name)).catch(() => {});

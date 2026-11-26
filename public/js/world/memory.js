@@ -92,7 +92,7 @@ export function createMemory(o) {
                 ca.open = cb.open = false;
                 game.flipped = [];
                 game.locked = false;
-                if (e.isConnected) open();
+                if (e.isConnected && !e.closest("[hidden]")) open();
               }, 650);
             }
             return;

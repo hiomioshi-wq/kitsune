@@ -60,8 +60,15 @@ export function createOrigami(o) {
         b.onclick = () => {
           const m = MODELS.find((x) => x.id === b.dataset.by);
           if (!m || s.mon < m.cost) return;
+          const d = new Date().toDateString();
+          if (st.paperDay !== d) { st.paperDay = d; st.paperN = 0; }
+          if ((st.paperN || 0) >= 5) return toast("Desk is out of fresh paper for today (5/day).");
           s.mon -= m.cost;
-          finish(m);
+          st.paperN++;
+          bag().page = (bag().page || 0) + 1;
+          ping("choice");
+          toast(`Bought 1 craft paper (Waterlogged Page) for ${m.cost} mon.`);
+          save(); hud(); open();
         };
       });
     });

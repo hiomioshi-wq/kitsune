@@ -1,4 +1,4 @@
-// Critter wishes: each critter dreams of one small thing each day.
+// Critter wishes: your active critter dreams of one small thing each day.
 import { FRUIT, stageOf } from "./baycore.js";
 const KINDS = [["fruit", "wants a sweet mango", "🥭", (b) => (b.fruit.mango || 0) > 0], ["dig", "wants to dig for treasure", "⛏️", (b) => (b.day.digs || 0) > 0], ["fish", "wants a fresh-caught dinner", "🎣", (b) => (b.day.fish || 0) > 0], ["parade", "wants to watch the parade", "🎊", (b) => (b.parade?.done || 0) > 0], ["play", "wants a playdate in the grove", "🌼", (b) => Object.keys(b.grove?.done || {}).length > 0], ["shell", "wants a new shell for the album", "🐚", (b) => (b.day.shells || 0) > 0], ["ride", "wants a ride along the shore", "🛴", (b) => (b.day.rode || 0) > 0], ["home", "wants to nap on the good furniture", "🛏️", (b) => (b.day.rent || 0) > 0]];
 const hash = (t) => { let h = 2166136261; for (let i = 0; i < t.length; i++) h = Math.imul(h ^ t.charCodeAt(i), 16777619); return h >>> 0; };

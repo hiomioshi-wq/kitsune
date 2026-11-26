@@ -37,6 +37,8 @@ export function createTeahouse(o) {
   }
 
   function open() {
+    if (st.buyDay !== today()) { st.buyDay = today(); st.buyN = 0; }
+    const canBuy = (st.buyN || 0) < 5;
     const canBrew = (reqs) => Object.entries(reqs).every(([k, n]) => (bag()[k] || 0) >= n);
     const reqTxt = (reqs) => Object.entries(reqs).map(([k, n]) => `${esc(findItem(k)?.[1] || k)} ${bag()[k] || 0}/${n}`).join(" · ");
 
@@ -49,7 +51,7 @@ export function createTeahouse(o) {
         </span>
         <div style="display:flex;gap:6px">
           <button type="button" class="btn btn-sm btn-accent" data-br="${t.id}" ${ok ? "" : "disabled"}>Brew</button>
-          <button type="button" class="btn btn-sm" data-od="${t.id}" ${s.mon < t.cost ? "disabled" : ""}>Order ${t.cost}</button>
+          <button type="button" class="btn btn-sm" data-od="${t.id}" ${!canBuy || s.mon < t.cost ? "disabled" : ""}>Order ${t.cost}</button>
         </div>
       </div>`;
     }).join("");
@@ -69,8 +71,9 @@ export function createTeahouse(o) {
       e.querySelectorAll("[data-od]").forEach((b) => {
         b.onclick = () => {
           const t = TEAS.find((x) => x.id === b.dataset.od);
-          if (!t || s.mon < t.cost) return;
+          if (!t || s.mon < t.cost || (st.buyN || 0) >= 5) return;
           s.mon -= t.cost;
+          st.buyN = (st.buyN || 0) + 1;
           serve(t);
         };
       });

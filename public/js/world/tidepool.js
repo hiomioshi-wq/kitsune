@@ -9,6 +9,10 @@ export function createTidepool(o) {
   st.freeDay ||= "";
 
   let board = null;
+  const addLoot = (id, n = 1) => {
+    const bag = extras?.state?.bag || ((s.x2 ||= {}).bag ||= {});
+    bag[id] = (bag[id] || 0) + n;
+  };
 
   function startBoard(cost) {
     if (cost > 0 && s.mon < cost) return toast("Not enough mon.");
@@ -79,7 +83,7 @@ export function createTidepool(o) {
           } else if (c.k === "pearl") {
             board.pearls++;
             st.pearls++;
-            extras?.addItem?.("pearl", 1);
+            addLoot("pearl", 1);
             s.mon += 20;
             board.wonMon += 20;
             ping("done");
@@ -91,12 +95,12 @@ export function createTidepool(o) {
               toast("3 Pearls! +75 mon bonus & +25 Renown!");
             }
           } else if (c.k === "shell") {
-            extras?.addItem?.("shell", 1);
+            addLoot("shell", 1);
             s.mon += 6;
             board.wonMon += 6;
             ping("choice");
           } else if (c.k === "kelp") {
-            extras?.addItem?.("kelp", 1);
+            addLoot("kelp", 1);
             s.mon += 4;
             board.wonMon += 4;
             ping("choice");

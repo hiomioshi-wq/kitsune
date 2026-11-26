@@ -177,12 +177,17 @@ export function createExplorer(o) {
       // Player fox
       drawFox(g, px, py, dir, step, fur, tailsN, s.hat, now, moving);
 
-      const n = nearby();
-      if (n) {
-        promptEl.innerHTML = `<button type="button" class="btn btn-accent btn-sm" id="ex-act"><kbd>E</kbd> ${esc(n.label)}</button>`;
+      const n = nearby(), key = n ? n.label : "";
+      if (promptEl.dataset.lbl !== key) {
+        promptEl.dataset.lbl = key;
+        if (n) {
+          promptEl.innerHTML = `<button type="button" class="btn btn-accent btn-sm" id="ex-act"><kbd>E</kbd> ${esc(n.label)}</button>`;
+          promptEl.querySelector("#ex-act").onclick = n.go;
+        } else {
+          promptEl.innerHTML = `<span class="muted">Explore ${esc(b[6])} — check the chest, plaque, or counter.</span>`;
+        }
+      } else if (n) {
         promptEl.querySelector("#ex-act").onclick = n.go;
-      } else {
-        promptEl.innerHTML = `<span class="muted">Explore ${esc(b[6])} — check the chest, plaque, or counter.</span>`;
       }
 
       raf = requestAnimationFrame(frame);

@@ -149,7 +149,13 @@ export function createInventory(o) {
       }));
       e.querySelectorAll("[data-cat]").forEach((b) => (b.onclick = () => { cat = b.dataset.cat; open(); }));
       const qEl = e.querySelector("#inv-q");
-      if (qEl) qEl.oninput = (ev) => { query = ev.target.value; open(); };
+      if (qEl) qEl.oninput = (ev) => {
+        const pos = ev.target.selectionStart ?? ev.target.value.length;
+        query = ev.target.value;
+        open();
+        const next = document.querySelector("#inv-q");
+        if (next) { next.focus(); try { next.setSelectionRange(pos, pos); } catch {} }
+      };
 
       e.querySelectorAll("[data-eat]").forEach((b) => (b.onclick = () => {
         const it = findItem(b.dataset.eat);
@@ -182,21 +188,21 @@ export function createInventory(o) {
       e.querySelectorAll("[data-crt]").forEach((b) => (b.onclick = () => {
         const t = TRINKETS.find((x) => x[0] === b.dataset.crt);
         if (!t || g.trinkets[t[0]] || !Object.entries(t[3]).every(([k, n]) => (bag()[k] || 0) >= n)) return;
-        for (const [k, n] of Object.entries(t[3])) bag()[k] -= n;
+        for (const [k, n] of Object.entries(t[3])) if (n > 0) bag()[k] = (bag()[k] || 0) - n;
         g.trinkets[t[0]] = 1; g.trinket = t[0];
         ping("done"); toast(`Crafted & equipped ${t[1]}!`); save(); hud(); open();
       }));
       e.querySelectorAll("[data-crl]").forEach((b) => (b.onclick = () => {
         const l = LANTERN_GEAR.find((x) => x[0] === b.dataset.crl);
         if (!l || g.lanterns[l[0]] || !Object.entries(l[3]).every(([k, n]) => (bag()[k] || 0) >= n)) return;
-        for (const [k, n] of Object.entries(l[3])) bag()[k] -= n;
+        for (const [k, n] of Object.entries(l[3])) if (n > 0) bag()[k] = (bag()[k] || 0) - n;
         g.lanterns[l[0]] = 1; g.lantern = l[0];
         ping("done"); toast(`Crafted & equipped ${l[1]}!`); save(); hud(); open();
       }));
       e.querySelectorAll("[data-cook]").forEach((b) => (b.onclick = () => {
         const m = MEALS.find((x) => x[0] === b.dataset.cook);
         if (!m || !Object.entries(m[3]).every(([k, n]) => (bag()[k] || 0) >= n)) return;
-        for (const [k, n] of Object.entries(m[3])) bag()[k] -= n;
+        for (const [k, n] of Object.entries(m[3])) if (n > 0) bag()[k] = (bag()[k] || 0) - n;
         extras.addItem(m[0], 1);
         ping("done"); toast(`Cooked ${m[1]}!`); save(); hud(); open();
       }));

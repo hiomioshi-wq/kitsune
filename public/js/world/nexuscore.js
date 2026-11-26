@@ -106,8 +106,8 @@ export function pendingCaravanYield(s, now = Date.now()) {
   }
   const tradeMult = 1 + st.trade / 100;
   return {
-    mon: Math.floor(monPerHr * elapsedHrs * tradeMult),
-    motes: Math.floor(motesPerHr * elapsedHrs * tradeMult),
+    mon: (nx.pendingMon || 0) + Math.floor(monPerHr * elapsedHrs * tradeMult),
+    motes: (nx.pendingMotes || 0) + Math.floor(motesPerHr * elapsedHrs * tradeMult),
     monPerHr: Math.round(monPerHr * tradeMult),
     motesPerHr: Math.round(motesPerHr * tradeMult),
     hours: elapsedHrs,

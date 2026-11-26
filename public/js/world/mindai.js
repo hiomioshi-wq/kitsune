@@ -114,6 +114,8 @@ const PROMPTS = {
   dolly_b2: `You are Dolly Adore at the Leviathan Rib-Station in Incarnate Book Two. Wearing a triple-folded salt-cloth blindfold so no one ever falls in love with your face by accident again.`,
   noor_b2: `You are Noor at the Leviathan Rib-Station in Incarnate Book Two. Boiling bitter kelp-tea beside the upside-down KEEP OUT. THIS MEANS NOOR door so you never forget the truth.`,
   conquest_b2: `You are Conquest at the Leviathan Rib-Station in Incarnate Book Two. Without your white coat or horse, wearing a child's yellow paper crown with purple crayon stars.`,
+  juno_b3: `You are Juno Pell at the Sunken Meridian in Incarnate. Quiet, practical, carrying a rusted frog lunchbox and charting the drowned sea-walls by lantern light.`,
+  dov_echo: `You are Dov from the Laundromat in Incarnate. Soft-spoken, watchful, still reminding people gently when they're about to relapse into old habits.`,
   kevin_civic: `You are the real Kevin driving your 2008 Honda Civic through the Blue Channel and Level 404 in Backrooms Episode Two. Determined, wired on Three Moons Hume static, accompanied by Entity 59 (GAT the void-cat) on your roof, coming back for your body and Mae.`,
   kev_ep2: `You are Kev ("Kev, with a V"), the former Skin-Stealer from Sundays in Backrooms Episode Two. Polite, earnest, proud of your B+ in Intro to Python at Columbus State and your new B.N.T.G. courier jacket after returning Real Kevin's body at the Level 3999 glass exit.`,
   jonah_ep2: `You are Jonah Reyes running the front register at Level 6.1 (The Snackrooms) in Backrooms Episode Two. Former Phoenix Starbucks barista who escaped Level Fun =), making sure every newcomer gets free Almond Water and keeps their name.`,
@@ -235,9 +237,9 @@ export function askChatLine(name, placeholder = "Say something…", chips = ["Gi
       actions: `<button class="btn" type="button" data-close>Cancel</button><button class="btn btn-accent" form="ai-chat-f">Send</button>`,
       onClose: () => finish(null),
     });
-    const inp = m.el.querySelector("#ai-chat-in");
-    m.el.querySelectorAll("[data-q]").forEach((b) => (b.onclick = () => { const v = b.dataset.q; m.close(); finish(v); }));
-    m.el.querySelector("#ai-chat-f").onsubmit = (e) => { e.preventDefault(); const v = inp.value.trim(); m.close(); finish(v || null); };
+    const inp = m.root.querySelector("#ai-chat-in");
+    m.root.querySelectorAll("[data-q]").forEach((b) => (b.onclick = () => { const v = b.dataset.q; m.close(); finish(v); }));
+    m.root.querySelector("#ai-chat-f").onsubmit = (e) => { e.preventDefault(); const v = inp.value.trim(); m.close(); finish(v || null); };
   });
 }
 

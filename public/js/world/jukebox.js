@@ -1,5 +1,5 @@
 // Lantern Jukebox & Soundstage: 6 offline WebAudio synth tracks for Kitsune World + a 4-lane Rhythm Encore mini-game.
-import { esc } from "../util.js";
+import { esc, today } from "../util.js";
 
 const TRACKS = [
   { id: "dusk", name: "Hollow Pine Dusk", bpm: 92, notes: [261.6, 329.6, 392.0, 493.9, 392.0, 329.6, 293.7, 349.2], wave: "triangle" },
@@ -119,13 +119,17 @@ export function createJukebox(o) {
         });
 
         const goBtn = e.querySelector("#jb-go");
-        if (goBtn) goBtn.onclick = () => {
-          if (encore) return;
+        if (st.encoreDay !== today()) { st.encoreDay = today(); st.encoreN = 0; }
+        if (goBtn) {
+          if ((st.encoreN || 0) >= 5) goBtn.disabled = true;
+          goBtn.onclick = () => {
+            if (encore || (st.encoreN || 0) >= 5) return;
+            st.encoreN = (st.encoreN || 0) + 1;
           encore = { score: 0, left: 15, target: Math.floor(Math.random() * 4) };
           ping("choice");
           draw();
           const t = setInterval(() => {
-            if (!e.isConnected) { clearInterval(t); encore = null; return; }
+            if (!e.isConnected || e.closest("[hidden]")) { clearInterval(t); encore = null; return; }
             encore.left--;
             if (encore.left <= 0) {
               clearInterval(t);
@@ -143,6 +147,7 @@ export function createJukebox(o) {
             draw();
           }, 1000);
         };
+        }
       });
     };
 

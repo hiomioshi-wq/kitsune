@@ -44,8 +44,8 @@ export function createBellFoundry(o) {
         </div>
         <p class="muted">Bellows steps: <strong>${mold.strikes}/6</strong></p>
         <div class="px-row">
-          <button type="button" class="btn" id="bf-cool" ${mold.over ? "disabled" : ""}>Cool (−70°C)</button>
-          <button type="button" class="btn" id="bf-heat" ${mold.over ? "disabled" : ""}>Stoke (+90°C)</button>
+          <button type="button" class="btn" id="bf-cool" ${mold.over || mold.strikes >= 6 ? "disabled" : ""}>Cool (−70°C)</button>
+          <button type="button" class="btn" id="bf-heat" ${mold.over || mold.strikes >= 6 ? "disabled" : ""}>Stoke (+90°C)</button>
           <button type="button" class="btn btn-accent" id="bf-strike" ${mold.over ? "disabled" : ""}>Quench &amp; Cast</button>
         </div>
         ${mold.over ? `<div style="margin-top:10px"><button type="button" class="btn btn-accent" id="bf-go">New Mold</button></div>` : ""}`;

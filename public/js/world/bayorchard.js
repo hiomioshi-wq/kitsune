@@ -140,6 +140,8 @@ export function wheelPage(ctx) {
   const { b, page, esc, ping, save, pay, checkGoals, say } = ctx;
   const o = ensureOrchard(b);
   const today = new Date().toDateString();
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+  if (o.lastStreakDay && o.lastStreakDay !== today && o.lastStreakDay !== yesterday) o.streak = 0;
   const canStreak = o.lastStreakDay !== today;
 
   const spinWheel = (free) => {

@@ -26,19 +26,21 @@ export function createLanternPress(o) {
 
   function open() {
     const canInk = st.inkDay !== today();
+    if (st.printDay !== today()) { st.printDay = today(); st.printN = 0; }
+    const canPrint = (st.printN || 0) < 5;
     let body = "";
 
     if (!job) {
       body = `
-        <p class="muted">Set wooden type blocks in the right headline order to print a fresh edition. Each print run pays <strong>50 mon</strong> &amp; <strong>+20 Renown</strong>.</p>
-        <p>Editions printed: <strong>${st.printed}</strong></p>
+        <p class="muted">Set wooden type blocks in the right headline order to print a fresh edition. Each print run pays <strong>50 mon</strong> &amp; <strong>+20 Renown</strong> (up to 5/day).</p>
+        <p>Editions printed: <strong>${st.printed}</strong> · Today: <strong>${st.printN}/5</strong></p>
         <div class="px-row">
-          <button type="button" class="btn btn-accent" id="lp-go">Set Type</button>
+          <button type="button" class="btn btn-accent" id="lp-go" ${canPrint ? "" : "disabled"}>${canPrint ? "Set Type" : "Press Resting Today"}</button>
           <button type="button" class="btn" id="lp-ink" ${canInk ? "" : "disabled"}>${canInk ? "Daily Ink Stamp (+20 mon)" : "Stamped Today ✓"}</button>
         </div>`;
     } else {
       body = `
-        <p class="muted">Edition: <strong>📰 ${esc(job.ed.title)}</strong> · Target: <em>${esc(job.ed.blocks.join(" "))}</em></p>
+        <p class="muted">Edition: <strong>📰 ${esc(job.ed.title)}</strong> · Arrange the <strong>${job.ed.blocks.length}</strong> headline blocks in order.</p>
         <div class="se-mkt" style="margin:10px 0">
           <div class="se-good">
             <span><strong>Composing Stick</strong><small>${job.picked.length ? esc(job.picked.join(" ")) : "Tap words in order..."}</small></span>
@@ -76,6 +78,7 @@ export function createLanternPress(o) {
             job.done = true;
             if (job.picked.every((w, i) => w === job.ed.blocks[i])) {
               st.printed++;
+              st.printN = (st.printN || 0) + 1;
               s.mon += 50;
               addRenown?.(20);
               ping("done");

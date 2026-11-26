@@ -29,14 +29,16 @@ export function createCartography(o) {
 
   function open() {
     const canStamp = st.stampDay !== today();
+    if (st.chartDay !== today()) { st.chartDay = today(); st.chartN = 0; }
+    const canChart = (st.chartN || 0) < 5;
     let body = "";
 
     if (!survey) {
       body = `
-        <p class="muted">Triangulate regional surveys by pairing each expedition's compass bearing and landmark. Completing a chart pays <strong>55 mon</strong> &amp; <strong>+25 Renown</strong>.</p>
-        <p>Charts published: <strong>${st.charted}</strong></p>
+        <p class="muted">Triangulate regional surveys by pairing each expedition's compass bearing and landmark. Completing a chart pays <strong>55 mon</strong> &amp; <strong>+25 Renown</strong> (up to 5/day).</p>
+        <p>Charts published: <strong>${st.charted}</strong> · Today: <strong>${st.chartN}/5</strong></p>
         <div class="px-row">
-          <button type="button" class="btn btn-accent" id="cg-go">Draft New Chart</button>
+          <button type="button" class="btn btn-accent" id="cg-go" ${canChart ? "" : "disabled"}>${canChart ? "Draft New Chart" : "Daily Limit Reached"}</button>
           <button type="button" class="btn" id="cg-stamp" ${canStamp ? "" : "disabled"}>${canStamp ? "Daily Survey Stamp (+20 mon)" : "Stamped Today ✓"}</button>
         </div>`;
     } else {
@@ -101,6 +103,7 @@ export function createCartography(o) {
         survey.done = true;
         if (survey.bearing === survey.pick.bearing && survey.landmark === survey.pick.landmark) {
           st.charted++;
+          st.chartN = (st.chartN || 0) + 1;
           s.mon += 55;
           addRenown?.(25);
           ping("done");

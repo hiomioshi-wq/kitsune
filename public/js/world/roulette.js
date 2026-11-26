@@ -224,22 +224,9 @@ export function createRoulette(o) {
         const t0 = performance.now();
         const dur = 2400;
 
-        const tick = (now) => {
-          if (!cv.isConnected) { spinning = false; return; }
-          const p = Math.min(1, (now - t0) / dur);
-          const ease = 1 - Math.pow(1 - p, 3);
-          const curW = wStart + (wEnd - wStart) * ease;
-          const curB = bStart + (bEnd - bStart) * ease;
-          const rad = 114 - ease * 32;
-          drawWheel(g, curW, curB, rad, p >= 1 ? landed : null);
-
-          if (p < 1) {
-            raf = requestAnimationFrame(tick);
-            return;
-          }
-
+        const settle = () => {
           spinning = false;
-          wAng = curW % (Math.PI * 2);
+          wAng = wEnd % (Math.PI * 2);
           st.hist.unshift(landed);
           st.hist = st.hist.slice(0, 20);
 
@@ -281,13 +268,28 @@ export function createRoulette(o) {
             ping("done");
           } else {
             st.streak = 0;
-            toast(`${landed} (${colorOf(landed)}). Better luck next spin.`);
+            toast(`Ball landed on ${landed} (${colorOf(landed)}).`);
             ping("blip");
           }
-          resEl.innerHTML = `Landed on <strong>${esc(String(landed))} (${colorOf(landed)})</strong>${won ? ` · <strong>+${won} mon</strong>` : ""}`;
-          save();
-          hud();
-          setTimeout(() => { if (cv.isConnected && !spinning) open(); }, 1050);
+          save(); hud();
+        };
+
+        const tick = (now) => {
+          if (!cv.isConnected) { settle(); return; }
+          const p = Math.min(1, (now - t0) / dur);
+          const ease = 1 - Math.pow(1 - p, 3);
+          const curW = wStart + (wEnd - wStart) * ease;
+          const curB = bStart + (bEnd - bStart) * ease;
+          const rad = 114 - ease * 32;
+          drawWheel(g, curW, curB, rad, p >= 1 ? landed : null);
+
+          if (p < 1) {
+            raf = requestAnimationFrame(tick);
+            return;
+          }
+
+          settle();
+          open();
         };
         raf = requestAnimationFrame(tick);
       };

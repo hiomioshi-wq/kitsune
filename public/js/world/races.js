@@ -75,7 +75,7 @@ export function buildCourse(c, { map, W, H, T, REGIONS, TILE, blocked }) {
   return { ...c, poly, cum, len, at, cps, items, wind, start: pts[0], ideal, pace, gold: pace * 1.07 * m, silver: pace * 1.2 * m, bronze: pace * 1.42 * m, rivalTimes: [1.11, 1.24, 1.38].map((k) => pace * k * m) };
 }
 export const terrain = (v, t) => (v === t.path || v === t.brick || v === t.plaza || v === t.market || v === t.bridge || v === t.rail ? 1.08 : v === t.snow || v === t.sand || v === t.marsh || v === t.dune || v === t.ash ? .88 : 1);
-export const fmt = (n) => `${Math.floor(n / 60)}:${(n % 60).toFixed(2).padStart(5, "0")}`;
+export const fmt = (n) => { const cs = Math.round(Math.max(0, n) * 100); return `${Math.floor(cs / 6000)}:${((cs % 6000) / 100).toFixed(2).padStart(5, "0")}`; };
 const medalFor = (c, t) => (t <= c.gold ? 3 : t <= c.silver ? 2 : t <= c.bronze ? 1 : 0);
 
 export function createDerby(o) {

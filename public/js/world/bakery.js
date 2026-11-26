@@ -1,5 +1,5 @@
 // Lantern Bakery: buy fresh pastries or bake treats from your forage for speed boosts and Lucky Ripples.
-import { esc } from "../util.js";
+import { esc, today } from "../util.js";
 import { item as findItem } from "./extras.js";
 
 const PASTRIES = [
@@ -27,6 +27,8 @@ export function createBakery(o) {
   }
 
   function open() {
+    if (st.buyDay !== today()) { st.buyDay = today(); st.buyN = 0; }
+    const canBuy = (st.buyN || 0) < 5;
     const canBake = (reqs) => Object.entries(reqs).every(([k, n]) => (bag()[k] || 0) >= n);
     const reqTxt = (reqs) => Object.entries(reqs).map(([k, n]) => `${esc(findItem(k)?.[1] || k)} ${bag()[k] || 0}/${n}`).join(" · ");
 
@@ -39,7 +41,7 @@ export function createBakery(o) {
         </span>
         <div style="display:flex;gap:6px">
           <button type="button" class="btn btn-sm btn-accent" data-bk="${p.id}" ${ok ? "" : "disabled"}>Bake</button>
-          <button type="button" class="btn btn-sm" data-by="${p.id}" ${s.mon < p.cost ? "disabled" : ""}>Buy ${p.cost}</button>
+          <button type="button" class="btn btn-sm" data-by="${p.id}" ${!canBuy || s.mon < p.cost ? "disabled" : ""}>Buy ${p.cost}</button>
         </div>
       </div>`;
     }).join("");
@@ -60,8 +62,9 @@ export function createBakery(o) {
       e.querySelectorAll("[data-by]").forEach((b) => {
         b.onclick = () => {
           const p = PASTRIES.find((x) => x.id === b.dataset.by);
-          if (!p || s.mon < p.cost) return;
+          if (!p || s.mon < p.cost || (st.buyN || 0) >= 5) return;
           s.mon -= p.cost;
+          st.buyN = (st.buyN || 0) + 1;
           applyTreat(p);
         };
       });

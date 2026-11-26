@@ -23,6 +23,8 @@ export function createBeacon(o) {
 
   function open() {
     const canShift = st.shiftDay !== today();
+    if (st.guideDay !== today()) { st.guideDay = today(); st.guideN = 0; }
+    const canGuide = (st.guideN || 0) < 5;
     const sigBtns = SIGNALS.map((sg) =>
       `<button type="button" class="btn btn-accent" data-sg="${sg.id}">${sg.icon} ${esc(sg.name)}</button>`
     ).join("");
@@ -37,15 +39,16 @@ export function createBeacon(o) {
       ${ship
         ? `<p><strong>${esc(ship.name)}</strong> is signaling in the fog! Match its beacon request: <strong>${ship.need.icon} ${esc(ship.need.name)}</strong></p>
            <div class="chips" style="margin-top:8px">${sigBtns}</div>`
-        : `<p class="muted">Guide incoming vessels safely into Saltwick Harbor for mon and Renown.</p>
-           <button type="button" class="btn btn-accent" id="bc-watch">Watch the Horizon</button>`}
+        : `<p class="muted">Guide incoming vessels safely into Saltwick Harbor for mon and Renown (${st.guideN}/5 today).</p>
+           <button type="button" class="btn btn-accent" id="bc-watch" ${canGuide ? "" : "disabled"}>${canGuide ? "Watch the Horizon" : "Harbor Clear Today"}</button>`}
     `, (e) => {
       const pol = e.querySelector("#bc-pol");
       if (pol) pol.onclick = () => {
         if (st.shiftDay === today()) return;
         st.shiftDay = today();
         s.mon += 25;
-        extras?.addItem?.("pearl", 1);
+        const bag = extras?.state?.bag || ((s.x2 ||= {}).bag ||= {});
+        bag.pearl = (bag.pearl || 0) + 1;
         addRenown?.(15);
         ping("done");
         toast("Lens polished! +25 mon & +1 Pearl.");
@@ -53,13 +56,14 @@ export function createBeacon(o) {
       };
 
       const w = e.querySelector("#bc-watch");
-      if (w) w.onclick = nextShip;
+      if (w) w.onclick = () => { if (canGuide) nextShip(); };
 
       e.querySelectorAll("[data-sg]").forEach((b) => {
         b.onclick = () => {
           if (!ship) return;
           if (b.dataset.sg === ship.need.id) {
             st.guided++;
+            st.guideN = (st.guideN || 0) + 1;
             s.mon += 24;
             addRenown?.(12);
             ping("done");

@@ -2,14 +2,14 @@
 import { today } from "../util.js";
 
 const WEDGES = [
-  { label: "+15 mon", mon: 15, ren: 5, luck: 0, motes: 0 },
-  { label: "+30 mon", mon: 30, ren: 10, luck: 0, motes: 0 },
-  { label: "+60 mon", mon: 60, ren: 15, luck: 0, motes: 0 },
-  { label: "+150 JACKPOT", mon: 150, ren: 35, luck: 2, motes: 0 },
-  { label: "+4 Lucky Ripples", mon: 10, ren: 10, luck: 4, motes: 0 },
-  { label: "+20 Astral Motes", mon: 10, ren: 10, luck: 0, motes: 20 },
-  { label: "+40 Renown", mon: 15, ren: 40, luck: 0, motes: 0 },
-  { label: "+25 mon", mon: 25, ren: 10, luck: 1, motes: 0 },
+  { label: "+5 mon", mon: 5, ren: 5, luck: 0, motes: 0 },
+  { label: "+12 mon", mon: 12, ren: 10, luck: 0, motes: 0 },
+  { label: "+25 mon", mon: 25, ren: 15, luck: 0, motes: 0 },
+  { label: "+80 JACKPOT", mon: 80, ren: 35, luck: 2, motes: 0 },
+  { label: "+4 Lucky Ripples", mon: 5, ren: 10, luck: 4, motes: 0 },
+  { label: "+20 Astral Motes", mon: 5, ren: 10, luck: 0, motes: 20 },
+  { label: "+40 Renown", mon: 8, ren: 40, luck: 0, motes: 0 },
+  { label: "+10 mon", mon: 10, ren: 10, luck: 1, motes: 0 },
 ];
 
 export function createLuckySpin(o) {

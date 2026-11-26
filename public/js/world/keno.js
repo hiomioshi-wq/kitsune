@@ -27,16 +27,18 @@ export function createKeno(o) {
   let card = null;
 
   const newCard = () => {
-    const cells = Array.from({ length: 9 }, () => ({
-      sym: SCRATCH_ICONS[Math.floor(Math.random() * SCRATCH_ICONS.length)],
-      open: false,
-    }));
-    // Small chance to seed a guaranteed pair/triple for excitement
-    if (Math.random() < 0.35) {
-      const sym = SCRATCH_ICONS[Math.floor(Math.random() * SCRATCH_ICONS.length)];
-      cells[0].sym = sym; cells[4].sym = sym; cells[8].sym = sym;
+    const pool = [...SCRATCH_ICONS, ...SCRATCH_ICONS].sort(() => Math.random() - 0.5);
+    const syms = pool.slice(0, 9);
+    // Weighted ~30% chance of a triple (~12.2 mon EV on a 15-mon card)
+    const r = Math.random();
+    const winSym = r < 0.008 ? "💎" : r < 0.023 ? "🦊" : r < 0.053 ? "🏮" : r < 0.103 ? "⭐" : r < 0.183 ? "🍀" : r < 0.303 ? "🔔" : null;
+    if (winSym) {
+      const rest = SCRATCH_ICONS.filter((x) => x !== winSym);
+      const fill = [...rest, ...rest].sort(() => Math.random() - 0.5).slice(0, 6);
+      syms.splice(0, 9, winSym, winSym, winSym, ...fill);
+      syms.sort(() => Math.random() - 0.5);
     }
-    return { cells, settled: false };
+    return { cells: syms.map((sym) => ({ sym, open: false })), settled: false };
   };
 
   function open(nextTab = tab) {
@@ -135,7 +137,7 @@ export function createKeno(o) {
         const pool = Array.from({ length: 30 }, (_, i) => i + 1).sort(() => Math.random() - 0.5).slice(0, 8);
         let idx = 0;
         const timer = setInterval(() => {
-          if (!e.isConnected) { clearInterval(timer); drawing = false; return; }
+          if (!e.isConnected || e.closest("[hidden]")) { clearInterval(timer); drawing = false; return; }
           drawn.push(pool[idx++]);
           ping("blip");
           if (idx >= pool.length) {

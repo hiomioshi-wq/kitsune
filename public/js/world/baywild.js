@@ -270,8 +270,7 @@ function openGift(b, tier) {
   if (q < .48) { b.tickets = (b.tickets || 0) + tix; return { k: "tickets", v: tix }; }
   if (q < .66) {
     const pool = PLUSH.slice(tier === 0 ? 0 : 6, tier === 0 ? 6 : 12).filter((p) => !w.plush[p[0]]);
-    const all = PLUSH.filter((p) => !w.plush[p[0]]);
-    const pick = (pool.length ? pool : all)[Math.floor(Math.random() * (pool.length ? pool.length : all.length))];
+    const pick = pool.length ? pool[Math.floor(Math.random() * pool.length)] : null;
     if (pick) { w.plush[pick[0]] = 1; return { k: "plush", id: pick[0] }; }
     const v = shells; b.shells += v; return { k: "shells", v };
   }
