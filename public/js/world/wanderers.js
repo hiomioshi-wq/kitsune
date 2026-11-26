@@ -1,5 +1,20 @@
-// Ambient wandering townsfolk & resident strolling behavior across Kitsune World.
-import { today } from "../util.js";
+// Ambient wandering townsfolk, traveling item buyers & resident strolling behavior across Kitsune World.
+import { esc, today } from "../util.js";
+import { ITEMS, MEALS } from "./extras.js";
+
+const BUYERS = [
+  { id: "b_goro", name: "Goro", role: "Curio Peddler", region: "village", baseMul: 1.4, favMul: 2.0, favs: ["acorn", "mushroom", "berry", "honey", "pinecone", "herb"], style: { c: "#9c5a32", a: "#f5d98c", st: 2, sk: 2, h: "#2b1d14", e: "#1f1812", f: "apron" }, line: "Looking to lighten your pack? I pay double for woodland & town curios!" },
+  { id: "b_sera", name: "Sera", role: "Silk & Spice Broker", region: "market", baseMul: 1.4, favMul: 2.2, favs: ["silk", "spice", "ink", "ticket", "coal", "skewer", "bento"], style: { c: "#683d8a", a: "#ffd27a", st: 3, sk: 1, h: "#1f1629", e: "#1a1421", f: "coat" }, line: "Night Market caravans always need silk, spice, ink, and train goods." },
+  { id: "b_brine", name: "Capt. Brine", role: "Coastal Collector", region: "shore", baseMul: 1.4, favMul: 2.2, favs: ["shell", "kelp", "pearl", "driftwood", "reed", "lily", "page", "broth"], style: { c: "#2f6c85", a: "#e8f6ff", st: 1, sk: 2, h: "#3b4248", e: "#1b2429", f: "vest" }, line: "Tide treasures, pearls, and river finds — I'll buy the lot for fair mon!" },
+  { id: "b_cog", name: "Master Cogsworth", role: "Brass Appraiser", region: "clock", baseMul: 1.4, favMul: 2.2, favs: ["gear", "spring", "iron", "gold", "quartz", "clockwork"], style: { c: "#b88a2e", a: "#d8e0e8", st: 4, sk: 1, h: "#4a4338", e: "#221f1a", f: "smart" }, line: "Gears, springs, ores, and quartz — every spare part keeps Brask ticking." },
+  { id: "b_emerald", name: "Lady Emerald", role: "Oz Reliquarian", region: "oz", baseMul: 1.4, favMul: 2.2, favs: ["emerald", "poppy", "patch", "emeraldcake", "feast"], style: { c: "#2e8f62", a: "#fff0b3", st: 2, sk: 0, h: "#1c3829", e: "#14261c", f: "robe" }, line: "Emerald chips, poppies, and fine confections fetch royal prices with me." },
+  { id: "b_koji", name: "Koji", role: "Caravan Chef", region: "capital", baseMul: 1.5, favMul: 2.5, favs: ["tea", "jam", "stew", "broth", "pie", "soup", "skewer", "cocoa", "bento", "emeraldcake", "feast", "clockwork"], style: { c: "#d14d3a", a: "#ffffff", st: 1, sk: 1, h: "#261b18", e: "#1a1412", f: "apron" }, line: "Hungry travelers pay top mon for home-cooked meals — and I'll buy any spare ingredients too!" },
+];
+
+const ALL_ITEMS = [
+  ...ITEMS.map((q) => ({ id: q[0], name: q[1], color: q[2], val: Math.max(2, q[4] || 3) })),
+  ...MEALS.map((q) => ({ id: q[0], name: q[1], color: q[2], val: Math.max(6, q[5] || 10) })),
+];
 
 const TRAVELERS = [
   { id: "w_taro", name: "Taro", role: "Lantern Sweeper", region: "village", style: { c: "#c96f44", a: "#f2dec0", st: 1, sk: 1, h: "#2d241e", e: "#1f1c18", f: "casual" }, lines: ["Keeping the cobblestones swept so nobody trips at dusk.", "Have you checked the Town Council projects lately?", "A clean lantern burns half a candle brighter."] },
@@ -82,12 +97,17 @@ export function updateResidents(people, dt, s, blocked, T, busy) {
 }
 
 export function createWanderers(o) {
-  const { s, REGIONS, T, blocked, characterSvg, say, closeTalk, ping, toast, save, hud, calm } = o;
+  const { s, REGIONS, T, blocked, characterSvg, panel, say, closeTalk, ping, toast, save, hud, calm } = o;
   const st = (s.wanderers ||= {});
   st.day ||= "";
   st.tipped ||= {};
 
-  const npcs = TRAVELERS.map((t, i) => {
+  const spawnList = [
+    ...TRAVELERS.map((t) => ({ ...t, buyer: false })),
+    ...BUYERS.map((b) => ({ ...b, buyer: true })),
+  ];
+
+  const npcs = spawnList.map((t, i) => {
     const reg = REGIONS[t.region] || REGIONS.village || ["Foxhold", 60, 47];
     const hx = (reg[1] + ((i % 3) - 1) * 2 + 0.5) * T;
     const hy = (reg[2] + (Math.floor(i / 3) % 2 ? 2 : -2) + 0.5) * T;
@@ -130,20 +150,99 @@ export function createWanderers(o) {
         if (w.img.complete && w.img.naturalWidth) {
           g.drawImage(w.img, w.x - 24, w.y - 52 + b, 48, 68);
         }
+        if (w.buyer) {
+          g.fillStyle = "#ffd27a";
+          g.strokeStyle = "#1b1d33";
+          g.lineWidth = 2;
+          g.beginPath();
+          g.arc(w.x + 16, w.y - 52 + b, 8, 0, 7);
+          g.fill();
+          g.stroke();
+          g.font = "900 10px system-ui";
+          g.textAlign = "center";
+          g.fillStyle = "#1b1d33";
+          g.fillText("$", w.x + 16, w.y - 48.5 + b);
+        }
         if (Math.hypot(w.x - s.x, w.y - s.y) < 120) {
           g.font = "700 10px system-ui";
           g.textAlign = "center";
-          const tw = g.measureText(w.name).width + 10;
+          const label = w.buyer ? `${w.name} · Buyer` : w.name;
+          const tw = g.measureText(label).width + 10;
           g.fillStyle = "rgba(15,14,24,.82)";
-          g.fillRect(w.x - tw / 2, w.y - 66 + b, tw, 14);
-          g.fillStyle = "#ffe8b3";
-          g.fillText(w.name, w.x, w.y - 55 + b);
+          g.fillRect(w.x - tw / 2, w.y - 68 + b, tw, 14);
+          g.fillStyle = w.buyer ? "#9effc6" : "#ffe8b3";
+          g.fillText(label, w.x, w.y - 57 + b);
         }
       }]);
     }
   }
 
+  function priceFor(b, itemId, baseVal) {
+    const isFav = b.favs.includes(itemId);
+    const mul = isFav ? b.favMul : b.baseMul;
+    return { price: Math.max(3, Math.round(baseVal * mul)), isFav };
+  }
+
+  function sellPanel(b) {
+    const x2 = (s.x2 ||= {});
+    const bag = (x2.bag ||= {});
+    const entries = Object.entries(bag)
+      .filter(([, qty]) => qty > 0)
+      .map(([id, qty]) => {
+        const meta = ALL_ITEMS.find((it) => it.id === id) || { id, name: id.replace(/[_-]/g, " "), color: "#ffd27a", val: 4 };
+        const { price, isFav } = priceFor(b, id, meta.val);
+        return { id, name: meta.name, color: meta.color, qty, price, isFav };
+      })
+      .sort((a, z) => (z.isFav - a.isFav) || (z.price - a.price));
+
+    const favNames = b.favs
+      .map((id) => ALL_ITEMS.find((it) => it.id === id)?.name || id)
+      .slice(0, 6)
+      .join(", ");
+
+    const rows = entries.length
+      ? entries.map((it) => `
+          <div class="se-good">
+            <span>
+              <strong style="color:${it.color}">${esc(it.name)}</strong> ×${it.qty}
+              ${it.isFav ? `<em>★ ${b.favMul}×</em>` : ""}
+              <small>${it.price} mon each</small>
+            </span>
+            <div style="display:flex;gap:6px">
+              <button type="button" class="btn btn-sm" data-sell="${esc(it.id)}:1">Sell 1 (+${it.price})</button>
+              ${it.qty > 1 ? `<button type="button" class="btn btn-sm btn-accent" data-sell="${esc(it.id)}:${it.qty}">All (+${it.price * it.qty})</button>` : ""}
+            </div>
+          </div>`).join("")
+      : `<p class="muted">Your bag is empty! Forage items, mine ore, or cook meals to sell here.</p>`;
+
+    panel(`${b.name} · ${b.role}`, `
+      <p class="muted">"${esc(b.line)}"</p>
+      <p style="font-size:12px;margin-bottom:8px"><strong>Specialty (${b.favMul}×):</strong> ${esc(favNames)} · <strong>Other items:</strong> ${b.baseMul}×</p>
+      <div class="se-mkt">${rows}</div>
+    `, (e) => {
+      e.querySelectorAll("[data-sell]").forEach((btn) => {
+        btn.onclick = () => {
+          const [id, rawCount] = btn.dataset.sell.split(":");
+          const count = Math.min(bag[id] || 0, Number(rawCount) || 1);
+          if (count <= 0) return;
+          const meta = ALL_ITEMS.find((it) => it.id === id) || { name: id, val: 4 };
+          const { price } = priceFor(b, id, meta.val);
+          const total = price * count;
+          bag[id] -= count;
+          if (bag[id] <= 0) delete bag[id];
+          s.mon += total;
+          x2.t ||= {};
+          x2.t.sell = (x2.t.sell || 0) + count;
+          ping("done");
+          toast(`Sold ${count}× ${meta.name} to ${b.name} for +${total} mon!`);
+          save(); hud(); sellPanel(b);
+        };
+      });
+    });
+  }
+
   function chat(w) {
+    if (w.buyer) return sellPanel(w);
     const d = today();
     if (st.day !== d) {
       st.day = d;
@@ -171,7 +270,7 @@ export function createWanderers(o) {
       const d = Math.hypot(w.x - s.x, w.y - s.y);
       if (d < bestD) {
         bestD = d;
-        best = { label: `Chat with ${w.name}`, go: () => chat(w) };
+        best = { label: w.buyer ? `Sell items to ${w.name}` : `Chat with ${w.name}`, go: () => chat(w) };
       }
     }
     return best;
