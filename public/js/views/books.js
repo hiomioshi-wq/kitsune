@@ -141,7 +141,7 @@ async function renderGutenberg(view, id) {
         <div style="min-width:0"><p class="eyebrow" style="margin-bottom:6px">About the author</p><h3 class="h3">${esc(w.title)}</h3>${w.description ? `<p class="muted" style="margin:2px 0 8px;font-size:13px">${esc(w.description)}</p>` : ""}
         <p style="margin:0;max-width:68ch">${esc(w.extract)}</p><a class="link-btn" style="margin-top:8px" href="${esc(w.url)}" target="_blank" rel="noopener">Wikipedia ↗</a></div></div>`;
     }).catch(() => {});
-    searchBooks({ search: b.authors[0].split(",")[0], languages: b.languages[0] || "en" }).then((d) => {
+    if (b.authors[0]) searchBooks({ search: b.authors[0].split(",")[0], languages: b.languages?.[0] || "en" }).then((d) => {
       const more = d.results.filter((x) => x.id !== b.id && x.authors.includes(b.authors[0])).slice(0, 14);
       if (!more.length || !$("#g-more", view)) return;
       $("#g-more-wrap", view).hidden = false;
@@ -184,7 +184,7 @@ async function renderScans(view, q0) {
       let html = "", d;
       if (f.src === "loc") {
         d = await api(`loc?page=${f.page}${f.q ? "&q=" + encodeURIComponent(f.q) : ""}`);
-        html = d.results.map((s) => `<a class="card" href="#loc/${encodeURIComponent(s.id)}">${coverHtml(s.cover, s.title, { badge: s.year ? String(s.year) : "" })}<span class="card-t">${esc(s.title)}</span><span class="card-m">${esc(s.creator.split(",")[0] || "Library of Congress")}</span></a>`).join("");
+        html = d.results.map((s) => `<a class="card" href="#loc/${encodeURIComponent(s.id)}">${coverHtml(s.cover, s.title, { badge: s.year ? String(s.year) : "" })}<span class="card-t">${esc(s.title)}</span><span class="card-m">${esc((s.creator || "").split(",")[0] || "Library of Congress")}</span></a>`).join("");
       } else if (f.src === "met" || f.src === "cma") {
         // Museum open access: public-domain illustrated books, prints and albums with all their page photos.
         d = await api(`museum?src=${f.src}&page=${f.page}&q=${encodeURIComponent(f.q || (f.src === "met" ? "illustrated book" : "book"))}`);
@@ -222,7 +222,7 @@ async function renderScans(view, q0) {
         html = d.results.map((x) => `<button class="card" type="button" data-ol="${esc(x.ia.slice(0, 8).join(","))}">${coverHtml(x.cover_i ? `https://covers.openlibrary.org/b/id/${x.cover_i}-M.jpg` : null, x.title, { badge: x.first_publish_year ? String(x.first_publish_year) : "" })}<span class="card-t">${esc(x.title)}</span><span class="card-m">${esc((x.author_name || [])[0] || "")}</span></button>`).join("");
       } else {
         d = await api(`scans?kind=${f.shelf}&page=${f.page}&sort=${f.sort}${f.q ? "&q=" + encodeURIComponent(f.q) : ""}`);
-        html = d.results.map((s) => `<a class="card" href="#scan/${encodeURIComponent(s.id)}">${coverHtml(s.cover, s.title, { badge: s.year ? String(s.year) : "" })}<span class="card-t">${esc(s.title)}</span><span class="card-m">${esc([s.creator.split(",")[0], s.pages + "p"].filter(Boolean).join(" · "))}</span></a>`).join("");
+        html = d.results.map((s) => `<a class="card" href="#scan/${encodeURIComponent(s.id)}">${coverHtml(s.cover, s.title, { badge: s.year ? String(s.year) : "" })}<span class="card-t">${esc(s.title)}</span><span class="card-m">${esc([(s.creator || "").split(",")[0], s.pages ? s.pages + "p" : ""].filter(Boolean).join(" · "))}</span></a>`).join("");
       }
       if (my !== seq) return;
       if (more) $(".grid", out).insertAdjacentHTML("beforeend", html); else out.innerHTML = html ? `<div class="grid">${html}</div>` : "";
@@ -638,15 +638,16 @@ async function renderFree(view, target = "") {
   const pillText = (s) => (s.done ? "Finished ✓" : s.pct > 0 ? `${s.pct}% read` : s.have ? "In your library" : "Read");
   const SHOW = 8;
   const seriesHead = (x) => {
-    const out = x.items.filter(itemOut);
+    const items = x.items || [];
+    const out = items.filter(itemOut);
     const st = out.map((e) => state(e.id));
     const read = st.filter((s) => s.done).length, started = st.some((s) => s.pct > 0);
     const ni = st.findIndex((s) => !s.done), next = ni >= 0 ? out[ni] : null;
-    const go = !out.length ? { id: null, label: x.items[0] ? `First entry unlocks ${outDate(x.items[0])}` : "Coming soon" }
+    const go = !out.length ? { id: null, label: items[0] ? `First entry unlocks ${outDate(items[0])}` : "Coming soon" }
       : !started ? { id: out[0].id, label: `Start with ${out[0].label}` }
       : next ? { id: next.id, label: `${st[ni].pct > 0 ? "Continue" : "Next"}: ${next.title.replace(/^Incarnate: /, "")}` }
       : { id: out[0].id, label: "Read again from the start" };
-    return { read, started, go, out: out.length, locked: x.items.length - out.length };
+    return { read, started, go, out: out.length, locked: items.length - out.length };
   };
   view.innerHTML = head("free", "Books", "Stories and manga made for Kitsune, plus a hand-picked shelf of free classics. All free, all yours to keep.", null, null) + `
     <section class="section orig-hero"><div class="orig-hero-art"><img src="/originals/kitsu-delivers-1/000.svg" alt="Kitsu Delivers cover"></div>
@@ -656,18 +657,18 @@ async function renderFree(view, target = "") {
     <section class="section"><div class="orig-grid">${ORIGINALS.map((o) => `<button class="orig-card" type="button" data-orig="${o.id}">
       <img src="${o.cover}" alt="" loading="lazy"><span><span class="eyebrow">${o.type === "manga" ? "Manga" : "Short story"} · ${o.minutes} min</span><strong>${esc(o.title)}</strong><span class="muted">${esc(o.blurb)}</span>
       <span class="pill" data-have="${o.id}">${getItem(o.id) ? "In your library" : "Read free"}</span></span></button>`).join("")}</div></section>
-    ${series.map((x) => { const sh = seriesHead(x); return `<section class="section orig-series" data-series="${x.id}" id="series-${x.id}">
-      <div class="series-banner" data-tint="${(x.items.find((i) => /^(Episode 1|Book One)/.test(i.label)) || x.items[0]).cover}" style="--cover:url('${(x.items.find((i) => /^(Episode 1|Book One)/.test(i.label)) || x.items[0]).cover}')">
-        <img class="series-banner-cover" src="${(x.items.find((i) => /^(Episode 1|Book One)/.test(i.label)) || x.items[0]).cover}" alt="">
-        <div class="series-banner-txt"><p class="eyebrow">Original series · ${x.items.length} ${x.items.length === 1 ? "entry" : "entries"}${x.mature ? ` · <span class="pill mature">Mature</span>` : ""}</p><h2 class="h1">${esc(x.title)}</h2>
+    ${series.map((x) => { const items = x.items || [], sh = seriesHead(x), lead = items.find((i) => /^(Episode 1|Book One)/.test(i.label)) || items[0] || {}; return `<section class="section orig-series" data-series="${x.id}" id="series-${x.id}">
+      <div class="series-banner" data-tint="${lead.cover || x.cover || ""}" style="--cover:url('${lead.cover || x.cover || ""}')">
+        <img class="series-banner-cover" src="${lead.cover || x.cover || ""}" alt="">
+        <div class="series-banner-txt"><p class="eyebrow">Original series · ${items.length} ${items.length === 1 ? "entry" : "entries"}${x.mature ? ` · <span class="pill mature">Mature</span>` : ""}</p><h2 class="h1">${esc(x.title)}</h2>
           <p class="series-banner-blurb">${esc(x.blurb)}</p>${x.note ? `<p class="series-banner-note">${esc(x.note)}</p>` : ""}
-          ${sh.started ? `<div class="series-prog" aria-label="Read ${sh.read} of ${x.items.length}"><span class="series-prog-bar"><i style="width:${Math.round((sh.read / x.items.length) * 100)}%"></i></span><span>Read ${sh.read} of ${x.items.length}</span></div>` : ""}
+          ${sh.started ? `<div class="series-prog" aria-label="Read ${sh.read} of ${items.length}"><span class="series-prog-bar"><i style="width:${Math.round((sh.read / (items.length || 1)) * 100)}%"></i></span><span>Read ${sh.read} of ${items.length}</span></div>` : ""}
           <div class="linkgrid" style="margin-top:14px"><button class="btn btn-accent" type="button" ${sh.go.id ? `data-sitem="${sh.go.id}"` : "disabled"}>${icon("book")}${esc(sh.go.label)}</button><button class="btn btn-on-dark" type="button" data-series-all="${x.id}" ${sh.locked ? `data-some="${sh.locked}"` : ""}>${icon("plus")}Add all${sh.locked ? " out now" : ""}</button><a class="btn btn-on-dark" href="#lore/s/${x.id}">${icon("list")}Wiki</a></div></div>
       </div>
-      ${x.items.length > SHOW || sh.started ? `<div class="series-tools"><div class="seg" role="group" aria-label="Show"><button type="button" data-sf="all" aria-pressed="true">All ${x.items.length}</button><button type="button" data-sf="unread" aria-pressed="false">Unread ${x.items.length - sh.read}</button></div></div>` : ""}
-      <div class="orig-grid">${x.items.map((e, i) => { const s = state(e.id), out = itemOut(e); if (!out) { const d = daysUntilOut(e); return `<div class="orig-card is-locked" aria-disabled="true"><img src="${e.cover}" alt="" loading="lazy"><span><span class="eyebrow">${i + 1} · ${esc(e.label)}${e.kind === "script" ? " · Script" : " · Novel"}</span><strong>${esc(e.title)}</strong><span class="muted">${esc(e.blurb)}</span><span class="pill">${icon("clock")}Unlocks ${outDate(e)}${d > 1 ? ` · in ${d} days` : d === 1 ? " · tomorrow" : ""}</span></span></div>`; } return `<button class="orig-card${s.done ? " is-done" : ""}" type="button" data-sitem="${e.id}" data-done="${s.done}" ${i >= SHOW ? "hidden" : ""}><img src="${e.cover}" alt="" loading="lazy"><span><span class="eyebrow">${i + 1} · ${esc(e.label)}${e.kind === "script" ? " · Script" : " · Novel"}</span><strong>${esc(e.title)}</strong><span class="muted">${esc(e.blurb)}</span>
+      ${items.length > SHOW || sh.started ? `<div class="series-tools"><div class="seg" role="group" aria-label="Show"><button type="button" data-sf="all" aria-pressed="true">All ${items.length}</button><button type="button" data-sf="unread" aria-pressed="false">Unread ${items.length - sh.read}</button></div></div>` : ""}
+      <div class="orig-grid">${items.map((e, i) => { const s = state(e.id), out = itemOut(e); if (!out) { const d = daysUntilOut(e); return `<div class="orig-card is-locked" aria-disabled="true"><img src="${e.cover}" alt="" loading="lazy"><span><span class="eyebrow">${i + 1} · ${esc(e.label)}${e.kind === "script" ? " · Script" : " · Novel"}</span><strong>${esc(e.title)}</strong><span class="muted">${esc(e.blurb)}</span><span class="pill">${icon("clock")}Unlocks ${outDate(e)}${d > 1 ? ` · in ${d} days` : d === 1 ? " · tomorrow" : ""}</span></span></div>`; } return `<button class="orig-card${s.done ? " is-done" : ""}" type="button" data-sitem="${e.id}" data-done="${s.done}" ${i >= SHOW ? "hidden" : ""}><img src="${e.cover}" alt="" loading="lazy"><span><span class="eyebrow">${i + 1} · ${esc(e.label)}${e.kind === "script" ? " · Script" : " · Novel"}</span><strong>${esc(e.title)}</strong><span class="muted">${esc(e.blurb)}</span>
         <span class="pill${s.done ? " pill-done" : ""}" data-have="${e.id}">${pillText(s)}</span>${s.pct > 0 && !s.done ? `<span class="card-prog"><i style="width:${s.pct}%"></i></span>` : ""}</span></button>`; }).join("")}</div>
-      ${x.items.length > SHOW ? `<button class="btn btn-ghost series-more" type="button" data-smore="${x.id}">Show all ${x.items.length}</button>` : ""}
+      ${items.length > SHOW ? `<button class="btn btn-ghost series-more" type="button" data-smore="${x.id}">Show all ${items.length}</button>` : ""}
       <p class="muted" style="font-size:12px;margin-top:10px">${esc(x.rights)}</p></section>`; }).join("")}
     <section class="section"><div class="section-head"><div><h2 class="h2">Free classics</h2><p class="muted" style="margin:4px 0 0;font-size:13.5px">${total} public-domain books from Project Gutenberg. Add one to read it, or add a whole shelf and keep it offline.</p></div>
       <button class="btn btn-accent" type="button" id="fr-all">${icon("download")}Add all ${total} & keep offline</button></div><p class="status" id="fr-s"></p>
@@ -694,17 +695,17 @@ async function renderFree(view, target = "") {
     const si = e.target.closest("[data-sitem]");
     if (si) {
       si.disabled = true;
-      const x = series.find((y) => y.items.some((i) => i.id === si.dataset.sitem));
-      try { openItem(await addSeriesItem(x, x.items.find((i) => i.id === si.dataset.sitem))); } catch (err) { toast(err.message); }
+      const x = series.find((y) => (y.items || []).some((i) => i.id === si.dataset.sitem));
+      try { openItem(await addSeriesItem(x, (x?.items || []).find((i) => i.id === si.dataset.sitem))); } catch (err) { toast(err.message); }
       si.disabled = false; return;
     }
     const sa = e.target.closest("[data-series-all]");
     if (sa) {
       sa.disabled = true;
-      const x = series.find((y) => y.id === sa.dataset.seriesAll);
-      const outNow = x.items.filter((i) => itemOut(i));
+      const x = series.find((y) => y.id === sa.dataset.seriesAll), items = x?.items || [];
+      const outNow = items.filter((i) => itemOut(i));
       for (const it of outNow) { try { await addSeriesItem(x, it); const p = view.querySelector(`[data-have="${it.id}"]`); if (p && p.textContent === "Read") p.textContent = "In your library"; } catch {} }
-      const locked = x.items.length - outNow.length;
+      const locked = items.length - outNow.length;
       toast(locked ? `${outNow.length} entr${outNow.length === 1 ? "y" : "ies"} added. ${locked} more unlock weekly.` : `${x.title} is in your library.`, { action: "View", onAction: () => (location.hash = "library/book") }); return;
     }
     const sf = e.target.closest("[data-sf]"), sm = e.target.closest("[data-smore]");

@@ -23,7 +23,7 @@ export function vnCatalog() {
   return [
     ...ORIGINALS.filter((o) => o.type === "manga").map((o) => ({ id: o.id, title: o.title, urls: o.urls, cover: o.cover, blurb: o.blurb, group: "Kitsune Originals", kind: "comic", label: "Comic", mature: false })),
     ...ORIGINALS.filter((o) => o.type === "book").map((o) => ({ id: o.id, title: o.title, file: o.file, cover: o.cover, blurb: o.blurb, group: "Kitsune Originals", kind: "text", mature: false })),
-    ...SERIES.filter((s) => !(kids && s.mature)).flatMap((s) => s.items.filter((e) => e.file).map((e) => ({ id: e.id, title: e.title, label: e.label, file: e.file, cover: e.cover, blurb: e.blurb, group: s.title, sid: s.id, kind: e.kind, mature: !!s.mature }))),
+    ...SERIES.filter((s) => !(kids && s.mature)).flatMap((s) => (s.items || []).filter((e) => e.file).map((e) => ({ id: e.id, title: e.title, label: e.label, file: e.file, cover: e.cover, blurb: e.blurb, group: s.title, sid: s.id, kind: e.kind, mature: !!s.mature }))),
   ];
 }
 // Crowds, machines and things that talk get a name on the text box but no face.

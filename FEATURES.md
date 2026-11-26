@@ -2143,3 +2143,34 @@ A dark workplace comedy from the city of Gloam, where human fears are a crop and
 - **Moonroot Apothecary**: three new essences — Brine, Ash and Starlight — brewed from shore shells, train coal and meteor shards, and six new discoverable potions (18 total), with all 216 forage items' old-recipe math proven unchanged
 - **Two book realms grow again**: The Lantern Under-Market gains The Porcelain Gallery (whisper-holding masks kept by the Porcelain Warden) and The Hollow Clockworks gains The Lost Seconds Chamber (the three lost seconds of Brask, ticking in a brass jar, kept by Second-Keeper Tibb) — a scene, relic and quest chapter each, both proven reachable with boss gates intact
 - **Browser tools v146 (`webplus27.js`)**: every time on a page converted to your time zone; a pull-quote summary under each heading; a read-only audit of every form field; every date on a page laid out as a sorted timeline with its sentence; and nested lists flattened to indented text
+
+## 52. The Glass Desert & the Huge World Wave
+
+- **The Glass Desert (`public/js/world/desert.js`)**: a new walkable realm (`112×64`) of dunes, fused glass flats, sparkling crystal fields, mesas and a palm oasis, reached from the world HUD's Glass Desert button — currency is beads, and a wandering dust wraith keeps five lines of advice
+  - **The Glassworks**: a heat-cycle timing game — pull three panes a day while the marker rides the amber zone, with the zone shrinking as you shape well
+  - **Sand-Surf Run**: a three-lane board run across the glass flat — dodge rocks and thornbush, gather loose beads, three spills ends it, with speed ramping as you ride
+  - **The Mirror Caravan**: Vitrine the Mirror-Merchant, with daily-restocked shelves — beads trade for mon, the **Mirrorweave Turban** (new hat) and the **Glass Wind-Chime** (new house furniture); every mirror she carries shows the customer slightly braver than they arrived
+  - **The Buried City**: one deterministic find a day hidden among the ruin columns — walk the field, hear the hollow sound, and dig up a pane of the old glass
+  - **Oasis Teahouse**: a cold-tea rest that grants +50% bead payouts for ten minutes across the Glassworks and Sand-Surf
+- **World Events ×3**: the Lantern Kite Regatta (drifting kites from the Kite Yard), the Bead Storm (falling glass beads with a gold-tier bonus), and the Nightjar Courier (chain catches of wind-blown letters at rising pay) — 18 events in rotation
+- **Four new Delves**: The Glass Foundry (The Founder), The Icefall Cistern (The Counting Cistern), The Orchards' Overdue Cellar (The Harvest That Waited) and The Estuary Wreck (The Tide's Custodian) — 153 delves, each with a new museum trophy
+- **Two new Arena Champions**: The Kiln-Glass Wyrm (mirror-scaled desert wyrm, drops the Stargazer's veil and Starlight Lantern) and The Second-Tick Colossus (a brass giant that banks Brask's lost seconds, drops the Moonwake sunhat and Brass Orrery) — 7 champions, gauntlet now seven rounds
+- **Deep Mines, two new strata**: The Vitrified Deep (depth 34) and The Hourglass Floor (depth 46), with the Vitrine vein (deep glass ore) and the Hourglass Sand vein — a strike restores +2 lamp stamina instead of paying mon — and a depth-46 milestone
+
+## 53. The Blackwood Darwin Awards
+
+The university's least dignified ceremony, held nightly in the Detention Wing cafeteria — now an event on the Activities hub, deterministic by day, kid-safe and deadpan:
+
+- **Tonight's citations**: five per ceremony, drawn daily from fifteen nominees across eight categories (Improvised Flight, Stairwell Relations, Powers Misapplied, Meridian Curiosity…) — Kevin drifting into a ceiling fan that isn't there, Madison forgetting the memory-rewriting assignment by rewriting her memory, Officer Rusk escorting the building's own school spirit to Detention, the Detention Wing detaining itself for holding contraband detention slips
+- **The Golden Stairwell vote**: pick the night's crowd favourite among three nominees — one vote a night; matching the crowd pays 120 mon, disagreeing politely pays 40
+- **Ceremony openers and closers** rotate too ("The trophy is carried in upside down… nobody remembers why, and the one year they fixed it, everyone fell down the stairs")
+- **The trophy hat**: attend five ceremonies (correct votes or not — the Darwin Awards reward attendance, not judgment) and claim the **Golden Stairwell Trophy** hat, a small stairwell, plated, that you may wear — with new hat art
+- Hub-tile shows your citation count; the whole thing is offline, no new mechanics, just the finest in ill-considered Blackwood decision-making
+
+## 54. Roulette Wave: puzzles, fossils, a tavern lane, besties, and feed comforts
+
+- **Town Square, three new places** (65 total): the Postal Puzzle Club (a daily three-resident logic puzzle, brute-force-proven to have exactly one solution, one attempt a day, +40 mon); the Gossip Bench (5 mon buys the day's whisper from a list of twelve lore-canon town secrets); and the Lost & Found Emporium (guess which of three residents lost today's item — correct pays +30 mon and the real item goes to your Bag; all ten item→owner pairs reference actual extras.js forage items)
+- **Country Life**: six new fossils (the Ammonite Bookmark — the shell of a snail that read; a nine-tail's first whisker; The First Acorn), a new secret (The Drowned Chapel, half a chapel under the bog water, hymn board still saying next Sunday), and a Fox figurehead for the Ship's Cabin — all museum-visible automatically, almanac counters now fully dynamic (24 fossils, 7 secrets, 13 cabin pieces)
+- **Lantern Cards**: the Tavern Lantern lane — cards costing 3 or less have +2 there — math-proven (badger cost 3 gains exactly +2; stag cost 4 gains nothing), with the foe's AI weighing it correctly and all 365 cards' basePower values unchanged across every pre-existing lane (5,110 comparisons, zero drift)
+- **Blackwood besties**: three new Madison cupcake-delivery companions — the Quiet Clerk from the Sub-Basement Stacks, the Accreditation Goose (a cupcake is not a form of accreditation), and the vending machine from the quad (THE MACHINE ACCEPTS) — plus a forage-alongside-you mechanic: every 64 tiles walked with a companion out, Madison spots something on the path (30% a real forage item, 70% small mon)
+- **Feeds reading comfort**: a minutes-read estimate on every item card, a persisted unread-only toggle with an "N unread of M" chip, and a one-click mark-all-read pill per feed

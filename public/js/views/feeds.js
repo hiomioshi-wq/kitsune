@@ -1,19 +1,20 @@
 // Feeds: follow sites, blogs, webcomics, podcasts' show notes and news in one place. RSS, Atom and JSON Feed, folders,
 // unread and starred, OPML import and export, full-article loading, reading aloud. Everything is kept on this device.
 import { $, $$, esc, icon, toast, modal, plural, menu, uid } from "../util.js";
-import { saveItem } from "../store.js";
+import { saveItem, kvGet, kvSet } from "../store.js";
 import { setCrumbs } from "../main.js";
 import * as F from "../feedlib.js";
 
-const S = { subs: [], items: {}, read: new Set(), stars: {}, view: "all", q: "", open: null, busy: false, errors: {}, collapsed: new Set(), full: {} };
+const S = { subs: [], items: {}, read: new Set(), stars: {}, view: "all", q: "", open: null, busy: false, errors: {}, collapsed: new Set(), full: {}, unreadOnly: false };
 let root = null, keyHandler = null;
 
 const ago = (t) => { if (!t) return ""; const s = (Date.now() - t) / 1000; if (s < 90) return "now"; if (s < 3600) return Math.round(s / 60) + "m"; if (s < 86400) return Math.round(s / 3600) + "h"; if (s < 86400 * 30) return Math.round(s / 86400) + "d"; return new Date(t).toLocaleDateString(undefined, { month: "short", day: "numeric" }); };
 const host = (u) => { try { return new URL(u).hostname.replace(/^www\./, ""); } catch { return ""; } };
 const subOf = (id) => S.subs.find((s) => s.id === id);
+const minsOf = (html) => { const w = F.snippet(html || "", 1e6).split(/\s+/).filter(Boolean).length; return w ? Math.max(1, Math.round(w / 200)) : 0; };
 
 function all() { return S.subs.flatMap((s) => (S.items[s.id] || []).map((i) => ({ ...i, feed: s.id }))); }
-function list() {
+function list(keepRead = false) {
   let l;
   const v = S.view;
   if (v === "starred") l = Object.values(S.stars);
@@ -23,6 +24,7 @@ function list() {
   if (v === "unread" || v === "all") { if (v === "unread") l = l.filter((i) => !S.read.has(i.id)); }
   if (v === "today") l = l.filter((i) => Date.now() - i.date < 864e5);
   if (S.q) { const q = S.q.toLowerCase(); l = l.filter((i) => (i.title + " " + F.snippet(i.html, 400)).toLowerCase().includes(q)); }
+  if (S.unreadOnly && !keepRead && v !== "unread") l = l.filter((i) => !S.read.has(i.id));
   return l.sort((a, b) => b.date - a.date).slice(0, 400);
 }
 const unreadOf = (ids) => ids.reduce((n, id) => n + (S.items[id] || []).filter((i) => !S.read.has(i.id)).length, 0);
@@ -30,7 +32,7 @@ const unreadOf = (ids) => ids.reduce((n, id) => n + (S.items[id] || []).filter((
 export async function render(view, _n, params = []) {
   setCrumbs([["Feeds", "feeds"]]);
   root = view;
-  [S.subs, S.items, S.read, S.stars] = await Promise.all([F.getSubs(), F.getItems(), F.getRead(), F.getStars()]);
+  [S.subs, S.items, S.read, S.stars, S.unreadOnly] = await Promise.all([F.getSubs(), F.getItems(), F.getRead(), F.getStars(), kvGet("feedUnreadOnly", false)]);
   if (params[0] === "add" && params[1]) { S.pendingAdd = decodeURIComponent(params[1]); }
   draw();
   if (S.pendingAdd) { const u = S.pendingAdd; S.pendingAdd = null; addFeed(u); }
@@ -42,7 +44,7 @@ export async function render(view, _n, params = []) {
 function draw() {
   const total = unreadOf(S.subs.map((s) => s.id)), folders = [...new Set(S.subs.map((s) => s.folder).filter(Boolean))].sort();
   const row = (v, label, n, extra = "") => `<button type="button" class="fd-nav ${S.view === v ? "on" : ""}" data-v="${esc(v)}" ${extra}><span>${esc(label)}</span>${n ? `<b>${n}</b>` : ""}</button>`;
-  const feedRow = (s) => `<button type="button" class="fd-nav fd-sub ${S.view === "f:" + s.id ? "on" : ""}" data-v="f:${s.id}" data-sub="${s.id}"><span>${S.errors[s.id] ? "⚠ " : ""}${esc(s.title)}</span>${unreadOf([s.id]) ? `<b>${unreadOf([s.id])}</b>` : ""}</button>`;
+  const feedRow = (s) => `<button type="button" class="fd-nav fd-sub ${S.view === "f:" + s.id ? "on" : ""}" data-v="f:${s.id}" data-sub="${s.id}"><span>${S.errors[s.id] ? "⚠ " : ""}${esc(s.title)}</span>${unreadOf([s.id]) ? `<b class="fd-mk" data-mark="${s.id}" title="Mark all as read">${unreadOf([s.id])} ✓</b>` : ""}</button>`;
   root.innerHTML = `<div class="fd ${S.open ? "fd-reading" : ""}">
     <aside class="fd-side" aria-label="Feeds">
       <div class="fd-actions"><button class="btn btn-accent btn-sm" type="button" data-a="add">${icon("plus")}Add feed</button><button class="icon-btn" type="button" data-a="refresh" aria-label="Refresh all" title="Refresh all (R)">↻</button><button class="icon-btn" type="button" data-a="more" aria-label="More">⋯</button></div>
@@ -50,7 +52,7 @@ function draw() {
       ${folders.map((f) => `<div class="fd-folder"><button type="button" class="fd-fh" data-fold="${esc(f)}">${S.collapsed.has(f) ? "▸" : "▾"} ${esc(f)}${unreadOf(S.subs.filter((s) => s.folder === f).map((s) => s.id)) ? `<b>${unreadOf(S.subs.filter((s) => s.folder === f).map((s) => s.id))}</b>` : ""}</button>${S.collapsed.has(f) ? "" : S.subs.filter((s) => s.folder === f).map(feedRow).join("")}</div>`).join("")}
       ${S.subs.filter((s) => !s.folder).map(feedRow).join("")}
     </aside>
-    <section class="fd-list" aria-label="Articles">${S.subs.length ? `<form class="fd-search" id="fd-sf"><input class="field" id="fd-q" type="search" placeholder="Search articles ( / )" value="${esc(S.q)}" aria-label="Search articles"></form><div id="fd-items"></div>` : welcome()}</section>
+    <section class="fd-list" aria-label="Articles">${S.subs.length ? `<form class="fd-search" id="fd-sf"><input class="field" id="fd-q" type="search" placeholder="Search articles ( / )" value="${esc(S.q)}" aria-label="Search articles"></form><div class="chips" id="fd-tools" style="padding:0 10px 8px"></div><div id="fd-items"></div>` : welcome()}</section>
     <article class="fd-read" id="fd-read" aria-label="Article"></article></div>`;
   fillList(); fillReader(); wire();
 }
@@ -63,9 +65,10 @@ function welcome() {
 
 function fillList() {
   const box = $("#fd-items", root); if (!box) return;
-  const l = list();
-  box.innerHTML = l.length ? l.map((i) => `<button type="button" class="fd-item ${S.read.has(i.id) ? "read" : ""} ${S.open === i.id ? "on" : ""}" data-id="${esc(i.id)}">${i.thumb ? `<img src="${esc(i.thumb)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ""}<span class="fd-t"><strong>${esc(i.title)}</strong><small>${esc(subOf(i.feed)?.title || i.feedTitle || "")} · ${ago(i.date)}${S.stars[i.id] ? " · ★" : ""}</small><em>${esc(F.snippet(i.html))}</em></span></button>`).join("")
-    : `<p class="muted" style="padding:16px">${S.view === "unread" ? "You’re all caught up." : S.view === "starred" ? "Star an article to keep it here." : S.q ? "Nothing matches that." : "Nothing here yet."}</p>`;
+  const l = list(), raw = list(true), un = raw.filter((i) => !S.read.has(i.id)).length, tools = $("#fd-tools", root);
+  if (tools) tools.innerHTML = `<button class="chip" type="button" data-a="unreadOnly" aria-pressed="${!!S.unreadOnly}">${S.unreadOnly ? "●" : "○"} Unread only</button><span class="chip" style="cursor:default">${un} unread of ${raw.length}</span>`;
+  box.innerHTML = l.length ? l.map((i) => { const m = minsOf(i.html); return `<button type="button" class="fd-item ${S.read.has(i.id) ? "read" : ""} ${S.open === i.id ? "on" : ""}" data-id="${esc(i.id)}">${i.thumb ? `<img src="${esc(i.thumb)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ""}<span class="fd-t"><strong>${esc(i.title)}</strong><small>${esc(subOf(i.feed)?.title || i.feedTitle || "")} · ${ago(i.date)}${m ? ` · ${m} min read` : ""}${S.stars[i.id] ? " · ★" : ""}</small><em>${esc(F.snippet(i.html))}</em></span></button>`; }).join("")
+    : `<p class="muted" style="padding:16px">${S.view === "unread" || S.unreadOnly ? "You’re all caught up." : S.view === "starred" ? "Star an article to keep it here." : S.q ? "Nothing matches that." : "Nothing here yet."}</p>`;
 }
 
 function fillReader() {
@@ -93,6 +96,7 @@ function wire() {
     const t = e.target;
     const fold = t.closest("[data-fold]"); if (fold) { const f = fold.dataset.fold; S.collapsed.has(f) ? S.collapsed.delete(f) : S.collapsed.add(f); return draw(); }
     const start = t.closest("[data-start]"); if (start) { start.disabled = true; await addFeed(start.dataset.start, start.dataset.folder); return; }
+    const mk = t.closest("[data-mark]"); if (mk) { const id = mk.dataset.mark, n = (S.items[id] || []).filter((x) => !S.read.has(x.id)).length; (S.items[id] || []).forEach((x) => S.read.add(x.id)); F.setRead(S.read); toast(`Marked ${plural(n, "article")} read in ${subOf(id)?.title || "this feed"}.`); return draw(); }
     const nav = t.closest("[data-v]"); if (nav) { S.view = nav.dataset.v; S.open = null; return draw(); }
     const it = t.closest(".fd-item"); if (it) return openArticle(it.dataset.id);
     const a = t.closest("[data-a]")?.dataset.a; if (!a) return;
@@ -102,6 +106,7 @@ function wire() {
     if (a === "refresh") return refresh(S.subs, true);
     if (a === "more") return moreMenu(t.closest("[data-a]"));
     if (a === "close") { S.open = null; return draw(); }
+    if (a === "unreadOnly") { S.unreadOnly = !S.unreadOnly; kvSet("feedUnreadOnly", S.unreadOnly); return draw(); }
     if (!art) return;
     if (a === "open") return (location.hash = "web/" + encodeURIComponent(art.link));
     if (a === "lib") {

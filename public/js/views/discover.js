@@ -90,7 +90,7 @@ async function renderClassic(view, q0) {
     status.className = "status"; status.textContent = "Searching library scans…";
     try {
       const d = await api(`scans?kind=manga&page=${f.page}&sort=${f.sort}${f.q ? "&q=" + encodeURIComponent(f.q) : ""}`);
-      const html = d.results.map((s) => `<a class="card" href="#scan/${encodeURIComponent(s.id)}">${coverHtml(s.cover, s.title, { badge: s.year ? String(s.year) : "" })}<span class="card-t">${esc(s.title)}</span><span class="card-m">${esc([s.creator.split(",")[0], s.pages + "p"].filter(Boolean).join(" · "))}</span></a>`).join("");
+      const html = d.results.map((s) => `<a class="card" href="#scan/${encodeURIComponent(s.id)}">${coverHtml(s.cover, s.title, { badge: s.year ? String(s.year) : "" })}<span class="card-t">${esc(s.title)}</span><span class="card-m">${esc([(s.creator || "").split(",")[0], s.pages ? s.pages + "p" : ""].filter(Boolean).join(" · "))}</span></a>`).join("");
       if (more) $(".grid", out).insertAdjacentHTML("beforeend", html); else out.innerHTML = `<div class="grid">${html}</div>`;
       status.textContent = d.count ? `${d.count.toLocaleString()} scans` : "No scans found. Try another artist or title.";
       $("#c-more", view).hidden = !d.hasNext;
@@ -262,7 +262,7 @@ async function shelfCards(sh) {
     return d.results.slice(0, 14).map((x) => `<a class="card" href="#books/scans/${encodeURIComponent(sh.q)}" data-src="${sh.src}">${coverHtml(x.cover, x.title)}<span class="card-t">${esc(x.title)}</span><span class="card-m">${esc(meta(x.creator, x.year))}</span></a>`);
   }
   const d = await api(`scans?kind=${sh.kind}${sh.q ? "&q=" + encodeURIComponent(sh.q) : ""}`);
-  return d.results.slice(0, 14).map((x) => `<a class="card" href="#scan/${encodeURIComponent(x.id)}">${coverHtml(x.cover, x.title, { badge: x.year ? String(x.year) : "" })}<span class="card-t">${esc(x.title)}</span><span class="card-m">${esc(meta(x.creator.split(",")[0], x.pages ? x.pages + "p" : ""))}</span></a>`);
+  return d.results.slice(0, 14).map((x) => `<a class="card" href="#scan/${encodeURIComponent(x.id)}">${coverHtml(x.cover, x.title, { badge: x.year ? String(x.year) : "" })}<span class="card-t">${esc(x.title)}</span><span class="card-m">${esc(meta((x.creator || "").split(",")[0], x.pages ? x.pages + "p" : ""))}</span></a>`);
 }
 function renderShelves(view) {
   setCrumbs([["Discover", "discover"], ["Curated shelves", ""]]);

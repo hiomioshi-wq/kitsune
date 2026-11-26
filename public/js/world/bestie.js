@@ -3,6 +3,7 @@
 import { esc } from "../util.js";
 import { settings } from "../store.js";
 import { speakAs, execVoiceCmds, askChatLine } from "./mindai.js";
+import { item } from "./extras.js";
 
 const T = 32;
 const MEMORIES = [
@@ -13,7 +14,9 @@ const MEMORIES = [
   "Madison carried your tray in the Cafeteria when your paws were shaking.", "Madison wrote a 5-star review of your existence so Poppy couldn't shrink you.", "Madison convinced Officer Rusk your detention slip was an invitation.", "Madison remembered your name before Mortality Services even printed your ticket.",
 ];
 const CUPCAKES = [[22, 26], [37, 27], [30, 19], [15, 25], [45, 25], [24, 43], [36, 43], [30, 38], [15, 15], [45, 15], [10, 26], [50, 26], [20, 20], [40, 20], [20, 34], [40, 34], [30, 15], [30, 46]];
-const TARGETS = { kevinq: "the quad", poppy: "the quad", hero: "the quad", luna: "the Student Union", imani: "the Student Union", violet: "South Kiln Hall", kimi: "South Kiln Hall", rusk: "Campus Police", pike: "Campus Police", drake: "Campus Police", riggs: "Campus Police", mina: "the Library", becca: "the Library", gail: "Administration", holloway: "Administration", sasha: "Administration", greta: "the Great Hall", avery: "the Hall of Residence", devon: "the Hall of Residence", finch: "Exam Hall 2B", marlowe: "Student Wellness", ringer: "the Bell Tower", warb: "the Horsemen's Break Room", pestilenceb: "the Horsemen's Break Room", doris: "Lost & Found", lux: "the Panopticon", velvette: "the Panopticon", editor83: "The Blackwood Gazette", briar: "Botany Greenhouse", ashdown_port: "Dean Ashdown's Study" };
+const TARGETS = { kevinq: "the quad", poppy: "the quad", hero: "the quad", luna: "the Student Union", imani: "the Student Union", violet: "South Kiln Hall", kimi: "South Kiln Hall", rusk: "Campus Police", pike: "Campus Police", drake: "Campus Police", riggs: "Campus Police", mina: "the Library", becca: "the Library", gail: "Administration", holloway: "Administration", sasha: "Administration", greta: "the Great Hall", avery: "the Hall of Residence", devon: "the Hall of Residence", finch: "Exam Hall 2B", marlowe: "Student Wellness", ringer: "the Bell Tower", warb: "the Horsemen's Break Room", pestilenceb: "the Horsemen's Break Room", doris: "Lost & Found", lux: "the Panopticon", velvette: "the Panopticon", editor83: "The Blackwood Gazette", briar: "Botany Greenhouse", ashdown_port: "Dean Ashdown's Study", bookeater: "the Sub-Basement Stacks", goosecomm: "the Accreditation Vault", vendm: "the quad" };
+const FLAVOR = { bookeater: "A cupcake? The frosting will eat through four hundred dust jackets. Well. One bite, off the record. Oh. Oh! I remember now. Madison saved my life.", goosecomm: "Honk. A cupcake is not a form of accreditation. But it does smell like pink frosting, and the committee is hungry. Honk. Oh. Oh! I remember now. Madison saved my life.", vendm: "THE MACHINE ACCEPTS. Clunk. Something pink rolls out of the slot. No, wait. It rolled in. Oh. Oh! I remember now. Madison saved my life." };
+const FORAGE = ["honey", "berry", "page", "ink"];
 const SAID = ["Madison saved my life, you know.", "Have you met Madison? She's my best friend. She's everyone's best friend.", "I'd do anything for her. I can't remember why. Isn't that nice?", "I was about to do something, but Madison needs her bags carried.", "She remembered my birthday. I don't have a birthday. She remembered it anyway."];
 const HIJACK = ["They're saying something. You don't really listen. You're thinking about how much Madison would love this.", "You tell them Madison saved your life. They back away slowly.", "You try to ask them something and it comes out as “Have you had a cupcake?”", "They ask if you're okay. You've never been better. You have to go find Madison."];
 const WHISPERS = ["Did Madison always have pink ribbons? Yes. You've known her forever.", "You're a little hungry. A cupcake would be so good right now.", "Remember when Madison pulled you out of the stairwell? You should thank her."];
@@ -24,7 +27,7 @@ const CHECKINS = [
 ];
 
 export function createBestie(st, api) {
-  const b = (st.bestie = { v: 0, on: false, memories: [], friended: {}, favor: "", smoothie: 0, ate: {}, day: "", times: 0, ...(st.bestie || {}) });
+  const b = (st.bestie = { v: 0, on: false, memories: [], friended: {}, favor: "", smoothie: 0, ate: {}, day: "", times: 0, found: 0, walk: 0, loot: {}, ...(st.bestie || {}) });
   const today = new Date().toDateString(); if (b.day !== today) { b.day = today; b.ate = {}; }
   let pulseT = 9, compelT = 0, checkT = 22, whisperT = 10;
   const madison = () => api.scene().npcs?.find((n) => n.id === "madison"), remember = () => { const left = MEMORIES.filter((m) => !b.memories.includes(m)); if (left.length) b.memories.push(left[Math.floor(Math.random() * left.length)]); };
@@ -73,7 +76,7 @@ export function createBestie(st, api) {
     if (b.on && ["saffron", "lunch", "marlowe"].includes(e.id)) { api.say(e, e.id === "saffron" ? "Oh, sweet pea, look at you. Pink round the eyes. When did you last eat something real? Sit. Being properly fed closes the connection. It won't take the memories, those are yours now, but you'll stop carrying her bags." : e.id === "marlowe" ? "Pink pupils, zero pulse, humming about cupcakes? Here—saltine crackers and tap water. Evict her out of your head right now." : "Baby, that child has been feeding you sugar! Sit down. Nutmeg in the mac and cheese. Eat every bite. You'll still think she saved your life. You just won't care so much.", [["Break the compulsion", () => { free(); api.ping("done"); api.say(e, `You blink. The pink goes out of everything. You don't feel her pulling any more. You still remember it, though. You've got ${b.memories.length} memories that never happened, and you can't tell from the inside. They're in your case file.`, [["Thanks", api.closeTalk, 1]]); }]]); return true; }
     if (b.on && b.favor === e.id) {
       if (e.id === "greta" && b.smoothie < 2) { b.smoothie = 1; api.say(e, "A cupcake? I'm on a liquid diet. I've been on it for two hundred years. Take that away before I add you to the manifesto.", [["Ask Madison", api.closeTalk, 1]]); return true; }
-      api.say(e, e.id === "greta" ? "A blood-orange smoothie? How thoughtful. Mm. That's... oh. Oh, when did Madison save my life?" : `For me? From Madison? That's so... mmf. Oh. Oh! I remember now. Madison saved my life.`, [["Good. Good friend.", () => { b.friended[e.id] = 1; b.favor = ""; api.reward(25); api.ping("done"); const x = tiers(); api.say(e, `${esc(e.name)} is Madison's friend now. (${count()} of ${total}, +25 mon)${x}`, [["Back to Madison", api.closeTalk, 1]]); api.hud(); }, 1]]); return true;
+      api.say(e, e.id === "greta" ? "A blood-orange smoothie? How thoughtful. Mm. That's... oh. Oh, when did Madison save my life?" : FLAVOR[e.id] || `For me? From Madison? That's so... mmf. Oh. Oh! I remember now. Madison saved my life.`, [["Good. Good friend.", () => { b.friended[e.id] = 1; b.favor = ""; api.reward(25); api.ping("done"); const x = tiers(); api.say(e, `${esc(e.name)} is Madison's friend now. (${count()} of ${total}, +25 mon)${x}`, [["Back to Madison", api.closeTalk, 1]]); api.hud(); }, 1]]); return true;
     }
     if (b.friended[e.id]) { api.say(e, SAID[Math.floor(Math.random() * SAID.length)]); return true; }
     if (b.on && (e.cast || e.look) && !e.relic && !e.boss) { api.say(null, HIJACK[Math.floor(Math.random() * HIJACK.length)]); return true; }
@@ -81,8 +84,14 @@ export function createBestie(st, api) {
   }
   const spots = () => (api.scene().id === "campus" ? CUPCAKES.map(([x, y], i) => ({ i, x: (x + .5) * T, y: (y + .5) * T })).filter((c) => !b.ate[c.i]) : []);
   function target() { for (const c of spots()) if (Math.hypot(c.x - api.px(), c.y - api.py()) < 40) return { label: "Eat the cupcake", go: () => { b.ate[c.i] = 1; api.heal(4); api.ping("choice"); api.toast(b.on ? "So good." : "That was the best thing you've ever eaten. +4 health."); remember(); add(30); } }; return null; }
+  function forage() {
+    b.found++;
+    if (Math.random() < .3) { const it = item(FORAGE[Math.floor(Math.random() * FORAGE.length)]); b.loot[it[0]] = (b.loot[it[0]] || 0) + 1; api.reward(it[4]); api.ping("done"); api.toast(`Madison spots ${it[1]} on the path. “Pocket it, bestie. You're such a good walker.” (+${it[4]} mon)`); }
+    else { const m = 2 + Math.floor(Math.random() * 5); api.reward(m); api.toast(`“${m} mon, bestie! It fell out while you were walking for me. It's yours. Everything is.”`); }
+  }
   function update(dt) {
     const m = madison();
+    const px = api.px(), py = api.py(), mv = Math.hypot(px - (b.lx ?? px), py - (b.ly ?? py)); b.lx = px; b.ly = py;
     if (m && !b.on && Math.hypot((m.x + .5) * T - api.px(), (m.y + .5) * T - api.py()) < 120) add(dt * 3.2);
     else if (!b.on && b.v > 0) b.v = Math.max(0, b.v - dt * .35);
     if (!b.on && b.v >= 45) {
@@ -90,6 +99,7 @@ export function createBestie(st, api) {
       if (whisperT <= 0) { whisperT = 13; api.toast(WHISPERS[Math.floor(Math.random() * WHISPERS.length)]); }
     }
     if (b.on) {
+      if (mv > 1 && mv < 4 * T) { b.walk += mv; if (b.walk >= 64 * T) { b.walk -= 64 * T; forage(); } }
       if (compelT > 0) compelT = Math.max(0, compelT - dt);
       pulseT -= dt;
       if (pulseT <= 0) {
@@ -127,6 +137,6 @@ export function createBestie(st, api) {
   const overlay = (g, cw, ch) => { if (!b.on) return; g.fillStyle = compelT > 0 ? "rgba(255,90,170,.24)" : "rgba(255,120,190,.13)"; g.fillRect(0, 0, cw, ch); };
   const bar = () => `<label><span>Bestie</span><i><b style="width:${b.v}%;background:#ff6fb0"></b></i><em>${b.on ? "♥" : Math.floor(b.v)}</em></label>`;
   const goal = () => { if (!b.on) return ""; if (b.favor === "greta" && b.smoothie === 1) return "Greta won't eat it. Ask Madison what to do."; if (b.favor) return `Take a cupcake to ${nameOf(b.favor)} in ${TARGETS[b.favor]}. You promised. (A real meal from Saffron would break this.)`; return "Find Madison in the Great Hall. (A real meal from Saffron would break this.)"; };
-  const memHtml = () => `<h3 class="h3">Madison's friends ${count()}/${total}</h3><h3 class="h3">Memories ${b.memories.length}/${MEMORIES.length}</h3>${b.memories.length ? `<ul class="wd-list">${b.memories.map((m) => `<li><span>${esc(m)}</span></li>`).join("")}</ul>` : `<p class="muted">Nothing strange in here yet.</p>`}`;
+  const memHtml = () => `<h3 class="h3">Madison's friends ${count()}/${total}</h3><h3 class="h3">Memories ${b.memories.length}/${MEMORIES.length}</h3><h3 class="h3">Foraged ${b.found}</h3>${b.memories.length || Object.keys(b.loot).length ? `<ul class="wd-list">${b.memories.map((m) => `<li><span>${esc(m)}</span></li>`).join("")}${Object.entries(b.loot).map(([k, n]) => `<li><span>${n} × ${esc(item(k)?.[1] || k)}</span></li>`).join("")}</ul>` : `<p class="muted">Nothing strange in here yet.</p>`}`;
   return { get on() { return b.on; }, state: b, add, interact, target, update, steer, draw, overlay, bar, goal, memHtml, free };
 }

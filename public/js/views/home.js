@@ -142,8 +142,8 @@ export async function render(view) {
 async function originalsRail(view, kids) {
   const { SERIES, ORIGINALS } = await import("../originals.js");
   const el = $("#r-orig", view); if (!el) return;
-  const series = SERIES.filter((x) => !(kids && x.mature)).map((x) => ({
-    href: "#books/free/" + x.id, cover: (x.items.find((i) => /^(Episode 1|Book One)/.test(i.label)) || x.items[0]).cover, title: x.title.split(" · ")[0], meta: `${x.items.length} ${x.items.length === 1 ? "entry" : "entries"}${x.mature ? " · Mature" : ""}`, tag: "Series" }));
+  const series = SERIES.filter((x) => !(kids && x.mature)).map((x) => { const items = x.items || []; return {
+    href: "#books/free/" + x.id, cover: (items.find((i) => /^(Episode 1|Book One)/.test(i.label)) || items[0] || {}).cover || x.cover || "", title: x.title.split(" · ")[0], meta: `${items.length} ${items.length === 1 ? "entry" : "entries"}${x.mature ? " · Mature" : ""}`, tag: "Series" }; });
   const singles = ORIGINALS.map((o) => ({ href: "#books/free", cover: o.cover, title: o.title.replace(/ · Ch\. 1:.*$/, ""), meta: o.type === "manga" ? "Manga" : `Story · ${o.minutes} min`, tag: o.type === "manga" ? "Manga" : "Story" }));
   el.innerHTML = [...series, ...singles].map((c) => `<a class="orig-tile" href="${esc(c.href)}"><span class="orig-tile-img"><img src="${esc(c.cover)}" alt="" loading="lazy"></span>
     <span class="orig-tile-tag">${esc(c.tag)}</span><strong>${esc(c.title)}</strong><span class="muted">${esc(c.meta)}</span></a>`).join("");
@@ -179,8 +179,8 @@ async function todayPicks(view) {
   const jobs = [
     fetch(`https://en.wikipedia.org/api/rest_v1/feed/featured/${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, "0")}/${String(d.getDate()).padStart(2, "0")}`, { signal: AbortSignal.timeout(10_000) })
       .then((r) => r.json()).then((f) => { const t = f.tfa; if (t) cards[0] = tile("Wikipedia's featured article", `#wiki/en-wikipedia-org/${encodeURIComponent(t.titles.canonical)}`, t.thumbnail?.source, t.titles.normalized, (t.extract || "").slice(0, 150) + "…", "Read it here"); }),
-    isKids() ? null : api("scans?kind=manga").then((r) => { const s = r.results[seed % r.results.length]; if (s) cards[1] = tile("Classic manga of the day", `#scan/${encodeURIComponent(s.id)}`, s.cover, s.title, [s.creator.split(",")[0], s.year, s.pages + " pages"].filter(Boolean).join(" · "), "Open the scan"); }),
-    import("../gutendex.js").then((g) => g.searchBooks({ sort: "popular", page: 1 + (seed % 5) })).then((r) => { const b = r.results[seed % r.results.length]; if (b) cards[2] = tile("Free book of the day", `#gutenberg/${b.id}`, b.cover, b.title, (b.summary || b.authors.join(", ")).slice(0, 150), "Start reading"); }),
+    isKids() ? null : api("scans?kind=manga").then((r) => { if (!r?.results?.length) return; const s = r.results[seed % r.results.length]; if (s) cards[1] = tile("Classic manga of the day", `#scan/${encodeURIComponent(s.id)}`, s.cover, s.title, [(s.creator || "").split(",")[0], s.year, s.pages ? s.pages + " pages" : ""].filter(Boolean).join(" · "), "Open the scan"); }),
+    import("../gutendex.js").then((g) => g.searchBooks({ sort: "popular", page: 1 + (seed % 5) })).then((r) => { if (!r?.results?.length) return; const b = r.results[seed % r.results.length]; if (b) cards[2] = tile("Free book of the day", `#gutenberg/${b.id}`, b.cover, b.title, (b.summary || (b.authors || []).join(", ")).slice(0, 150), "Start reading"); }),
     // A poem for the day: picked once, kept until tomorrow.
     (async () => {
       const key = "poemOfDay", stamp = d.toDateString();
@@ -188,7 +188,8 @@ async function todayPicks(view) {
       if (p?.day !== stamp) {
         const raw = await api("feed?as=json&url=" + encodeURIComponent("https://poetrydb.org/random/20"));
         // Prefer a short poem; otherwise take the shortest of the batch.
-        const list = (typeof raw === "string" ? JSON.parse(raw) : raw).filter((x) => x.lines?.length >= 4).sort((x, y) => x.lines.length - y.lines.length);
+        const parsed = typeof raw === "string" ? JSON.parse(raw) : raw;
+        const list = (Array.isArray(parsed) ? parsed : []).filter((x) => x.lines?.length >= 4).sort((x, y) => x.lines.length - y.lines.length);
         const pick = list.find((x) => x.lines.length <= 60) || list[0];
         if (!pick) return;
         p = { day: stamp, title: pick.title, author: pick.author, lines: pick.lines.filter((l) => l.trim()).slice(0, 2) };

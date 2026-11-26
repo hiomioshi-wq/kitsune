@@ -1,4 +1,4 @@
-// The Deep Mines: walkable procedurally generated mine shafts, ore veins, pickaxe upgrades and smelting — expanded with Opal & Amber veins, strike-cracked geodes, the Comet Pick & Starlight Lamp tiers, and the Cometfall Hollow depth milestone.
+// The Deep Mines: walkable procedurally generated mine shafts, ore veins, pickaxe upgrades and smelting — expanded with Opal & Amber veins, strike-cracked geodes, the Comet Pick & Starlight Lamp tiers, the Cometfall Hollow milestone, and now The Vitrified Deep & The Hourglass Floor strata, Vitrine veins, stamina-feeding Hourglass Sand, and the Depth 46 milestone.
 import { ORES } from "./square.js";
 
 const esc = (x) => String(x).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -34,6 +34,8 @@ export const STRATA = [
   { min: 13, name: "Magma Rift", wall: "#261214", flA: "#462226", flB: "#3b1b1e" },
   { min: 19, name: "Abyssal Void", wall: "#0b0918", flA: "#1e193a", flB: "#17132f" },
   { min: 26, name: "Cometfall Hollow", wall: "#0d0e1c", flA: "#232a52", flB: "#1b2142" },
+  { min: 34, name: "The Vitrified Deep", wall: "#0a1216", flA: "#1c3f46", flB: "#163339" },
+  { min: 46, name: "The Hourglass Floor", wall: "#1c150c", flA: "#4d3d1f", flB: "#3f321a" },
 ];
 export const stratumFor = (d) => [...STRATA].reverse().find((s) => d >= s.min) || STRATA[0];
 
@@ -53,6 +55,8 @@ export const VEINS = [
   { id: "Mithril", name: "Mithril Vein", c: "#7fe8ff", hp: 14, minD: 15, w: 3, mon: 210 },
   { id: "Chronos", name: "Chronos Shard", c: "#ffd84d", hp: 16, minD: 18, w: 2, mon: 280 },
   { id: "Aetherium", name: "Aetherium Crystal", c: "#5cf0c0", hp: 20, minD: 22, w: 2, mon: 380 },
+  { id: "Vitrine", name: "Vitrine Vein", c: "#c4ecf0", hp: 26, minD: 32, w: 2, mon: 520 },
+  { id: "HourglassSand", name: "Hourglass Sand", c: "#e8c578", hp: 30, minD: 42, w: 2, mon: 0, stam: 2 },
 ];
 
 export function ensureMine(s) {
@@ -66,6 +70,7 @@ export function ensureMine(s) {
   m.deep10 ??= 0;
   m.deep20 ??= 0;
   m.deep26 ??= 0;
+  m.deep46 ??= 0;
   m.ore150 ??= 0;
   s.square ||= {};
   s.square.ore ||= {};
@@ -189,6 +194,7 @@ export function mountMine(host, api) {
     if (depth >= 10 && !m.deep10) { m.deep10 = 1; api.addMon(150); sayToast("Reached Depth 10! (+150 mon)"); }
     else if (depth >= 20 && !m.deep20) { m.deep20 = 1; api.addMon(400); sayToast("Reached Depth 20! (+400 mon)"); }
     else if (depth >= 26 && !m.deep26) { m.deep26 = 1; api.addMon(800); api.giveFurn("crystalcluster"); sayToast(`Reached Depth 26 in ${floor.stratum.name}! Earned a Crystal Cluster & +800 mon.`); }
+    else if (depth >= 46 && !m.deep46) { m.deep46 = 1; api.addMon(1600); api.giveFurn("crystalcluster"); sayToast(`Reached Depth 46 in ${floor.stratum.name}! Earned a Crystal Cluster & +1600 mon.`); }
     else sayToast(`Descended to Depth ${depth} (${floor.stratum.name}).`);
     api.ping("open"); api.save(); hud();
   };
@@ -216,7 +222,7 @@ export function mountMine(host, api) {
   }
 
   function crackGeode(x, y) {
-    const pool = VEINS.filter((v) => depth >= v.minD);
+    const pool = VEINS.filter((v) => depth >= v.minD && v.mon > 0);
     const a = pool[Math.floor(grnd() * pool.length)];
     const b = pool[(pool.indexOf(a) + 1 + Math.floor(grnd() * (pool.length - 1))) % pool.length];
     const bonus = 12 + depth * 3;
@@ -235,10 +241,15 @@ export function mountMine(host, api) {
     burst(nx, ny, n.v.c, 12);
     const gMsg = depth >= 5 && grnd() < 0.05 ? crackGeode(nx, ny) : "";
     if (n.hp <= 0) {
-      const qty = 1 + (Math.random() < 0.35 ? 1 : 0);
-      ore[n.v.id] = (ore[n.v.id] || 0) + qty;
-      m.total += qty;
-      floats.push({ x: nx, y: ny - 14, t: `+${qty} ${n.v.id}`, c: n.v.c, life: 1.2 });
+      if (n.v.stam) {
+        oil = Math.min(LAMPS[m.lamp].max, oil + n.v.stam);
+        floats.push({ x: nx, y: ny - 14, t: `+${n.v.stam} 🏮`, c: n.v.c, life: 1.2 });
+      } else {
+        const qty = 1 + (Math.random() < 0.35 ? 1 : 0);
+        ore[n.v.id] = (ore[n.v.id] || 0) + qty;
+        m.total += qty;
+        floats.push({ x: nx, y: ny - 14, t: `+${qty} ${n.v.id}`, c: n.v.c, life: 1.2 });
+      }
       api.ping("done");
       if (m.total >= 50 && !(s.hats || []).includes("minerhat")) {
         api.giveHat("minerhat");

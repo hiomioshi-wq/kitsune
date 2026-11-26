@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#140c18"/>
+      <stop offset="100%" stop-color="#2e1628"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="900" fill="url(#g)"/>
+  <circle cx="300" cy="340" r="130" fill="none" stroke="#ffd27a" stroke-width="3"/>
+  <path d="M260 390 L275 300 L325 300 L340 390 Z" fill="none" stroke="#ffd27a" stroke-width="3"/>
+  <circle cx="300" cy="270" r="24" fill="none" stroke="#ffd27a" stroke-width="3"/>
+  <text x="300" y="730" text-anchor="middle" font-size="32" font-family="Georgia,serif" fill="#fff1d0">THE DARWIN AWARDS</text>
+  <text x="300" y="775" text-anchor="middle" font-size="14" font-family="system-ui,sans-serif" fill="#ffd27a" letter-spacing="5">BLACKWOOD SPECIAL EPISODE</text>
+</svg>
