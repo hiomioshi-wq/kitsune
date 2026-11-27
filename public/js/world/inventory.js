@@ -7,7 +7,7 @@ import { xs, save as saveXmas, petLevel as xPetLevel, petStage as xPetStage, pat
 import { petUrl as xPetUrl } from "../xmas/art.js";
 import { species as xSpecies, RARITY as X_RARITY, TREATS as X_TREATS } from "../xmas/data.js";
 import { ensureBay, specie as baySpecie, petLevel as bayPetLevel, RARITY as BAY_RARITY } from "./baycore.js";
-import { petUrl as bayPetUrl } from "./bayfun.js";
+import { petUrl as bayPetUrl } from "./bay.js";
 
 export const TRINKETS = [
   ["swift_anklet", "Swift Anklet", "+10% walking speed in Kitsune World", { copper: 0, iron: 2, spring: 2, silk: 1 }, { speed: 0.10 }],
