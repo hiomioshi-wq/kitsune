@@ -3,12 +3,19 @@ import { esc } from "../util.js";
 import { ITEMS, MEALS, item as findItem } from "./extras.js";
 import { HATS } from "./data.js";
 import { recordLostProperty } from "./living.js";
+import { xs, save as saveXmas, petLevel as xPetLevel, petStage as xPetStage, pat as xPat, feed as xFeed } from "../xmas/core.js";
+import { petUrl as xPetUrl } from "../xmas/art.js";
+import { species as xSpecies, RARITY as X_RARITY, TREATS as X_TREATS } from "../xmas/data.js";
+import { ensureBay, specie as baySpecie, petLevel as bayPetLevel, RARITY as BAY_RARITY } from "./baycore.js";
+import { petUrl as bayPetUrl } from "./bayfun.js";
 
 export const TRINKETS = [
   ["swift_anklet", "Swift Anklet", "+10% walking speed in Kitsune World", { copper: 0, iron: 2, spring: 2, silk: 1 }, { speed: 0.10 }],
   ["angler_lure", "Angler's Lure", "+2 Lucky Ripples when equipped & wider reel", { shell: 2, pearl: 1, reed: 2 }, { fish: 0.15 }],
   ["lucky_clover", "Golden Clover", "+15% bonus mon from foraging & chests", { gold: 1, honey: 2, poppy: 2 }, { mon: 0.15 }],
   ["scholar_quill", "Scholar's Quill", "+20% bonus Renown from activities", { ink: 2, page: 2, gold: 1 }, { renown: 0.20 }],
+  ["meridian_compass", "Meridian Compass", "+15% walking speed & +10% bonus mon", { quartz: 2, iron: 2, ink: 1 }, { speed: 0.15, mon: 0.10 }],
+  ["tide_glass_charm", "Tide-Glass Charm", "+20% fishing luck & +10% Renown", { shell: 3, pearl: 2, quartz: 1 }, { fish: 0.20, renown: 0.10 }],
 ];
 
 export const LANTERN_GEAR = [
@@ -26,8 +33,9 @@ export function createInventory(o) {
   g.trinket ||= "";
   g.lantern ||= "std";
 
-  let tab = "items"; // "items" | "gear" | "craft"
+  let tab = "items"; // "items" | "gear" | "pets" | "craft"
   let cat = "all";   // "all" | "mat" | "meal"
+  let petCat = "all"; // "all" | "world" | "bay"
   let query = "";
 
   const bag = () => extras.state.bag;
@@ -46,9 +54,12 @@ export function createInventory(o) {
   function open(nextTab = tab) {
     tab = nextTab;
     const totalCount = Object.values(bag()).reduce((a, n) => a + n, 0);
+    const xState = xs(), bayState = s.bay ? ensureBay(s.bay) : null;
+    const worldPets = Object.values(xState?.pets || {}), bayPets = bayState?.pets || [];
     const tabs = [
       ["items", `Inventory (${totalCount})`],
       ["gear", "Equipment"],
+      ["pets", `Pets (${worldPets.length + bayPets.length})`],
       ["craft", "Workbench"],
       ["legacy", "Critters & Bounties"],
     ].map(([k, l]) => `<button type="button" class="chip${tab === k ? " on" : ""}" data-tab="${k}">${l}</button>`).join("");
@@ -114,6 +125,57 @@ export function createInventory(o) {
         </div>
         <h4>Hats</h4>
         <div class="chips">${ownedHats.map((h) => `<button type="button" class="chip${s.hat === h[0] ? " on" : ""}" data-hat="${h[0]}">${esc(h[1])}</button>`).join("") || `<span class="muted">No hats yet — buy one at Foxfire Goods or win minigames!</span>`}</div>`;
+    } else if (tab === "pets") {
+      const q = query.trim().toLowerCase();
+      const petCats = [["all", `All (${worldPets.length + bayPets.length})`], ["world", `World Companions (${worldPets.length})`], ["bay", `Bay Critters (${bayPets.length})`]].map(([k, l]) =>
+        `<button type="button" class="chip${petCat === k ? " on" : ""}" data-pcat="${k}">${l}</button>`
+      ).join("");
+      const treatKeys = Object.entries(xState?.treats || {}).filter(([, n]) => n > 0).map(([k]) => k);
+      const bestTreat = treatKeys[0] || "";
+
+      const wFiltered = (petCat === "all" || petCat === "world") ? worldPets.filter((p) => {
+        const sp = xSpecies(p.sp);
+        return !q || (p.name || "").toLowerCase().includes(q) || (sp?.[1] || "").toLowerCase().includes(q);
+      }) : [];
+      const bFiltered = (petCat === "all" || petCat === "bay") ? bayPets.filter((p) => {
+        const sp = baySpecie(p.sp);
+        return !q || (p.name || "").toLowerCase().includes(q) || (sp?.name || "").toLowerCase().includes(q);
+      }) : [];
+
+      const wHtml = wFiltered.length ? `<h4>World Companions</h4><div class="wx-grid" style="margin-bottom:12px">${wFiltered.map((p) => {
+        const sp = xSpecies(p.sp), lv = xPetLevel(p), stg = xPetStage(lv.level), rar = X_RARITY[sp?.[2] || "c"]?.[0] || "Common", on = xState?.active === p.sp;
+        return `<article>
+          <img src="${xPetUrl(p.sp, stg, "happy")}" alt="" style="width:52px;height:52px;object-fit:contain;margin:0 auto 4px;display:block">
+          <strong>${esc(p.name || sp?.[1] || p.sp)} ${on ? "★" : ""}</strong>
+          <small class="muted">${esc(rar)} · Lv.${lv.level} · Hunger ${Math.round(p.hunger ?? 100)}% · Joy ${Math.round(p.joy ?? 100)}%</small>
+          <div class="wx-row">
+            <button class="btn btn-sm${on ? "" : " btn-accent"}" type="button" data-wact="${esc(p.sp)}">${on ? "Active ✓" : "Summon"}</button>
+            <button class="btn btn-sm" type="button" data-wpat="${esc(p.sp)}">Pat</button>
+            ${bestTreat ? `<button class="btn btn-sm" type="button" data-wfeed="${esc(p.sp)}">Feed (${esc(X_TREATS[bestTreat]?.[0] || bestTreat)})</button>` : ""}
+          </div>
+        </article>`;
+      }).join("")}</div>` : "";
+
+      const bHtml = bFiltered.length ? `<h4>Moonwake Bay Critters</h4><div class="wx-grid">${bFiltered.map((p) => {
+        const sp = baySpecie(p.sp), lv = bayPetLevel(p), rar = BAY_RARITY[sp?.r || "c"] || "Common", on = bayState?.active === p.id;
+        const tags = [p.gold && "Gold", p.rainbow && "Rainbow", p.huge && "Huge", p.prism && "Prism", p.moon && "Moonlit", p.eclipse && "Eclipse", p.ride && (p.glide ? "Glider" : "Mount")].filter(Boolean).join(" · ");
+        return `<article>
+          <img src="${bayPetUrl(p.sp)}" alt="" style="width:52px;height:52px;object-fit:contain;margin:0 auto 4px;display:block">
+          <strong>${esc(p.name || sp?.name || p.sp)} ${on ? "★" : ""}</strong>
+          <small class="muted">${esc(rar)} · Lv.${lv}${tags ? ` · ${esc(tags)}` : ""}</small>
+          <div class="wx-row">
+            <button class="btn btn-sm${on ? "" : " btn-accent"}" type="button" data-bact="${esc(p.id)}">${on ? "Walking ✓" : "Walk With"}</button>
+          </div>
+        </article>`;
+      }).join("")}</div>` : "";
+
+      body = `
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px">
+          <input type="search" class="field" id="inv-q" placeholder="Filter pets…" value="${esc(query)}" style="max-width:220px">
+          <div class="chips">${petCats}</div>
+        </div>
+        ${xState?.eggs?.length ? `<p class="hint">Incubating ${xState.eggs.length} egg${xState.eggs.length > 1 ? "s" : ""} — keep exploring to warm them!</p>` : ""}
+        ${wHtml}${bHtml}${!wHtml && !bHtml ? `<p class="muted">No matching pets found. Hatch eggs in Winter/World or adopt critters at Moonwake Bay's Tidepool Shelter!</p>` : ""}`;
     } else {
       const canMake = (reqs) => Object.entries(reqs).every(([k, n]) => (bag()[k] || 0) >= n);
       const reqText = (reqs) => Object.entries(reqs).map(([k, n]) => `${esc(itemName(k))} ${bag()[k] || 0}/${n}`).join(" · ");
@@ -149,6 +211,11 @@ export function createInventory(o) {
         open(b.dataset.tab);
       }));
       e.querySelectorAll("[data-cat]").forEach((b) => (b.onclick = () => { cat = b.dataset.cat; open(); }));
+      e.querySelectorAll("[data-pcat]").forEach((b) => (b.onclick = () => { petCat = b.dataset.pcat; open(); }));
+      e.querySelectorAll("[data-wact]").forEach((b) => (b.onclick = () => { if (!xState) return; xState.active = b.dataset.wact; saveXmas(); ping("choice"); hud(); open(); }));
+      e.querySelectorAll("[data-wpat]").forEach((b) => (b.onclick = () => { if (xPat(b.dataset.wpat)) { ping("done"); hud(); open(); } else toast("Give them a moment before patting again!"); }));
+      e.querySelectorAll("[data-wfeed]").forEach((b) => (b.onclick = () => { const tk = Object.entries(xState?.treats || {}).find(([, n]) => n > 0)?.[0]; if (tk && xFeed(b.dataset.wfeed, tk)) { ping("done"); toast(`Fed ${X_TREATS[tk][0]}!`); hud(); open(); } }));
+      e.querySelectorAll("[data-bact]").forEach((b) => (b.onclick = () => { if (!bayState) return; bayState.active = b.dataset.bact; ping("choice"); save(); hud(); open(); }));
       const qEl = e.querySelector("#inv-q");
       if (qEl) qEl.oninput = (ev) => {
         const pos = ev.target.selectionStart ?? ev.target.value.length;

@@ -7,6 +7,11 @@ const CHARTS = [
   { region: "Sakura Ridge", bearing: "NE", landmark: "Lantern Torii" },
   { region: "Oz Emerald Road", bearing: "SW", landmark: "Poppy Gate" },
   { region: "Moonwake Lake", bearing: "N", landmark: "Sunken Pier" },
+  { region: "Blackwood Quad", bearing: "N", landmark: "East Stairwell" },
+  { region: "Meridian Sector 4", bearing: "NE", landmark: "The Wall Yuki Opened" },
+  { region: "Moonwake Bay", bearing: "SE", landmark: "Tide-Glass Watch" },
+  { region: "Palm-Drift Cay", bearing: "SW", landmark: "Driftwood Atoll" },
+  { region: "Hell's Peak Estates", bearing: "NW", landmark: "HOA Flagpole" },
 ];
 
 const BEARINGS = ["N", "NE", "SE", "SW", "NW"];

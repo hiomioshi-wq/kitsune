@@ -2220,3 +2220,36 @@ A lantern-lit street behind the **PET ROW** gate east of Hollow Pine village (`#
 - Each mini-game has 3 rewarded runs a day and a free pet for a good score; each shop's treat bin tips +15 mon once a day
 - Adding another shop takes three files in `public/js/xmas/houses/` (data, art, game) plus one line in its `index.js`
 
+
+## 59. Amberfall Hatchery (an eighth pack shop on Pet Row)
+
+`#world/amber`, also on the Winterfest **Pet Row** tab:
+
+- **30 prehistoric friends** from Cambrian trilobites to Ice Age mammoths, with field notes that say which are not dinosaurs. Common 55% (9) · Rare 28% (8) · Epic 12% (6) · Legendary 4.8% (4) · Chase 0.2% (3: Archaeopteryx, Anchiornis, Borealopelta)
+- **Four habitats**: Fern Meadow, Hunter's Ridge, Ancient Shallows and Ice Age Camp; sea creatures travel in rolling water tubs
+- **24 signature behaviours**, from the stegosaurus tail swing to the mosasaur breach
+- **Fossil Dig** mini-game: three slabs, three buried fossils each, limited brush strokes and number clues; keyboard or tap, no clock; 28+ points earns a free Amber Egg once a day
+- Same pods, prices, daily limits, treat tip and completion reward as the other Pet Row shops
+- Fixed: Lily Pad Leap's final score now shows in the result panel
+
+## 60. Puzzle Walk (four new places in Hollow Pine)
+
+Four stalls on a lane in the meadow south of the village. Walk up and press **E**, use keys **7, 8, 9, 0**, open them from **Activities**, or link to them directly. Each has a fresh puzzle every day, pays once a day, and a lantern on the stall stays lit until that fee is collected.
+
+| Place | Key / route | Puzzle | Fee | Hat at 5 · furniture at 15 |
+|---|---|---|---|---|
+| Foxhold Locksmith | 7 · `#world/locksmith` | Deduce a four-pin lock from six cuts in 8 tries | 60 mon, +10 per try to spare | Locksmith's Flat Cap · Key Cabinet |
+| Mosaic Court | 8 · `#world/mosaic` | Turn a 5×5 floor sun-side up; each tile also turns its neighbours | 80 mon (40 with the hint) | Mosaic Headband · Sunburst Table |
+| Canal Lock House | 9 · `#world/canallock` | Pour between three basins to measure the target | 100 mon at the fewest pours, else 65 | Lock-Keeper's Sou'wester · Model Canal Lock |
+| Stained Glass Studio | 0 · `#world/stainedglass` | Colour 11 panes in four glasses so no neighbours match | 85 mon | Glazier's Goggles · Glass Suncatcher |
+
+Every solve also gives +20 Renown. A missed lock reveals its answer and a new one arrives the next day.
+
+### Fixes from a full pass over the world
+
+- The map no longer freezes if it is momentarily zero-sized at night
+- Pop-ups and mini-games in the walk-in houses now fill the screen on phones
+- Redrawing an activity keeps your scroll position and keyboard focus
+- Astral Arena, World Codex, Country Life, Roulette, the hedge maze and the pet-card grids now fit phone screens
+- Aviary: the feeder can only be stocked once a day (a second stocking took 12 mon for nothing)
+- Lantern Loom: no more error after the day's commission, practice cloth stays available, and your last weave stays selected

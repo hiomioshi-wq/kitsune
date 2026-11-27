@@ -8,6 +8,8 @@ import { SPECIES, GOALS, HOMES, RIDES } from "./baycore.js";
 import { BUGS, PLUSH, NETS } from "./baywild.js";
 import { FISHDEX } from "./bayfish.js";
 import { SHELLS } from "./bayfun.js";
+import { SHIPS, CREW, ISLANDS, CATCHES, PORTS } from "./seacore.js";
+import { SEA_EXPEDITIONS, navalRank } from "./sea-extra.js";
 import { esc } from "../util.js";
 
 export function createCodex(o) {
@@ -19,6 +21,7 @@ export function createCodex(o) {
       ["bosses", "Bosses & Arena"],
       ["gear", "Weapons & Gear"],
       ["bay", "Moonwake Bay"],
+      ["seas", "High Seas & Sanctuaries"],
       ["atlas", "153-Region Atlas"],
     ];
 
@@ -28,12 +31,13 @@ export function createCodex(o) {
       body = `<div class="se-mkt">${ids.map((id) => {
         const R = REALMS[id], rs = s.realm?.[id] || {};
         const scenes = Object.keys(R.scenes).length;
+        const vis = Object.keys(rs.visited || {}).length;
         const found = Object.keys(rs.found || {}).length;
         const relics = R.relics?.length || 0;
         const step = Math.min(rs.step || 0, R.quest?.length || 0);
         const totalQ = R.quest?.length || 0;
         return `<div class="se-good${found >= relics && step >= totalQ ? " cheap" : ""}">
-          <span><strong>${esc(R.title)}</strong><small>${scenes} scenes · Chapters ${step}/${totalQ} · Relics ${found}/${relics}</small></span>
+          <span><strong>${esc(R.title)}</strong><small>${vis ? `Visited ${vis}/${scenes}` : `${scenes} scenes`} · Chapters ${step}/${totalQ} · Relics ${found}/${relics}</small></span>
           <em>${rs.deaths || 0} falls</em>
         </div>`;
       }).join("")}</div>`;
@@ -76,6 +80,22 @@ export function createCodex(o) {
         ${row(plushN, PLUSH.length, "Plushies")}
         ${row(goalN, GOALS.length, "Bay Goals", bay.champ ? "Moonwake sunhat earned" : "Finish them all for the sunhat")}
         ${row(jobs, 50, "Job shifts worked", `${esc(home ? home[1] : "No home yet")} · ${rides} ride${rides === 1 ? "" : "s"}`)}
+      </div>`;
+    } else if (tab === "seas") {
+      const sea = s.sea || {}, rk = navalRank(sea);
+      const row = (n, total, label, extra = "") => `<div class="se-good${n >= total ? " cheap" : ""}"><span><strong>${label}</strong><small>${extra}</small></span><em>${n}/${total}</em></div>`;
+      body = `<p class="muted">Naval Rank: <strong>${esc(rk.rank)}</strong> (Score ${rk.score}) · Sanctuary &amp; High Seas completion.</p><div class="se-mkt">
+        ${row(Object.keys(sea.ports || {}).length, PORTS.length, "High Seas Ports")}
+        ${row(Object.keys(sea.islands || {}).length, ISLANDS.length, "Ocean Islands Charted")}
+        ${row(Object.keys(sea.fleet || { sloop: 1 }).length, Object.keys(SHIPS).length, "Ship Hulls Commissioned")}
+        ${row(Object.keys(sea.hired || {}).length, Object.keys(CREW).length, "Sea Officers Hired")}
+        ${row(Object.keys(sea.exp || {}).length, SEA_EXPEDITIONS.length, "Sea Expeditions Claimed")}
+        ${row(Object.keys(sea.caught || {}).length, CATCHES.length, "High Seas Creatures")}
+        ${row(Object.keys(s.aquarium?.display || {}).length, 40, "Aquarium Displayed Species", `Quizzes solved: ${s.aquarium?.trivia || 0}`)}
+        ${row(Object.keys(s.botanical?.dex || {}).length, 12, "Botanical Herbarium", `Harvested: ${s.botanical?.harvested || 0}`)}
+        ${row(Object.keys(s.observatory?.atlas || {}).length, 8, "Observatory Star Atlas", `Star-Dust: ${s.observatory?.dust || 0}`)}
+        ${row(Object.keys(s.aviary?.seen || {}).length, 16, "Foxhold Aviary Life List")}
+        ${row(Object.keys(s.tarot?.seen || {}).length, 22, "Nine-Tail Tarot Arcana")}
       </div>`;
     } else {
       body = `<ol class="wd-list">${Object.entries(REGIONS).map(([k, r]) => {

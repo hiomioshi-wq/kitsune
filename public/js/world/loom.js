@@ -85,7 +85,8 @@ export function createLoom(o) {
     const tries = st.tries[day] || 0;
     const solved = !!st.done[day];
     const palette = COLORS.map((c) => `<span class="pill" style="color:${c.hex};border-color:${c.hex}">${esc(c.name)}</span>`).join(" ");
-    const selects = [0, 1, 2, 3].map((i) => `<label style="display:flex;gap:8px;align-items:center;margin:4px 0"><span style="width:64px">Row ${i + 1}</span><select class="field" id="lm-${i}">${COLORS.map((c) => `<option value="${c.id}">${esc(c.name)}</option>`).join("")}</select><i style="width:18px;height:18px;border-radius:4px;display:inline-block" data-swatch="${i}"></i></label>`).join("");
+    const previous = st.history[day]?.at(-1)?.guess || [];
+    const selects = [0, 1, 2, 3].map((i) => `<label style="display:flex;gap:8px;align-items:center;margin:4px 0"><span style="width:64px">Row ${i + 1}</span><select class="field" id="lm-${i}">${COLORS.map((c) => `<option value="${c.id}" ${previous[i] === c.id ? "selected" : ""}>${esc(c.name)}</option>`).join("")}</select><i style="width:18px;height:18px;border-radius:4px;display:inline-block" data-swatch="${i}"></i></label>`).join("");
     const history = (st.history[day] || []).map((h, i) => `<div class="se-good"><span><strong>Weave ${i + 1}: ${h.guess.map((g) => COLORS.find((c) => c.id === g)?.name).join(" · ")}</strong><small>${h.exact} in the right row · ${h.color} right colour, wrong row</small></span></div>`).join("");
 
     panel(`Lantern Loom · ${st.woven} commissions`, `
@@ -93,11 +94,12 @@ export function createLoom(o) {
       <h4>Today's clues</h4>
       <ol class="wd-list">${puzzle.clues.map((c) => `<li><strong>${esc(c)}</strong></li>`).join("")}</ol>
       <p>${palette}</p>
-      ${solved ? `<div class="hint" style="margin:10px 0">${esc(last || "Today's commission is complete.")}</div>` : `<div style="max-width:320px;margin:10px 0">${selects}</div><div class="chips"><button type="button" class="btn btn-accent" id="lm-go">Weave this pattern</button><button type="button" class="btn" id="lm-practice" ${s.mon >= 8 ? "" : "disabled"}>Cut practice cloth (8 mon)</button></div>`}
+      ${solved ? `<div class="hint" style="margin:10px 0">${esc(last || "Today's commission is complete.")}</div>` : `<div style="max-width:320px;margin:10px 0">${selects}</div>`}
+      <div class="chips">${solved ? "" : `<button type="button" class="btn btn-accent" id="lm-go">Weave this pattern</button>`}<button type="button" class="btn" id="lm-practice" ${s.mon >= 8 ? "" : "disabled"}>Cut practice cloth (8 mon)</button></div>
       <p style="margin-top:10px"><strong>Cloth:</strong> ${st.cloth} bolts · <strong>Perfect weaves:</strong> ${st.perfect} · <strong>Attempts today:</strong> ${tries}</p>
       ${history ? `<h4>Today's attempts</h4><div class="se-mkt">${history}</div>` : ""}
     `, (e) => {
-      const paint = () => [0, 1, 2, 3].forEach((i) => { const v = e.querySelector(`#lm-${i}`).value; const sw = e.querySelector(`[data-swatch="${i}"]`); if (sw) sw.style.background = COLORS.find((c) => c.id === v)?.hex || "#888"; });
+      const paint = () => [0, 1, 2, 3].forEach((i) => { const v = e.querySelector(`#lm-${i}`)?.value; const sw = e.querySelector(`[data-swatch="${i}"]`); if (sw) sw.style.background = COLORS.find((c) => c.id === v)?.hex || "#888"; });
       [0, 1, 2, 3].forEach((i) => e.querySelector(`#lm-${i}`)?.addEventListener("change", paint));
       paint();
       const go = e.querySelector("#lm-go");

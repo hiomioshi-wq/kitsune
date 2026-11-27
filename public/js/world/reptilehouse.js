@@ -541,7 +541,7 @@ export function enterReptileHouse(o) {
           <button type="button" class="chip on" data-btab="showcase">🎭 All 9 Signature Behaviours</button>
           <button type="button" class="chip" data-btab="hunt">🍂 Spot the Leaf-Tailed Gecko</button>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(250px,100%),1fr));gap:10px">
           ${BEHAVIOUR_SHOWCASE.map((id) => {
             const sp = species(id);
             const sig = SIGNATURE_BEHAVIOURS[id];

@@ -5,6 +5,10 @@ const BELLS = [
   { name: "Dawn Chime", min: 640, max: 760 },
   { name: "Harbor Bell", min: 700, max: 820 },
   { name: "Shrine Gong", min: 760, max: 880 },
+  { name: "Tuesday Noon Bell", min: 680, max: 780 },
+  { name: "Glass Stair Bell", min: 620, max: 720 },
+  { name: "Dented Bailiff Bell", min: 740, max: 840 },
+  { name: "Elysian Buoy Bell", min: 780, max: 900 },
 ];
 
 export function createBellFoundry(o) {

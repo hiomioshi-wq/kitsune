@@ -9,7 +9,16 @@ export function createRaffle(o) {
   st.freeDay ||= "";
   st.forgeries ||= [];
 
-  const FORGE_NAMES = ["Replica Lantern Crown", "Faux Foxfire Beret", "Counterfeit Courier Cap", "Gilded Starlight Tricorne"];
+  const FORGE_NAMES = [
+    "Replica Lantern Crown",
+    "Faux Foxfire Beret",
+    "Counterfeit Courier Cap",
+    "Gilded Starlight Tricorne",
+    "Replica Meridian Visor",
+    "Faux Accreditation Goose Cap",
+    "Counterfeit Sovereign Tricorne",
+    "Replica Pink Ribbon Beret",
+  ];
 
   function craftForgery() {
     if (s.mon < 25) return toast("Need 25 mon for replica silk and gilt thread.");
@@ -65,6 +74,26 @@ export function createRaffle(o) {
     save(); hud(); open();
   }
 
+  function drawBundle() {
+    if (s.mon < 65) return toast("Need 65 mon for a 5-ticket bundle.");
+    s.mon -= 65;
+    let wonTotal = 0, luckTotal = 0, big = false;
+    for (let i = 0; i < 5; i++) {
+      st.draws++;
+      const roll = Math.random();
+      if (roll < 0.02) {
+        wonTotal += 200; st.wins++; addRenown?.(45); big = true;
+        if (!s.hats.includes("lanternmaster")) giveHat?.("lanternmaster");
+      } else if (roll < 0.07) { wonTotal += 75; st.wins++; addRenown?.(20); }
+      else if (roll < 0.22) { wonTotal += 30; st.wins++; addRenown?.(10); }
+      else { luckTotal++; }
+    }
+    s.mon += wonTotal; s.luck = (s.luck || 0) + luckTotal;
+    lastRes = `🎟️ 5-Ticket Bundle: +${wonTotal} mon & +${luckTotal} Lucky Ripples${big ? " (GRAND PRIZE!)" : ""}!`;
+    ping(wonTotal ? "done" : "blip"); toast(lastRes);
+    save(); hud(); open();
+  }
+
   function open() {
     const canFree = st.freeDay !== today();
     const forgeList = st.forgeries.map((f) => `<span class="pill">🎩 ${f.name} (${f.quality}%)</span>`).join(" ");
@@ -74,6 +103,7 @@ export function createRaffle(o) {
       ${lastRes ? `<div class="hint" style="margin:10px 0">${lastRes}</div>` : ""}
       <div class="px-row" style="margin-bottom:12px">
         <button type="button" class="btn btn-accent" id="rf-go" ${!canFree && s.mon < 15 ? "disabled" : ""}>${canFree ? "Daily Free Ticket" : "Buy & Draw Ticket (15 mon)"}</button>
+        <button type="button" class="btn btn-accent" id="rf-5" ${s.mon < 65 ? "disabled" : ""}>5-Ticket Bundle (65 mon)</button>
         <button type="button" class="btn" id="rf-forge" ${s.mon < 25 ? "disabled" : ""}>Forge Replica Hat (25 mon)</button>
       </div>
       <h4>🎩 Night Market Forgeries (${st.forgeries.length})</h4>
@@ -81,6 +111,7 @@ export function createRaffle(o) {
       ${forgeList ? `<div class="chips">${forgeList}</div>` : ""}
     `, (e) => {
       e.querySelector("#rf-go").onclick = () => drawTicket(st.freeDay !== today() ? 0 : 15);
+      e.querySelector("#rf-5").onclick = drawBundle;
       e.querySelector("#rf-forge").onclick = craftForgery;
     });
   }

@@ -22,6 +22,11 @@ const EXHIBITS = [
   { id: "ex_poppy", wing: "Oz & Astral", name: "Pressed Sleepy Poppy", item: "poppy", qty: 3, mon: 45, ren: 20, desc: "Fragrant crimson petal from Oz." },
   { id: "ex_quartz", wing: "Oz & Astral", name: "High Post Frost Quartz", item: "quartz", qty: 2, mon: 55, ren: 25, desc: "Refracts winter starlight." },
   { id: "ex_gold", wing: "Oz & Astral", name: "Starlight Gold Fleck", item: "gold", qty: 1, mon: 70, ren: 30, desc: "Panned from the high mountain melt." },
+
+  { id: "ex_ink", wing: "Blackwood & Meridian", name: "Second Schedule Ink", item: "ink", qty: 2, mon: 60, ren: 25, desc: "Footnote 31, highlighted by Sasha Vale." },
+  { id: "ex_iron", wing: "Blackwood & Meridian", name: "Cathedral Crowbar Iron", item: "iron", qty: 2, mon: 65, ren: 30, desc: "Pried open the east wall beyond the Lattice." },
+  { id: "ex_copper", wing: "Blackwood & Meridian", name: "Meridian Radiator Core", item: "obsidian", qty: 1, mon: 60, ren: 25, desc: "From Sector 4's Sixth-Century thermal core." },
+  { id: "ex_silk", wing: "Blackwood & Meridian", name: "Madison's Pink Ribbon", item: "silk", qty: 2, mon: 70, ren: 30, desc: "Left on a diner counter in Nowhere, Nevada-ish." },
 ];
 
 export function createMuseum(o) {
@@ -32,7 +37,7 @@ export function createMuseum(o) {
   const bag = () => extras.state.bag;
 
   function open(wingFilter = "All") {
-    const wings = ["All", "Lantern Era", "Clockwork & Rails", "Sunken & Sea", "Oz & Astral"];
+    const wings = ["All", "Lantern Era", "Clockwork & Rails", "Sunken & Sea", "Oz & Astral", "Blackwood & Meridian"];
     const totalDone = EXHIBITS.filter((e) => st.donated[e.id]).length;
 
     const tabs = wings.map((w) =>

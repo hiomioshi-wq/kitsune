@@ -33,6 +33,10 @@ export const EXPEDITIONS = [
   { id: "abyssal", name: "Chart the 153rd Horizon", mins: 8, cost: 220, marks: 210, mon: 580, loot: ["stormstone", "crystal", "emerald"], desc: "Sail out to the Elysian Terminus at the edge of the chart." },
   { id: "rescue", name: "The Mine Rescue", mins: 9, cost: 245, marks: 225, mon: 625, loot: ["basaltshard", "crystal", "emerald"], req: 850, desc: "Dig a trapped miner out of the Deep Mines before his lantern gutters." },
   { id: "regatta", name: "Regatta Guard", mins: 1, cost: 15, marks: 13, mon: 38, loot: ["shell", "seaglass", "pearl"], desc: "Escort the paper boats of the Lantern Regatta along the shore." },
+  { id: "retrospect", name: "Ride the Retrospect Express", mins: 5, cost: 130, marks: 120, mon: 340, loot: ["ink", "gear", "quartz"], desc: "Board at Platform Null and survive the Three-Second Car." },
+  { id: "deadletter", name: "Sort the Dead Letter Office", mins: 6, cost: 150, marks: 140, mon: 390, loot: ["page", "ink", "gold"], desc: "Help Inspector Yuki deliver the backlog before dawn." },
+  { id: "hellspeak", name: "Inspect Hell's Peak Estates", mins: 4, cost: 90, marks: 85, mon: 230, loot: ["honey", "poppy", "silk"], desc: "Measure the grass to two and a half inches without saying please." },
+  { id: "oceanislands", name: "Chart the Uncharted Atolls", mins: 7, cost: 175, marks: 165, mon: 460, loot: ["pearl", "coralbranch", "starice"], desc: "Sail past the 12 ocean islands and log every drift chest." },
 ];
 
 export const GUILD_ARMORY = [

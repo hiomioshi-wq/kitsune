@@ -18,6 +18,12 @@ export function createPostOffice(o) {
     ["A Strange Feather", "Found a silver-tipped owl feather by the milestone. Did your fox drop by Hollow Pine last night?"],
     ["Saltwick Tide", "The morning tide brought in three glass floats and a very stubborn crab. Write back when you're in town!"],
     ["Night Market Soup", "Ponzu tried adding star-anise to the turnip broth. Let me know if you survive a bowl!"],
+    ["Returned from Tray Three", "A beige intake form stamped 'PROBABLY EATEN' washed onto our sorting table. We dried it out and pinned it to the board."],
+    ["Eight Pawprints", "Someone's eight-legged dog ran straight through the clover field behind the post box. Left a stick by the door."],
+    ["Postage Due · 1997", "A letter from the Retrospect Express arrived three seconds before we unlocked the mailbox. The conductor says keep the change."],
+    ["Dead Letter Backlog", "Inspector Yuki dropped off three crates from the cardboard cathedral. Even the Printer was helping sort."],
+    ["Bottle from Moonwake", "A corked bottle from Tide-Glass Watch rolled up the pier with a sea-glass charm inside."],
+    ["Uncharted Atoll", "Our courier skiff spotted a palm sandbar past Saltwick with a fresh drift chest on the shore."],
   ];
 
   function ensureLetters() {

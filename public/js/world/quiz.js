@@ -20,6 +20,16 @@ const QUESTIONS = [
   ["Who is the Student Council President at Blackwood University?", ["Yuki", "Greta Vance", "Becca", "Mina"], 1],
   ["What boosts your fishing reel bar width in Kitsune World?", ["Lucky Ripples", "Heavy Boots", "Iron Ores", "Snowballs"], 0],
   ["Which building in Kitsune World lets you browse your real reading library?", ["Foxfire Goods", "The Great Shelf", "Lantern Guild", "Your House"], 1],
+  ["How many legs does Sofia's dog Biscuit have in Episode 22?", ["Four", "Six", "Eight", "Twelve"], 2],
+  ["What word is strictly banned by the HOA in Hell's Peak Estates?", ["Sorry", "Please", "Thank you", "Goodbye"], 1],
+  ["How many seconds is the response window in the Retrospect Express's Three-Second Car?", ["Two seconds", "Three seconds", "Five seconds", "Ten seconds"], 1],
+  ["What did the Blackwood championship trophy do to Captain Sugar Rush postgame?", ["Melted", "Bit her face", "Turned into a duck", "Vanished"], 1],
+  ["What is the bartender at The Abyss Bar famous for having?", ["Four arms", "Three heads", "Paper wings", "A megaphone"], 0],
+  ["In the Hereafter Revenue Service, what crime are Kevin and Kevina put on trial for?", ["Littering", "Breathing while alive", "Jaywalking", "Stealing a printer"], 1],
+  ["What does the Cathedral of Quarterly Results display on its giant LED screen?", ["TODAY'S SERMON: SYNERGY", "NO REFUNDS", "EAT YOUR VEGETABLES", "MIND THE GAP"], 0],
+  ["What did Madison re-form out of at Dot's Gas Station in Madison, Nomad?", ["A toaster", "Instant ramen", "A vending machine", "A lawn chair"], 1],
+  ["How many Kevins are buried in the Graveyard of Kevins?", ["One hundred", "Four thousand", "Forty-seven thousand and nineteen", "One million"], 2],
+  ["Which Moonwake Bay spot lets you race your active critter against the Harbour Gull?", ["Tide-Glass Watch", "Driftwood Regatta", "Scoop Shack", "Wonder Wheel"], 1],
 ];
 
 export function createQuiz(o) {

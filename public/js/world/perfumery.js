@@ -22,6 +22,10 @@ const COMMISSIONS = [
   { title: "The Glass Desert Rose", wants: ["floral", "citrus", "sweet"], must: "rose", blurb: "Vitrine's mirror-trade asks for something bright enough to reflect." },
   { title: "A Fox's Nap", wants: ["sweet", "wood", "floral"], must: "vanilla", blurb: "The den wants to smell like safety and a little bit of trouble." },
   { title: "The Orchard Dance", wants: ["floral", "sweet", "green"], must: "honey", blurb: "Moonwake Bay's orchard wants a scent to wear to the festival." },
+  { title: "Madison's Cupcake Frosting", wants: ["sweet", "floral", "citrus"], must: "vanilla", blurb: "Bestie! Needs to smell like pink frosting and plausible deniability." },
+  { title: "The Cathedral Inside-Out", wants: ["wood", "green", "sweet"], must: "sandal", blurb: "A hundred and four thousand warm lamps, bottled in sandalwood." },
+  { title: "Biscuit's Clover Meadow", wants: ["green", "floral", "citrus"], must: "oakmoss", blurb: "Open sky, fresh clover, and zero ceilings." },
+  { title: "Elysian Sea-Spray", wants: ["citrus", "green", "wood"], must: "bergamot", blurb: "Salt wind off the bow of an uncharted schooner." },
 ];
 const dayNum = (d = today()) => Math.floor(Date.parse(d) / 86400000);
 

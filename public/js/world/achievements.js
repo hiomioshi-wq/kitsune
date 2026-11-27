@@ -18,6 +18,16 @@ const BADGES = [
   ["town", "Town Builder", "Finish a Town Council project", 140, 60, (s) => Object.values(s.square?.projects || {}).some((p) => p?.done)],
   ["caravan", "Caravan Charter", "Open an Astral Nexus Caravan route", 100, 45, (s) => Object.keys(s.nexus?.routes || {}).length >= 1],
   ["events", "Storm Chaser", "Complete 3 World Events", 90, 40, (s) => (s.ev?.done || 0) >= 3],
+  ["bw_explorer", "Blackwood Freshman", "Discover 15 locations in Blackwood University", 120, 50, (s) => Object.keys(s.realm?.blackwood?.visited || {}).length >= 15],
+  ["bw_scholar", "Dean's List", "Discover 35 locations in Blackwood University", 280, 110, (s) => Object.keys(s.realm?.blackwood?.visited || {}).length >= 35],
+  ["dbw_explorer", "Beyond the Wall", "Discover 15 locations in Deep Blackwood", 160, 70, (s) => Object.keys(s.realm?.blackwood2?.visited || {}).length >= 15],
+  ["bw_relics", "Archivist of Blackwood", "Collect 15 relics across Blackwood", 200, 85, (s) => (Object.keys(s.realm?.blackwood?.found || {}).length + Object.keys(s.realm?.blackwood2?.found || {}).length) >= 15],
+  ["sea_islands", "Island Hopper", "Discover 4 Ocean Islands on the High Seas", 180, 75, (s) => Object.keys(s.sea?.islands || {}).length >= 4],
+  ["sea_fleet", "Shipwright's Pride", "Own 2 or more ships in your High Seas Fleet", 220, 90, (s) => Object.keys(s.sea?.fleet || {}).length >= 2],
+  ["sea_crew", "Full Quarterdeck", "Hire 2 Sea Officers for your ship", 160, 65, (s) => Object.keys(s.sea?.hired || {}).length >= 2],
+  ["bay_regatta", "Moonwake Skipper", "Win a Critter Regatta in Moonwake Bay", 120, 50, (s) => (s.bay?.t?.regattaWon || 0) >= 1],
+  ["deep_angler", "Abyssal Angler", "Catch 5 species of Sunken Deep fish", 150, 65, (s) => Object.keys(s.deep?.fish || {}).length >= 5],
+  ["sky_stars", "Star-Mapper", "Trace 4 constellations in the Skyward Isles", 160, 70, (s) => Object.keys(s.sky?.stars || {}).length >= 4],
 ];
 
 export function createBadges(o) {

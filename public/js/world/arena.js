@@ -4,7 +4,7 @@ import { drawFox } from "./art.js";
 import { esc } from "../util.js";
 
 export const ARENA_CHAMPS = ["paper_ronin", "tide_chimera", "meridian_mech", "nine_shadow", "glasswing", "kiln_wyrm", "tick_colossus"];
-export const BW_CHAMPS = ["gargoyleking", "quorumgoose", "firstwinter", "griefwarden", "thermalcore", "paperwork"];
+export const BW_CHAMPS = ["gargoyleking", "quorumgoose", "firstwinter", "griefwarden", "thermalcore", "paperwork", "sugarrush", "threeseconds", "hrs_bailiff", "compliance_agent"];
 export const ALL_CHAMPS = [...ARENA_CHAMPS, ...BW_CHAMPS];
 
 export function createArena(o) {
@@ -115,8 +115,8 @@ export function createArena(o) {
     const done = ALL_CHAMPS.filter((id) => st.beat[id]).length;
     panel("Astral Arena", `<p class="muted">Challenge the Astral & Blackwood Champions individually or clear a Gauntlet in one run. Cleared: <strong>${done}/${ALL_CHAMPS.length}</strong> · Gauntlets won: <strong>${st.gauntlet}</strong></p>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-        <button class="btn btn-accent" type="button" id="ar-gauntlet">Astral Gauntlet (${ARENA_CHAMPS.length} Champions · +1,000 mon)</button>
-        <button class="btn btn-accent" type="button" id="ar-bw-gauntlet">Blackwood Gauntlet (6 Champions · +2,000 mon)</button>
+        <button class="btn btn-accent" type="button" id="ar-gauntlet" style="white-space:normal;max-width:100%">Astral Gauntlet (${ARENA_CHAMPS.length} Champions · +1,000 mon)</button>
+        <button class="btn btn-accent" type="button" id="ar-bw-gauntlet" style="white-space:normal;max-width:100%">Blackwood Gauntlet (6 Champions · +2,000 mon)</button>
       </div>
       <div class="se-mkt">${ALL_CHAMPS.map((id) => {
         const B = BOSSES[id], best = st.best[id];

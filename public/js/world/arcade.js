@@ -1,9 +1,10 @@
-// Foxhold Lantern Arcade: Reaction Reflex Tap & Number Oracle (1–100 in 7 guesses) for mon and Renown.
+// Foxhold Lantern Arcade: Reaction Reflex Tap, Number Oracle (1–100), and Three-Second Car for mon and Renown.
 export function createArcade(o) {
   const { s, panel, toast, ping, save, hud, addRenown } = o;
   const st = (s.arcade ||= {});
   st.bestReflex ||= 0;
   st.oracleWins ||= 0;
+  st.threeWins ||= 0;
 
   let tab = "reflex";
   let oracle = null;
@@ -13,6 +14,7 @@ export function createArcade(o) {
     const tabs = [
       ["reflex", "Foxfire Reflex"],
       ["oracle", "Number Oracle (1–100)"],
+      ["threesecond", "Three-Second Car"],
     ].map(([k, l]) => `<button type="button" class="chip${tab === k ? " on" : ""}" data-tab="${k}">${l}</button>`).join("");
 
     let body = "";
@@ -23,7 +25,7 @@ export function createArcade(o) {
           <button type="button" id="ar-pad" style="width:220px;height:120px;border-radius:16px;border:3px solid #d9a84e;background:#2a1d36;color:#fff;font:900 18px system-ui;cursor:pointer">Start Reflex Test</button>
           <div id="ar-msg" class="muted">Fast reflexes (< 320 ms) win +35 mon!</div>
         </div>`;
-    } else {
+    } else if (tab === "oracle") {
       if (!oracle) {
         body = `
           <p class="muted">Guess the secret number between <strong>1 and 100</strong> in 7 tries or fewer to win <strong>45 mon</strong> &amp; <strong>+20 Renown</strong>!</p>
@@ -36,6 +38,14 @@ export function createArcade(o) {
             ? `<button type="button" class="btn btn-accent" id="or-go">Play Again</button>`
             : `<form id="or-f" class="px-row"><input type="number" id="or-in" class="field" min="1" max="100" required placeholder="1–100" style="max-width:120px" autofocus><button class="btn btn-accent">Guess</button></form>`}`;
       }
+    } else {
+      body = `
+        <p class="muted">RESPONSE WINDOW: <strong>3.00 SECONDS</strong>. Press Start, wait without interrupting early, and click <strong>Answer!</strong> between <strong>2.70s and 3.30s</strong>! Wins: <strong>${st.threeWins}</strong></p>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;margin:14px 0">
+          <div id="ts-clock" style="font:900 32px monospace;color:#ffd84d">0.00s</div>
+          <button type="button" id="ts-btn" class="btn btn-accent" style="min-width:180px;padding:12px 18px">Start Clock</button>
+          <div id="ts-msg" class="muted">Hit 2.85s–3.15s for +55 mon &amp; +25 Renown!</div>
+        </div>`;
     }
 
     panel(`Foxhold Lantern Arcade · ${s.mon} mon`, `
@@ -88,6 +98,49 @@ export function createArcade(o) {
         oracle = { ans: 1 + Math.floor(Math.random() * 100), tries: 0, hint: "Pick a number 1–100.", over: false };
         open();
       };
+
+      const tsBtn = e.querySelector("#ts-btn"), tsClock = e.querySelector("#ts-clock"), tsMsg = e.querySelector("#ts-msg");
+      if (tsBtn) {
+        let running = false, t0 = 0, raf = 0;
+        const tick = () => {
+          if (!running || !tsBtn.isConnected) return;
+          const dt = (performance.now() - t0) / 1000;
+          tsClock.textContent = `${dt.toFixed(2)}s`;
+          if (dt > 4.5) {
+            running = false; tsBtn.textContent = "Start Clock";
+            tsMsg.textContent = "Window missed (> 4.50s). Try again!";
+            ping("close"); return;
+          }
+          raf = requestAnimationFrame(tick);
+        };
+        tsBtn.onclick = () => {
+          if (!running) {
+            running = true; t0 = performance.now();
+            tsBtn.textContent = "Answer!";
+            tsMsg.textContent = "Count silently to three…";
+            ping("blip");
+            raf = requestAnimationFrame(tick);
+          } else {
+            running = false; cancelAnimationFrame(raf);
+            const dt = (performance.now() - t0) / 1000;
+            tsClock.textContent = `${dt.toFixed(2)}s`;
+            tsBtn.textContent = "Start Clock";
+            if (dt < 2.70) {
+              ping("close");
+              tsMsg.textContent = `${dt.toFixed(2)}s — Premature response! Two brass figures unfolded.`;
+            } else if (dt <= 3.30) {
+              const perfect = dt >= 2.85 && dt <= 3.15;
+              const pay = perfect ? 55 : 30, ren = perfect ? 25 : 12;
+              st.threeWins++; s.mon += pay; addRenown?.(ren);
+              ping("done"); save(); hud();
+              tsMsg.textContent = `${dt.toFixed(2)}s — ${perfect ? "PERFECT!" : "Passed!"} +${pay} mon & +${ren} Renown!`;
+            } else {
+              ping("close");
+              tsMsg.textContent = `${dt.toFixed(2)}s — Too late! The brass attendant pocketed the key.`;
+            }
+          }
+        };
+      }
 
       const orForm = e.querySelector("#or-f");
       if (orForm) orForm.onsubmit = (ev) => {

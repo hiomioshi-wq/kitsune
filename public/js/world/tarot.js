@@ -14,6 +14,16 @@ const DECK = [
   ["reaper", "The Reaper", "⛱️", "Even Death takes a holiday eventually.", "luck", 3, "+3 Lucky Ripples"],
   ["ember", "The Ember", "🔥", "Keep one spark in your pocket for winter.", "mon", 40, "+40 mon"],
   ["bell", "The Bell", "🔔", "Ring once for arrival, twice for return.", "renown", 35, "+35 Renown"],
+  ["crowbar", "The Crowbar", "🧰", "Open the east wall when the lamps grow heavy.", "mon", 55, "+55 mon"],
+  ["cupcake", "The Cupcake", "🧁", "Bestie! Check the frosting before you take a bite.", "luck", 4, "+4 Lucky Ripples"],
+  ["chair144", "The Empty Chair", "🪑", "One hundred and forty-four seats; one kept open.", "renown", 40, "+40 Renown"],
+  ["biscuit", "The Eight-Legged Hound", "🐕", "Run across the grass where there is no ceiling.", "mon", 60, "+60 mon"],
+  ["threeseconds", "The Three-Second Key", "🗝️", "Count to three in silence before you answer.", "luck", 5, "+5 Lucky Ripples"],
+  ["box", "The Cardboard Box", "📦", "Deliver it in ten minutes; do not drop the tape.", "mon", 45, "+45 mon"],
+  ["sovereign", "The Sovereign", "⛵", "Set full sail past the last buoy on the chart.", "renown", 45, "+45 Renown"],
+  ["bottle", "The Tide-Bottle", "🍾", "Whatever you cast into Moonwake Bay washes back.", "luck", 4, "+4 Lucky Ripples"],
+  ["quorum", "The Duck Quorum", "🦆", "Three loaves of rye and an iron gavel.", "mon", 50, "+50 mon"],
+  ["seventh", "The Seventh Floor", "🚪", "The floor that is not a floor remembers your name.", "renown", 50, "+50 Renown"],
 ];
 
 export function createTarot(o) {
@@ -22,12 +32,14 @@ export function createTarot(o) {
   st.day ||= "";
   st.spread ||= null;
   st.reads ||= 0;
+  st.seen ||= {};
 
   function drawSpread() {
     const pool = [...DECK].sort(() => Math.random() - 0.5).slice(0, 3);
     st.day = today();
     st.reads++;
     st.spread = pool.map((c) => c[0]);
+    for (const c of pool) st.seen[c[0]] = 1;
     const blessing = pool[2];
     if (blessing[4] === "mon") s.mon += blessing[5];
     else if (blessing[4] === "renown") addRenown?.(blessing[5]);
@@ -54,7 +66,7 @@ export function createTarot(o) {
       : "";
 
     panel("Nine-Tail Tarot Parlor", `
-      <p class="muted">Draw a daily 3-card spread. Your <strong>Future</strong> card bestows a daily blessing of mon, Renown, or Lucky Ripples. (${st.reads} readings)</p>
+      <p class="muted">Draw a daily 3-card spread. Your <strong>Future</strong> card bestows a daily blessing of mon, Renown, or Lucky Ripples. (${st.reads} readings · ${Object.keys(st.seen).length}/${DECK.length} Arcana seen)</p>
       ${doneToday
         ? `<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0">${cards}</div><p class="muted">Come back tomorrow for your next reading.</p>`
         : `<button type="button" class="btn btn-accent" id="tr-draw">Draw Today's 3-Card Spread</button>`}

@@ -1,4 +1,5 @@
 // Deep Blackwood: Meridian Station, The Lower Screaming, The Rewrite Platform and The Wall Yuki Opened.
+import { DBW_EXTRA_SCENES, DBW_EXTRA_QUESTS, DBW_EXTRA_RELICS } from "./realm-deepbw-extra.js";
 const npc = (id, cast, name, x, y, story, lines, o = {}) => ({ id, cast, name, x, y, story, lines, ...o });
 
 export const DBW = {
@@ -46,14 +47,14 @@ export const DBW = {
       r: [[1, 4, 16, 2, "line"]],
       props: [["bench", 4, 2], ["bench", 13, 2], ["lampost", 2, 2], ["lampost", 15, 2], ["typewriter", 9, 2]],
       npcs: [npc("rewriteclerk", null, "The Rewrite Clerk", 9, 5, "bw-ep14", ["Every train that didn't arrive at Blackwood stops here instead.", "We're rewriting the third act. Again."], { look: { c: "#3a3844", a: "#e8dcc0", st: 5, sk: 2, h: "#2a2020", e: "#222", f: "smart" } })],
-      doors: [{ x: 17, y: 5, to: "lower_screaming", tx: 1, ty: 4, label: "Down to Sub-Tray 9" }, { x: 0, y: 5, to: "train_car", tx: 16, ty: 4, label: "Board the 1997 Rewrite Coach" }],
+      doors: [{ x: 17, y: 5, to: "lower_screaming", tx: 1, ty: 4, label: "Down to Sub-Tray 9" }, { x: 0, y: 5, to: "train_car", tx: 16, ty: 4, label: "Board the 1997 Rewrite Coach" }, { x: 9, y: 9, to: "last_stop_motel", tx: 8, ty: 1, label: "Check into The Last Stop Motel" }],
     },
     lower_screaming: {
       name: "The Lower Screaming · Sub-Tray 9", room: 1, w: 20, h: 11, base: "flesh", bg: "#080204", tint: "rgba(180,20,30,.12)",
       monster: "mini", hounds: [[11, 3], [14, 7], [7, 7]], houndLine: "Something in Sub-Tray 9 filed you under MISCELLANEOUS.",
       props: [["cabinet", 3, 2], ["cabinet", 16, 2], ["printer", 15, 7], ["canoe", 6, 7]],
       npcs: [npc("unfiled", null, "The Unfiled", 10, 5, "bw-ep05", ["Tray three was just the lobby. Down here is where the forms go when nobody says please."], { look: { c: "#4a242c", a: "#f2d8d8", st: 6, sk: 1, h: "#1a1418", e: "#ff3a48", f: "robe" } })],
-      doors: [{ x: 0, y: 5, to: "laststop", tx: 16, ty: 5, label: "Back to Last Stop" }, { x: 19, y: 5, to: "horsemen_vault", tx: 1, ty: 4, label: "Through the Boiler Door" }],
+      doors: [{ x: 0, y: 5, to: "laststop", tx: 16, ty: 5, label: "Back to Last Stop" }, { x: 19, y: 5, to: "horsemen_vault", tx: 1, ty: 4, label: "Through the Boiler Door" }, { x: 10, y: 10, to: "beige_void", tx: 9, ty: 1, label: "Peel back the Beige Wallpaper" }],
     },
     horsemen_vault: {
       name: "The Fifth Horseman's Room", room: 1, w: 18, h: 10, base: "wood", bg: "#0c0a10",
@@ -62,7 +63,7 @@ export const DBW = {
         npc("famine2", "Famine", "Famine", 6, 5, "bw-horsemen-1", ["I ate the leftovers from Ur. Still hungry."]),
         npc("war2", "War", "War", 11, 5, "bw-horsemen-2", ["Who moved the fifth chair?"], { look: { c: "#8a2424", a: "#f2d8d8", st: 5, sk: 2, h: "#1c1818", e: "#a82020", f: "coat" } }),
       ],
-      doors: [{ x: 0, y: 4, to: "lower_screaming", tx: 18, ty: 5, label: "Back to Sub-Tray 9" }, { x: 9, y: 9, to: "furnace_core", tx: 11, ty: 1, label: "Down into the Grief Furnace" }],
+      doors: [{ x: 0, y: 4, to: "lower_screaming", tx: 18, ty: 5, label: "Back to Sub-Tray 9" }, { x: 9, y: 9, to: "furnace_core", tx: 11, ty: 1, label: "Down into the Grief Furnace" }, { x: 17, y: 4, to: "tokyo_kabukicho", tx: 1, ty: 5, label: "Out to Kabukicho · 2:47 A.M." }],
     },
     cathedral: {
       name: "The Cathedral Inside-Out", room: 1, w: 21, h: 13, base: "lattice", bg: "#000", tint: "rgba(255,190,80,.06)",
@@ -115,7 +116,7 @@ export const DBW = {
       name: "The Unfiled Annex", room: 1, w: 20, h: 12, base: "stone", bg: "#0a0a10", tint: "rgba(160,140,220,.08)",
       props: [["cabinet", 4, 2], ["cabinet", 6, 2], ["cabinet", 14, 2], ["cabinet", 16, 2], ["typewriter", 10, 3]],
       npcs: [npc("sector0arch", null, "The Sector 0 Archivist", 10, 6, "bw-ep23", ["Every unasked question from the Great Hall ends up in these drawers.", "Now that the wall is open, we're shredding half of them into confetti."], { look: { c: "#4a3160", a: "#e8dcc0", st: 6, sk: 2, h: "#c8c8d0", e: "#222", f: "robe" } })],
-      doors: [{ x: 0, y: 6, to: "after_hall", tx: 20, ty: 6, label: "Back to the Hall of Questions" }, { x: 19, y: 6, to: "sector0_core", tx: 1, ty: 5, label: "Descend to Sector 0 · The Cold Core" }],
+      doors: [{ x: 0, y: 6, to: "after_hall", tx: 20, ty: 6, label: "Back to the Hall of Questions" }, { x: 19, y: 6, to: "sector0_core", tx: 1, ty: 5, label: "Descend to Sector 0 · The Cold Core" }, { x: 10, y: 11, to: "reaper_office", tx: 8, ty: 1, label: "To the Reaper's Office & Kitchen" }],
     },
     meridian_roof: {
       name: "Meridian Observation Deck", room: 1, w: 22, h: 12, base: "void", bg: "#03050c", tint: "rgba(100,170,255,.1)",
@@ -138,7 +139,7 @@ export const DBW = {
       monster: "mini", hounds: [[6, 3], [11, 5]], houndLine: "A ticket puncher from 1997 tried to void your pass.",
       props: [["seat", 3, 2], ["seat", 6, 2], ["seat", 9, 2], ["seat", 12, 2], ["lampost", 14, 6]],
       npcs: [npc("conductor97", null, "The 1997 Conductor", 9, 4, "bw-ep14", ["Last stop was Blackwood, twenty-nine drafts ago. Keep your feet off the velvet."], { look: { c: "#1c2438", a: "#ffd27a", st: 6, sk: 1, h: "#2a2020", e: "#222", f: "uniform" } })],
-      doors: [{ x: 17, y: 4, to: "laststop", tx: 1, ty: 5, label: "Step back onto The Last Stop" }],
+      doors: [{ x: 17, y: 4, to: "laststop", tx: 1, ty: 5, label: "Step back onto The Last Stop" }, { x: 0, y: 4, to: "express_reception", tx: 15, ty: 4, label: "Forward to Retrospect Express · Reception Car" }],
     },
     lamp_gallery: {
       name: "The Hundred Thousand Lamps", room: 1, w: 20, h: 11, base: "lattice", bg: "#020208", tint: "rgba(255,200,90,.07)",
@@ -162,6 +163,7 @@ export const DBW = {
       props: [["tree", 4, 2], ["tree", 9, 2], ["tree", 14, 2], ["tree", 4, 8], ["tree", 14, 8]],
       npcs: [npc("quietgardener", null, "The Quiet Gardener", 10, 5, "bw-ep23", ["Apples grow out here without anybody having to cry for them."], { look: { c: "#3f6a48", a: "#e8f0d8", st: 5, sk: 2, h: "#4a3220", e: "#222", f: "apron" } })],
       doors: [{ x: 0, y: 5, to: "meadow_south", tx: 18, ty: 5, label: "Back to the Open Sky Overlook" }] },
+    ...DBW_EXTRA_SCENES,
   },
   quest: [
     { id: "simone2", title: "Day Four Hundred", who: "simone2", goal: "Speak to Simone in Meridian Station · Sector 4.", say: "Four hundred days with nine hundred and sixty thousand people. Thirty years with a hundred and forty-four. Check Airlock 13—Kevin's still drifting out there.", btn: "Check Airlock 13", story: "bw-ep21" },
@@ -174,6 +176,7 @@ export const DBW = {
     { id: "biscuit8", title: "Eight Legs", who: "biscuit8", goal: "Visit Biscuit's Meadow north of the Wall Yuki Opened.", say: "Biscuit bounds in an impossible circle, eight paws drumming the clover. Even Madison can't pretend she's not smiling.", btn: "Pet Biscuit", story: "bw-ep22" },
     { id: "sector0arch", title: "The Unfiled Annex", who: "sector0arch", goal: "Step east from the Hall of Questions into the Unfiled Annex.", say: "Half the forms in Sector 0 were never meant to be read—just shredded. Down east is the Sixth-Century Cold Core.", btn: "Into Sector 0", story: "bw-ep23" },
     { id: "cmdrpark", title: "No Ceiling", who: "cmdrpark", goal: "Climb to the Meridian Observation Deck above Sector 4.", say: "Look up. Actual stars, no glass between us and the dark. We're done counting days of heat.", btn: "Look up", story: "bw-ep21" },
+    ...DBW_EXTRA_QUESTS,
   ],
   relics: [
     { id: "dbw_coat", s: "station", x: 6, y: 12, name: "a frozen station coat", text: "Meridian Station thermal lining, frosted stiff.", story: "bw-ep21" },
@@ -192,5 +195,6 @@ export const DBW = {
     { id: "dbw_starphoto", s: "meadow_south", x: 14, y: 7, name: "a polaroid of open sky", text: "Nothing in the frame except grass and stars.", story: "bw-ep23" },
     { id: "dbw_glassbell", s: "glass_stair", x: 13, y: 6, name: "a clear glass handbell", text: "Rings softly whenever you say thank you.", story: "bw-ep21" },
     { id: "dbw_orchardapple", s: "quiet_orchard", x: 11, y: 7, name: "a crisp orchard apple", text: "Grown in open air, six miles past the Ring Road.", story: "bw-ep23" },
+    ...DBW_EXTRA_RELICS,
   ],
 };

@@ -13,6 +13,10 @@ const SPECIES = [
   { id: "magpie", name: "Marigold Magpie", rarity: "Rare", call: "A rattling cackle, followed by a flawless imitation of the bakery bell." },
   { id: "mothwing", name: "Mothwing Dove", rarity: "Mythic", call: "A low, dusty coo with a shimmer in it, heard only at dusk." },
   { id: "glasswing", name: "Glasswing Swift", rarity: "Mythic", call: "A thin, glassy chime that seems to come from inside your ears." },
+  { id: "accredgoose", name: "Accreditation Goose", rarity: "Rare", call: "A resonant honk from the direction of a filing cabinet, followed by the sound of a stamp." },
+  { id: "harbourgull", name: "Moonwake Gull", rarity: "Common", call: "A salt-bright cry over the breakwater whenever a regatta boat passes." },
+  { id: "snowfinch", name: "Meridian Snow-Finch", rarity: "Rare", call: "Three crisp, frost-clear notes tapped against glass." },
+  { id: "emberswift", name: "Kiln Ember-Swift", rarity: "Mythic", call: "A warm crackle that leaves faint orange sparks along the rafters." },
 ];
 const RARITY_PAY = { Common: 10, Uncommon: 16, Rare: 26, Mythic: 40 };
 const RARITY_TONE = { Common: "#e8dcc0", Uncommon: "#8fd2a8", Rare: "#9fc4ff", Mythic: "#e8a8ff" };
@@ -52,6 +56,7 @@ export function createAviary(o) {
   }
 
   function stock() {
+    if (st.feederDay === today()) return toast("The feeder is already stocked for today.");
     if (s.mon < 12) return toast("Need 12 mon for seed and suet.");
     s.mon -= 12;
     st.feederDay = today();
@@ -88,7 +93,48 @@ export function createAviary(o) {
     save(); hud(); open();
   }
 
+  let raf = 0;
+
+  function startAviaryCanvas(canvas) {
+    cancelAnimationFrame(raf);
+    if (!canvas) return;
+    const g = canvas.getContext("2d");
+    const W = canvas.width, H = canvas.height;
+    const seenList = SPECIES.filter((sp) => st.seen[sp.id]);
+    const birds = (seenList.length ? seenList : [SPECIES[0], SPECIES[1]]).map((sp, i) => ({
+      col: RARITY_TONE[sp.rarity] || "#e8dcc0",
+      x: 40 + (i * 67) % (W - 80),
+      y: 26 + (i * 29) % (H - 56),
+      vx: (i % 2 ? 1 : -1) * (28 + (i % 4) * 10),
+      p: i * 0.9,
+    }));
+    const frame = (now) => {
+      if (!canvas.isConnected) return;
+      const grad = g.createLinearGradient(0, 0, 0, H);
+      grad.addColorStop(0, "#1c2c44");
+      grad.addColorStop(1, "#2f4438");
+      g.fillStyle = grad;
+      g.fillRect(0, 0, W, H);
+      g.strokeStyle = "#6a4528"; g.lineWidth = 4;
+      g.beginPath(); g.moveTo(20, H - 22); g.lineTo(W - 20, H - 22); g.stroke();
+      for (const b of birds) {
+        b.x += b.vx * 0.016;
+        if (b.x < 24 || b.x > W - 24) b.vx *= -1;
+        const y = b.y + Math.sin(now / 360 + b.p) * 5;
+        const flap = Math.sin(now / 95 + b.p) * 6;
+        g.strokeStyle = b.col; g.lineWidth = 2.5;
+        g.beginPath();
+        g.moveTo(b.x - 10, y - flap); g.quadraticCurveTo(b.x - 4, y - 4, b.x, y);
+        g.quadraticCurveTo(b.x + 4, y - 4, b.x + 10, y - flap);
+        g.stroke();
+      }
+      raf = requestAnimationFrame(frame);
+    };
+    raf = requestAnimationFrame(frame);
+  }
+
   function open() {
+    cancelAnimationFrame(raf);
     const day = today();
     rollDay(day);
     const list = sightings(day);
@@ -110,15 +156,17 @@ export function createAviary(o) {
     const life = SPECIES.map((sp) => `<span class="pill" style="opacity:${st.seen[sp.id] ? 1 : .42}">${st.seen[sp.id] ? "✓" : "·"} ${esc(sp.name)}</span>`).join(" ");
 
     panel(`Foxhold Aviary · ${seenN}/${SPECIES.length} species`, `
+      <canvas id="av-canvas" width="560" height="120" style="width:100%;height:auto;border-radius:10px;border:1px solid rgba(255,255,255,.15);display:block;margin-bottom:10px"></canvas>
       <p class="muted">Three birds call each day. Match each call to the right species from the field guide. A feeder stocked today pays out tomorrow.</p>
       <div class="se-mkt" style="margin:10px 0">${rows}</div>
       <div class="chips" style="margin-bottom:12px">
-        <button type="button" class="btn btn-accent" id="av-stock" ${s.mon >= 12 ? "" : "disabled"}>Stock the feeder (12 mon)</button>
+        <button type="button" class="btn btn-accent" id="av-stock" ${s.mon >= 12 && st.feederDay !== day ? "" : "disabled"}>Stock the feeder (12 mon)</button>
         <span class="pill">${st.feederDay === day ? "Feeder stocked today" : "Feeder empty"}</span>
       </div>
       <h4>Life list</h4>
       <div class="chips">${life}</div>
     `, (e) => {
+      startAviaryCanvas(e.querySelector("#av-canvas"));
       e.querySelectorAll("[data-bird]").forEach((b) => {
         b.onclick = () => { const [i, id] = b.dataset.bird.split(":"); answer(+i, id, day, list); };
       });

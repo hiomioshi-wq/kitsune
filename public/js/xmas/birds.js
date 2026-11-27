@@ -73,7 +73,7 @@ export function birdCard(r, s) {
         <div><span class="pill" style="color:${t.color};border-color:${t.color}66">${esc(t.label)} · ${esc(r.chance)}</span></div>
         <small class="muted" style="display:block;margin-top:3px"><i>${esc(r.sci)}</i> · ${hab.badge} ${esc(r.habit)}</small>
         <small style="display:block;margin-top:3px">${got ? "In your aviary ✓" : esc(sp[8])}</small>
-        ${sig ? `<button type="button" class="btn btn-sm" data-sig="${r.id}" style="margin-top:6px">🎭 ${esc(sig.btn)}</button>` : ""}
+        ${sig ? `<button type="button" class="btn btn-sm" data-sig="${r.id}" style="margin-top:6px;white-space:normal;max-width:100%">🎭 ${esc(sig.btn)}</button>` : ""}
       </div>
     </div>
   </article>`;
@@ -95,7 +95,7 @@ export function bindSignatures(host, s, ping, size = 82) {
   });
 }
 
-export const cardGrid = (list, s) => `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px">${list.map((r) => birdCard(r, s)).join("")}</div>`;
+export const cardGrid = (list, s) => `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(250px,100%),1fr));gap:10px">${list.map((r) => birdCard(r, s)).join("")}</div>`;
 
 export const FILTERS = (current) => [["all", `All (${BIRD_IDS.length})`], ["behaviours", `🎭 Behaviours (${Object.keys(BIRD_BEHAVIOURS).length})`], ...Object.values(BIRD_TIERS).map((t) => [t.key, `${t.label} · ${t.totalPct} (${t.count})`, t.color])]
   .map(([k, l, col]) => `<button type="button" class="chip${current === k ? " on" : ""}" data-bf="${k}"${col ? ` style="color:${col}"` : ""}>${esc(l)}</button>`).join("");

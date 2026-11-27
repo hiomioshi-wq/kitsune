@@ -223,7 +223,7 @@ export function enterBirdHouse(o) {
   function showTheatre() {
     const x = xs();
     openModal(`${head(`🎭 Signature Behaviour Theatre (${BIRD_SHOWCASE.length} stars)`, "Press a button to watch the real habit each bird is famous for.")}
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px">${BIRD_SHOWCASE.map((id) => {
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(250px,100%),1fr));gap:10px">${BIRD_SHOWCASE.map((id) => {
         const sig = BIRD_BEHAVIOURS[id], r = BIRD_LIST.find((q) => q.id === id);
         return `<div>${birdCard(r, x)}<small class="muted" style="display:block;padding:4px 6px"><strong style="color:#ffd84d">${esc(sig.tag)}:</strong> ${esc(sig.desc)}</small></div>`;
       }).join("")}</div>`, (el) => bindSignatures(el, x, ping));

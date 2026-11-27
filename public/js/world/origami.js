@@ -7,6 +7,10 @@ const MODELS = [
   { id: "boat", name: "Lantern Paper Boat", icon: "⛵", cost: 10, need: { page: 1, herb: 1 }, sell: 32, ren: 16 },
   { id: "crane", name: "Silk-Wing Crane", icon: "🕊️", cost: 16, need: { silk: 1 }, sell: 46, ren: 20 },
   { id: "star", name: "Nine-Tail Star", icon: "⭐", cost: 22, need: { page: 1, gold: 1 }, sell: 68, ren: 30 },
+  { id: "moth", name: "Juno Pell Paper Moth", icon: "🦋", cost: 14, need: { page: 1, ink: 1 }, sell: 42, ren: 22 },
+  { id: "hound8", name: "Eight-Legged Biscuit", icon: "🐕", cost: 18, need: { page: 2 }, sell: 52, ren: 26 },
+  { id: "galleon", name: "Elysian Paper Galleon", icon: "🚢", cost: 24, need: { silk: 1, shell: 1 }, sell: 72, ren: 32 },
+  { id: "quorum", name: "Quorum Paper Duck", icon: "🦆", cost: 28, need: { page: 2, gold: 1 }, sell: 84, ren: 38 },
 ];
 
 export function createOrigami(o) {

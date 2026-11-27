@@ -15,6 +15,8 @@ import grotto from "./grotto.js";
 import grottoArt from "./grotto-art.js";
 import glow from "./glow.js";
 import glowArt from "./glow-art.js";
+import amber from "./amber.js";
+import amberArt from "./amber-art.js";
 
 // [pack, art, lazy game loader], in Pet Row street order.
 const PACKS = [
@@ -25,6 +27,7 @@ const PACKS = [
   [reef, reefArt, () => import("./reef-game.js")],
   [grotto, grottoArt, () => import("./grotto-game.js")],
   [glow, glowArt, () => import("./glow-game.js")],
+  [amber, amberArt, () => import("./amber-game.js")],
 ];
 
 export const HOUSES = PACKS.map(([pack, art, loadGame]) => buildHouse({ ...pack, loadGame }, art));

@@ -146,13 +146,13 @@ export function createRoulette(o) {
     ).join("");
 
     panel(`Foxfire Roulette · ${s.mon} mon`, `
-      <div style="display:grid;grid-template-columns:280px minmax(0,1fr);gap:16px;align-items:start">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
-          <canvas id="rl-cv" width="280" height="280" style="width:280px;height:280px;max-width:100%"></canvas>
+      <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;flex:0 1 280px;min-width:0;margin:0 auto">
+          <canvas id="rl-cv" width="280" height="280" style="width:280px;max-width:100%;height:auto;aspect-ratio:1"></canvas>
           <div id="rl-res" class="muted" style="text-align:center;min-height:22px">Tap bets to place chips, then spin.</div>
           <div class="pill" style="border-color:#248f5a">🍀 0-Pocket Jackpot: <strong>${st.pot} mon</strong></div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;flex-direction:column;gap:10px;flex:1 1 240px;min-width:0">
           <p class="muted" style="margin:0">Spins: <strong>${st.spins}</strong> · Wins: <strong>${st.wins}</strong> · Best: <strong>${st.best} mon</strong>${st.streak > 1 ? ` · 🔥 Streak ×${mul}` : ""}</p>
           <div><strong>Outside &amp; Dozens</strong><div class="chips" style="margin-top:6px">${outsideBtns}</div></div>
           <div><strong>Numbers (18×)</strong><div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:6px">${numBtns}</div></div>

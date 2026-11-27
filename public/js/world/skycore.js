@@ -146,6 +146,10 @@ export const SKY_FISH = [
   ["celestial_whale", "Cloud Leviathan", 76, 0.04],
   ["paperkite", "Paper Kitefish", 40, 0.10],
   ["embermoth", "Ember Mothfish", 46, 0.08],
+  ["biscuit_cloud", "Eight-Legged Cloud-Hound", 68, 0.05],
+  ["galefox", "Gale-Tail Foxfish", 74, 0.04],
+  ["solar_moth", "Solaris Mothfish", 84, 0.03],
+  ["horizon_marlin", "Horizon Star-Marlin", 98, 0.02],
 ];
 
 export const CONSTELLATIONS = [
@@ -159,15 +163,19 @@ export const CONSTELLATIONS = [
   { id: "foxcrown", name: "The Nine-Tail Crown", pts: [[-42, 20], [-28, -28], [0, -10], [28, -28], [42, 20]] },
   { id: "meridian", name: "The Meridian", pts: [[0, -54], [0, 54], [-36, 0], [36, 0], [-24, -24], [24, 24]] },
   { id: "hourglass", name: "The Hourglass", pts: [[-32, -44], [32, -44], [0, 0], [-32, 44], [32, 44]] },
+  { id: "biscuit", name: "The Eight-Legged Hound", pts: [[-36, 12], [-20, -16], [18, -16], [36, 12], [-28, 38], [-12, 38], [12, 38], [28, 38]] },
+  { id: "sovereign", name: "The Elysian Schooner", pts: [[0, -52], [24, -18], [-24, -18], [-38, 18], [38, 18], [0, 34]] },
 ];
 
 export const SKY_GOODS = [
   { id: "hat:stargazer", kind: "hat", key: "stargazer", name: "Stargazer's veil", desc: "Woven from midnight silk and star-thread.", shards: 4, mon: 60 },
   { id: "hat:cloudwalker", kind: "hat", key: "cloudwalker", name: "Cloudwalker's plume", desc: "Light as updrafts.", shards: 6, mon: 90 },
+  { id: "hat:skycaptain", kind: "hat", key: "skycaptain", name: "Sky Captain's cap", desc: "Tailored for high-altitude helmsmen.", shards: 7, mon: 110 },
   { id: "furn:cloudbed", kind: "furn", key: "cloudbed", name: "Cloud-down Futon", desc: "For your house downstairs.", shards: 3, mon: 45 },
   { id: "furn:starlamp", kind: "furn", key: "starlamp", name: "Starlight Lantern", desc: "Hums softly at night.", shards: 4, mon: 65 },
   { id: "furn:orrery", kind: "furn", key: "orrery", name: "Brass Orrery", desc: "Miniature spinning sky-chart.", shards: 8, mon: 120 },
   { id: "furn:starorrery", kind: "furn", key: "starorrery", name: "Star-Heart Orrery", desc: "Tracks all ten constellations.", shards: 10, mon: 150 },
+  { id: "furn:celestialglobe", kind: "furn", key: "celestialglobe", name: "Celestial Orrery Globe", desc: "Maps every skyward archipelago.", shards: 9, mon: 140 },
   { id: "furn:handrail", kind: "furn", key: "handrail", name: "Brass Handrail", desc: "Polished gale-deck rail.", shards: 5, mon: 75 },
   { id: "tonic:updraft", kind: "tonic", key: "updraft", name: "Updraft Tonic", desc: "+15% speed in the Skyward Isles.", shards: 3, mon: 30 },
 ];

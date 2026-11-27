@@ -117,7 +117,7 @@ export async function mountMonitorEvent(host, ui = {}) {
         <button type="button" class="chip${filterTier === "behaviours" ? " on" : ""}" data-rt="behaviours">🎭 Behaviours (${Object.keys(SIGNATURE_BEHAVIOURS).length})</button>
         ${Object.values(REPTILE_TIERS).map((t) => `<button type="button" class="chip${filterTier === t.key ? " on" : ""}" data-rt="${t.key}" style="color:${t.color}">${esc(t.label)} · ${esc(t.totalPct)} (${tierCount(t.key)})</button>`).join("")}
       </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px">${cards}</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr));gap:10px">${cards}</div>
     `;
 
     host.querySelectorAll("[data-sig]").forEach((btn) => {

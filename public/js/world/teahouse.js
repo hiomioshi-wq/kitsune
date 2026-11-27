@@ -7,6 +7,8 @@ const TEAS = [
   { id: "chamomile", name: "Moth-Wing Chamomile", icon: "🌼", cost: 18, need: { herb: 1, honey: 1 }, speed: 150, luck: 2, ren: 15 },
   { id: "oolong", name: "Saltwick Sea-Salt Oolong", icon: "🫖", cost: 22, need: { herb: 1, kelp: 1 }, speed: 180, luck: 3, ren: 15 },
   { id: "jasmine", name: "Midnight Jasmine", icon: "🌙", cost: 26, need: { herb: 2, poppy: 1 }, speed: 210, luck: 3, ren: 25 },
+  { id: "blackwood_iced", name: "Imani's Iced Leaf", icon: "🧊", cost: 24, need: { herb: 2, berry: 1 }, speed: 195, luck: 3, ren: 22 },
+  { id: "meridian", name: "Meridian Ember-Chai", icon: "🔥", cost: 28, need: { herb: 1, mushroom: 1, honey: 1 }, speed: 220, luck: 4, ren: 28 },
 ];
 const SECRET_TEA = { id: "starblossom", name: "Starlight Blossom Blend", icon: "✨", cost: 34, need: { herb: 2, honey: 1, poppy: 1 }, speed: 280, luck: 5, ren: 40 };
 
@@ -15,6 +17,9 @@ const REGULARS = [
   { id: "momo", name: "Momo the Weaver", fav: "chamomile", hint: "prefers gentle honeyed blossoms" },
   { id: "kazu", name: "Kazu the Archivist", fav: "matcha", hint: "loves earthy pine-leaf tea" },
   { id: "sora", name: "Sora of the Bells", fav: "jasmine", hint: "drinks late-night moonlit petals" },
+  { id: "imani", name: "Imani (Off Duty)", fav: "blackwood_iced", hint: "wants one clean leaf over ice, no emotions attached" },
+  { id: "simone", name: "Simone of Meridian", fav: "meridian", hint: "misses warm spiced tea from before the cold" },
+  { id: "yuki", name: "Inspector Yuki", fav: "matcha", hint: "needs strong green tea before auditing Tray Three" },
 ];
 
 const FORTUNES = [
@@ -22,6 +27,10 @@ const FORTUNES = [
   "Something lost on the sleeper train is waiting for you.",
   "The bell over the door is still a half-note flat.",
   "A steep of three minutes makes a better cup than thirty.",
+  "One leaf in the foam is plenty.",
+  "The east wall opens if you bring a crowbar and a warm cup.",
+  "Eight paws across clover bring fairer weather than any forecast.",
+  "Never answer a brass figure in under three seconds.",
 ];
 
 export function createTeahouse(o) {

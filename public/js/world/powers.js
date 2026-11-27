@@ -34,9 +34,34 @@ export const STUDENT_POWERS = {
   soph_attic: { id: "zeroG", name: "Spin Cycle", dur: 6, color: "#7fe8ff", say: "The 1994 attic spins like Washer #3! (Zero-G drift)" },
   souschef: { id: "chill", name: "Freezer Blast", dur: 5, color: "#9fe8ff", say: "The walk-in freezer door swings wide! (-30% speed)" },
   lamplighter: { id: "ticket", name: "Lamplight Pulse", dur: 6, color: "#ffd84d", say: "A warm lantern flame quickens your step! (+18% speed)" },
+  velvette_qb: { id: "bleed", name: "Gerald's Edge", dur: 6, color: "#e0345e", say: "Velvette adjusts her shoulder pads and flicks a sharpened ruler! (+22% speed)" },
+  velvette_bar: { id: "bleed", name: "Bourbon & Blade", dur: 6, color: "#e0345e", say: "Velvette clinks her glass against a switchblade. (+22% speed)" },
+  velvette_train: { id: "bleed", name: "Boot Knife", dur: 6, color: "#e0345e", say: "Velvette smuggles Gerald past the Disarmament Car! (+22% speed)" },
+  velvette_suburban: { id: "bleed", name: "Hedge Shears", dur: 6, color: "#e0345e", say: "Velvette trims the hydrangeas with terrifying precision! (+22% speed)" },
+  lux_vip: { id: "glare", name: "VIP Spotlight", dur: 6, color: "#ffd84d", say: "Lux leans out of the VIP Box. Every stadium camera zooms in! (-20% speed)" },
+  lux_orchids: { id: "glare", name: "Orchid Glare", dur: 6, color: "#ffd84d", say: "Lux's conservatory glass catches the sun right in your eyes! (-20% speed)" },
+  lux_suburban: { id: "glare", name: "HOA Spotlight", dur: 6, color: "#ffd84d", say: "“No saying please, darling.” The cul-de-sac sprinklers turn toward you! (-20% speed)" },
+  imani_barista: { id: "chill", name: "Espresso Frost", dur: 5, color: "#b58cff", say: "Imani slides an iced latte across the counter. The carton hums! (-30% speed)" },
+  imogen_off: { id: "chill", name: "Off-Duty Quiet", dur: 5, color: "#b58cff", say: "Imogen sets the kettle down. Everything in the kitchen goes still. (-30% speed)" },
+  becca_402: { id: "rewrite", name: "Octagon Quad Edit", dur: 6, color: "#b58cff", say: "Becca types 'and then the hallway was diagonal!' (+25% speed)" },
+  sasha_216: { id: "clause", name: "2:16 A.M. Retainer", dur: 7, color: "#9aa8d4", say: "Sasha highlights Subclause 404. Billable ink slows your stride! (-20% speed)" },
+  bursar_thorne: { id: "detention", name: "Non-Refundable Hold", dur: 2.2, color: "#d9302e", say: "“NO REFUNDS!” Bursar Thorne freezes your student account!" },
+  violet_practical: { id: "kiln", name: "9:01 A.M. Extinguisher", dur: 6, color: "#ff9a3a", say: "Violet pulls the pin—the fire extinguisher shoots bright orange sparks!" },
+  hero_set: { id: "burn", name: "Ring-Light Flare", dur: 6, color: "#ff7a2a", say: "Captain Hero cranks the studio lights to 400%! (+35% panic speed)" },
+  priestess_yuki: { id: "ticket", name: "Q3 Performance Review", dur: 7, color: "#7fe8ff", say: "High Priestess Yuki stamps SYNERGY across your forehead! (+18% speed)" },
+  inspector_yuki: { id: "frenzy", name: "Bailiff Bell Charge", dur: 6, color: "#ff3a48", say: "Inspector Yuki rings two dented Bailiff bells! Eleven hours until dawn! (+30% speed)" },
+  kevina_hrs: { id: "zeroG", name: "Translucent Drift", dur: 7, color: "#7fe8ff", say: "Kevina floats past with her mop and your gravity slips!" },
+  kevina_hoa: { id: "zeroG", name: "Cul-de-Sac Float", dur: 7, color: "#7fe8ff", say: "Kevina accidentally drops the HOA casserole in zero-G!" },
+  smart_kevin: { id: "zeroG", name: "47,019th Probability", dur: 7, color: "#7fe8ff", say: "Smart Kevin bends the timeline's gravity vector!" },
+  kevin_grave: { id: "zeroG", name: "Graveyard Drift", dur: 7, color: "#7fe8ff", say: "Kevin sits on headstone #47,019 and gravity politely excuses itself!" },
+  hoa_warden: { id: "oneStar", name: "HOA Violation", dur: 7, color: "#ffd27a", say: "A VIOLATION HAS BEEN RECORDED. Your grass is 2.6 inches! (-25% speed)" },
+  conquest_tokyo: { id: "compel", name: "White Crown", dur: 3, color: "#ff5a9a", say: "Conquest tilts its head in the Shinjuku rain. You almost kneel." },
+  ena_tokyo: { id: "frenzy", name: "Gold Thread", dur: 6, color: "#ff3a48", say: "Ena's gold thread whips across the alley! (+30% speed)" },
+  madison_nomad: { id: "compel", name: "Ramen Cupcake", dur: 3, color: "#ff5a9a", say: "Madison offers you half a cup of desert ramen. Still weirdly persuasive!" },
+  fourarm_bartender: { id: "burn", name: "Four-Handed Pour", dur: 6, color: "#ff7a2a", say: "The bartender lights four bourbon shots at once! (+35% panic speed)" },
 };
 
-const CLEANSE_IDS = new Set(["marlowe", "saffron", "lunch", "okonkwo", "imani2"]);
+const CLEANSE_IDS = new Set(["marlowe", "marlowe_night", "saffron", "saffron_coffee", "saffron_dorm", "lunch", "okonkwo", "imani2"]);
 
 export function createPowers(st, api) {
   const active = {}; // powerId -> expiry timestamp (seconds)
@@ -83,6 +108,10 @@ export function createPowers(st, api) {
     else if (has("rewrite") && has("rewind")) api.toast("COMBO: Third Act Edit!");
     else if (has("glare") && has("deliver")) api.toast("COMBO: Viral Attachment!");
     else if (has("grade") && has("manifesto")) api.toast("COMBO: Tenure Review!");
+    else if (has("burn") && has("kiln")) api.toast("COMBO: 9:01 A.M. Fire Safety!");
+    else if (has("ticket") && has("clause")) api.toast("COMBO: Death Is Certain. So Is The Form!");
+    else if (has("compel") && has("oneStar")) api.toast("COMBO: HOA Violation: Mandatory Friendship!");
+    else if (has("frenzy") && has("bleed")) api.toast("COMBO: Gerald & Crowbar!");
     api.hud();
     return true;
   }

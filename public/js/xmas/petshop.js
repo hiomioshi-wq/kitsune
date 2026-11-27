@@ -85,12 +85,12 @@ export function petCard(house, r, s) {
         <div><span class="pill" style="color:${t.color};border-color:${t.color}66">${esc(t.label)} · ${esc(r.chance)}</span></div>
         <small class="muted" style="display:block;margin-top:3px"><i>${esc(r.sci)}</i> · ${hab.badge} ${esc(r.habit)}</small>
         <small style="display:block;margin-top:3px">${got ? "In your collection ✓" : esc(r.personality)}</small>
-        ${sig ? `<button type="button" class="btn btn-sm" data-sig="${r.id}" style="margin-top:6px">🎭 ${esc(sig.btn)}</button>` : ""}
+        ${sig ? `<button type="button" class="btn btn-sm" data-sig="${r.id}" style="margin-top:6px;white-space:normal;max-width:100%">🎭 ${esc(sig.btn)}</button>` : ""}
       </div>
     </div>
   </article>`;
 }
-export const cardGrid = (house, list, s) => `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px">${list.map((r) => petCard(house, r, s)).join("")}</div>`;
+export const cardGrid = (house, list, s) => `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(250px,100%),1fr));gap:10px">${list.map((r) => petCard(house, r, s)).join("")}</div>`;
 
 /** Toggle signature art on any [data-sig] button inside `el`. */
 export function bindSignatures(house, el, s, ping) {
@@ -123,6 +123,8 @@ export function mountGame(house, el, ui = {}) {
   const G = house.game;
   const info = () => `${Math.max(0, DAILY_GAME_CAP - a.plays)}/${DAILY_GAME_CAP} rewarded runs today${a.freeDay !== today() ? ` · ${G.freeAt}+ ${G.unit} earns a free ${house.pod}` : ""} · Best ${a.best || 0}`;
   el.innerHTML = `<small class="muted" data-info style="display:block;margin-bottom:6px">${esc(info())}</small><div data-play></div><div data-result hidden style="text-align:center;margin-top:10px"><p data-msg aria-live="polite" style="font-weight:700"></p><button type="button" class="btn btn-accent" data-back>Back to ${esc(house.name)}</button></div>`;
+  // Grab our own elements before the game mounts: games are free to reuse these attribute names.
+  const [infoEl, playEl, resultEl, msgEl, backEl] = ["info", "play", "result", "msg", "back"].map((k) => el.querySelector(`[data-${k}]`));
 
   function done(raw) {
     if (paid || dead) return;
@@ -147,15 +149,15 @@ export function mountGame(house, el, ui = {}) {
     } else msg += ".";
     ui.ping?.("done");
     ui.hud?.();
-    el.querySelector("[data-info]").textContent = info();
-    el.querySelector("[data-msg]").textContent = msg;
-    el.querySelector("[data-result]").hidden = false;
-    el.querySelector("[data-back]").onclick = () => ui.onDone?.(msg);
+    infoEl.textContent = info();
+    msgEl.textContent = msg;
+    resultEl.hidden = false;
+    backEl.onclick = () => ui.onDone?.(msg);
   }
 
   house.loadGame().then((m) => {
     if (dead) return;
-    stop = m.default(el.querySelector("[data-play]"), {
+    stop = m.default(playEl, {
       done,
       ping: (n) => ui.ping?.(n),
       unhurried: !!settings.world?.unhurried,
@@ -164,7 +166,7 @@ export function mountGame(house, el, ui = {}) {
     });
   }).catch((err) => {
     console.error(err);
-    if (!dead) el.querySelector("[data-play]").innerHTML = `<p class="muted">The game didn't load. Try again.</p>`;
+    if (!dead) playEl.innerHTML =`<p class="muted">The game didn't load. Try again.</p>`;
   });
 
   return () => {

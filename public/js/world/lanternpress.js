@@ -11,6 +11,10 @@ export function gazetteHeadline(s) {
   if ((s.taxUpgrades || []).length) bits.push(`funds ${s.taxUpgrades.length} Foxhold civic upgrade${s.taxUpgrades.length > 1 ? "s" : ""}`);
   if (fishN) bits.push(`logs ${fishN} fish species`);
   if (litN) bits.push(`lights ${litN} Country Lantern${litN > 1 ? "s" : ""}`);
+  const bwRooms = Object.keys(s.realm?.blackwood?.visited || {}).length;
+  const seaIslands = Object.keys(s.sea?.islands || {}).length;
+  if (bwRooms >= 10) bits.push(`charts ${bwRooms} Blackwood halls`);
+  if (seaIslands) bits.push(`maps ${seaIslands} Ocean Island${seaIslands > 1 ? "s" : ""}`);
   if (s.gazetteExtra) bits.push(s.gazetteExtra);
   return bits.length ? `Kitsune Gazette: “${bits.slice(0, 3).join(", ")}!”` : "Kitsune Gazette: “Quiet morning in Foxhold — lanterns burn steady.”";
 }
@@ -20,6 +24,10 @@ const EDITIONS = [
   { title: "Saltwick Tide Sheet", blocks: ["Harbor", "Fog", "Clears"] },
   { title: "Brask Chime Extra", blocks: ["Clock", "Three", "Late"] },
   { title: "Night Market Flyer", blocks: ["Silk", "Spices", "Arrive"] },
+  { title: "The Blackwood Gazette (1983)", blocks: ["East", "Stairwell", "Hungry"] },
+  { title: "Meridian Thermal Bulletin", blocks: ["Four", "Hundred", "Days"] },
+  { title: "Moonwake Regatta Extra", blocks: ["Gull", "Edged", "Out"] },
+  { title: "High Seas Lloyd's Sheet", blocks: ["Twelve", "Islands", "Charted"] },
 ];
 
 export function createLanternPress(o) {

@@ -24,6 +24,10 @@ const ORDERS = [
   { title: "The Brask Minute-Book", cover: "indigo", paper: "blue", thread: "linen", blurb: "The clocktower needs a sturdy book for its surplus Tuesdays." },
   { title: "The Saltwick Tide Tables", cover: "ochre", paper: "blue", thread: "linen", blurb: "Waterproof-adjacent, and never opened on a dry day." },
   { title: "The Perfumer's Notebook", cover: "rose", paper: "cream", thread: "silk", blurb: "Rose covers, because the shop insists the book smell like the stock." },
+  { title: "The Second Schedule", cover: "indigo", paper: "white", thread: "linen", blurb: "Sasha Vale bills by the footnote; bind it tight enough to survive an audit." },
+  { title: "Madison's Burn-Book (Redacted)", cover: "rose", paper: "cream", thread: "silk", blurb: "Smells faintly of cupcake frosting and freshman orientation." },
+  { title: "Meridian Thermal Logs · Day 400", cover: "ochre", paper: "blue", thread: "linen", blurb: "Nine hundred and sixty thousand entries, stitched for Sector 4." },
+  { title: "The Elysian Sea Atlas", cover: "moss", paper: "blue", thread: "silk", blurb: "Twelve uncharted atolls, mapped in waterproof blue ink." },
 ];
 const dayNum = (d = today()) => Math.floor(Date.parse(d) / 86400000);
 

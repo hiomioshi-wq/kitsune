@@ -8,6 +8,10 @@ const PROMPTS = [
   { id: "market_pic", title: "Market Lanterns", desc: "Snap a photo in The Night Market.", check: (s, reg) => reg === "market", pay: 50 },
   { id: "village_pic", title: "Hollow Pine Hearth", desc: "Snap a photo in Hollow Pine Village.", check: (s, reg) => reg === "village", pay: 35 },
   { id: "night_pic", title: "Nightfall Glow", desc: "Snap a photo when darkness falls (or switch Time to Night).", check: (s, reg, dark) => dark > 0.25, pay: 45 },
+  { id: "clock_pic", title: "Three Seconds Behind", desc: "Snap a photo in Brask Clockwork.", check: (s, reg) => reg === "clock", pay: 55 },
+  { id: "lake_pic", title: "Moonwake Pier", desc: "Snap a photo by Moonwake Lake.", check: (s, reg) => reg === "lake", pay: 45 },
+  { id: "bw_pic", title: "Blackwood Graduate", desc: "Snap a photo after discovering 15 Blackwood locations.", check: (s) => Object.keys(s.realm?.blackwood?.visited || {}).length >= 15, pay: 75 },
+  { id: "sea_pic", title: "Island Cartographer", desc: "Snap a photo after charting 2 High Seas Ocean Islands.", check: (s) => Object.keys(s.sea?.islands || {}).length >= 2, pay: 75 },
 ];
 
 const FILTERS = [
@@ -16,6 +20,9 @@ const FILTERS = [
   { id: "moon", name: "Moonlit Indigo", css: "hue-rotate(190deg) saturate(0.95) brightness(0.9)" },
   { id: "sakura", name: "Sakura Pink", css: "sepia(0.35) hue-rotate(305deg) saturate(1.3)" },
   { id: "noir", name: "Ink Noir", css: "grayscale(1) contrast(1.25)" },
+  { id: "gothic", name: "Gothic Gloom", css: "contrast(1.2) saturate(0.75) hue-rotate(250deg)" },
+  { id: "meridian", name: "Meridian Frost", css: "saturate(0.8) brightness(1.08) hue-rotate(175deg)" },
+  { id: "amber", name: "Amber Sunset", css: "sepia(0.55) saturate(1.45) contrast(1.08)" },
 ];
 
 export function createPhotoClub(o) {

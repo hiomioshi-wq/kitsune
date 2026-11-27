@@ -113,6 +113,10 @@ export const DEEP_FISH = [
   ["trench_dragon", "Trench Sea-Dragon", 80, 0.04],
   ["moon_koi", "Moonwell Koi", 72, 0.05],
   ["well_wraith", "Moonwell Wraith", 92, 0.03],
+  ["tideglass_ray", "Tide-Glass Ray", 64, 0.06],
+  ["chimera_eel", "Chimera Ribbon-Eel", 78, 0.04],
+  ["bell_jelly", "Seventh-Bell Jelly", 88, 0.03],
+  ["abyssal_crown", "Crowned Coelacanth", 105, 0.02],
 ];
 
 export const DEEP_GOODS = [
@@ -123,6 +127,8 @@ export const DEEP_GOODS = [
   { id: "furn:glassfountain", kind: "furn", key: "glassfountain", name: "Tide-Glass Fountain", desc: "Carved from abyssal sea-glass.", pearls: 7, mon: 130 },
   { id: "furn:kelprug", kind: "furn", key: "kelprug", name: "Woven Kelp Rug", desc: "Soft bioluminescent weave.", pearls: 5, mon: 90 },
   { id: "furn:mothlantern", kind: "furn", key: "mothlantern", name: "Moon Moth Lantern", desc: "Moths that sip from the Moonwell.", pearls: 8, mon: 140 },
+  { id: "furn:saltmirror", kind: "furn", key: "saltmirror", name: "Salt-Prism Mirror", desc: "Reflects deep trench starlight.", pearls: 6, mon: 120 },
+  { id: "furn:stormglobe", kind: "furn", key: "stormglobe", name: "Maelstrom Stormglobe", desc: "Bottled abyssal current.", pearls: 9, mon: 160 },
   { id: "tonic:fins", kind: "tonic", key: "fins", name: "Current-Fin Tonic", desc: "+15% swim speed in the Sunken Deep.", pearls: 3, mon: 35 },
 ];
 

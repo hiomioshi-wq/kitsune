@@ -8,6 +8,10 @@ const TRACKS = [
   { id: "nexus", name: "Astral Nexus", bpm: 132, notes: [220.0, 329.6, 440.0, 523.3, 659.3, 523.3, 440.0, 329.6], wave: "sawtooth" },
   { id: "tavern", name: "Fox & Lantern Rag", bpm: 138, notes: [261.6, 329.6, 392.0, 523.3, 440.0, 349.2, 392.0, 293.7], wave: "square" },
   { id: "winter", name: "Winterfest Bells", bpm: 100, notes: [523.3, 493.9, 440.0, 392.0, 440.0, 523.3, 659.3, 587.3], wave: "sine" },
+  { id: "blackwood", name: "East Stairwell Waltz", bpm: 118, notes: [220.0, 261.6, 329.6, 311.1, 293.7, 261.6, 246.9, 220.0], wave: "triangle" },
+  { id: "abyss", name: "The Abyss Bar Jukebox", bpm: 128, notes: [196.0, 233.1, 293.7, 349.2, 311.1, 261.6, 233.1, 196.0], wave: "sawtooth" },
+  { id: "highseas", name: "Elysian Sovereign Shanty", bpm: 136, notes: [293.7, 349.2, 440.0, 440.0, 523.3, 440.0, 392.0, 349.2], wave: "square" },
+  { id: "moonwake", name: "Moonwake Tide-Chime", bpm: 98, notes: [392.0, 493.9, 587.3, 784.0, 659.3, 587.3, 493.9, 440.0], wave: "sine" },
 ];
 
 export function createJukebox(o) {

@@ -171,7 +171,7 @@ export function enterPetHouse(house, o) {
   function showTheatre() {
     const x = xs(), stars = filterPets(house, "behaviours");
     openModal(`${head(`🎭 Signature Behaviour Theatre (${stars.length} stars)`, "Press a button to watch the habit each one is known for.")}
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px">${stars.map((r) => `<div>${petCard(house, r, x)}<small class="muted" style="display:block;padding:4px 6px"><strong style="color:#ffd84d">${esc(house.behaviours[r.id].tag)}:</strong> ${esc(house.behaviours[r.id].desc)}</small></div>`).join("")}</div>`, (el) => bindSignatures(house, el, x, ping));
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(250px,100%),1fr));gap:10px">${stars.map((r) => `<div>${petCard(house, r, x)}<small class="muted" style="display:block;padding:4px 6px"><strong style="color:#ffd84d">${esc(house.behaviours[r.id].tag)}:</strong> ${esc(house.behaviours[r.id].desc)}</small></div>`).join("")}</div>`, (el) => bindSignatures(house, el, x, ping));
   }
   function showGame() {
     if (!xs()) return toast("Give the house a moment to open up.");
@@ -249,7 +249,7 @@ export function enterPetHouse(house, o) {
 
   const [h0, h1, h2, h3] = house.habitats;
   const STATIONS = [
-    { x: 380, y: 230, r: 80, label: `Open a ${house.pod} (${house.ids.length} ${house.noun})`, go: showPods },
+    { x: 380, y: 230, r: 80, label: `Open ${/^[aeiou]/i.test(house.pod) ? "an" : "a"} ${house.pod} (${house.ids.length} ${house.noun})`, go: showPods },
     { x: 140, y: 158, r: 62, label: `Visit ${h0.name}`, go: () => showHabitat(h0) },
     { x: 620, y: 158, r: 62, label: `Visit ${h1.name}`, go: () => showHabitat(h1) },
     { x: 140, y: 280, r: 62, label: `Visit ${h2.name}`, go: () => showHabitat(h2) },

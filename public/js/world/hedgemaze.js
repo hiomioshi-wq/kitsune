@@ -108,14 +108,14 @@ export function createHedgeMaze(o) {
       const hasLantern = at(x, y) && !run.got.includes(`${x},${y}`);
       const bg = here ? "rgba(255,216,77,.32)" : goal ? "rgba(53,214,138,.18)" : "transparent";
       const label = here ? "🦊" : goal ? "⛩️" : hasLantern ? "🏮" : "";
-      cells.push(`<button type="button" data-mx="${x}" data-my="${y}" aria-label="${here ? "You" : goal ? "Maze gate" : hasLantern ? "Lantern" : "Maze path"}" style="aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:14px;background:${bg};padding:0;min-width:0;border-radius:0;border-style:solid;border-width:2px;border-color:${w.t ? "#2f5a3a" : "transparent"};border-top-color:${w.t ? "#2f5a3a" : "transparent"};border-right-color:${w.r ? "#2f5a3a" : "transparent"};border-bottom-color:${w.b ? "#2f5a3a" : "transparent"};border-left-color:${w.l ? "#2f5a3a" : "transparent"}">${label}</button>`);
+      cells.push(`<button type="button" data-mx="${x}" data-my="${y}" aria-label="${here ? "You" : goal ? "Maze gate" : hasLantern ? "Lantern" : "Maze path"}" style="width:100%;height:100%;min-height:0;display:flex;align-items:center;justify-content:center;font-size:14px;background:${bg};padding:0;min-width:0;border-radius:0;border-style:solid;border-width:2px;border-color:${w.t ? "#2f5a3a" : "transparent"};border-top-color:${w.t ? "#2f5a3a" : "transparent"};border-right-color:${w.r ? "#2f5a3a" : "transparent"};border-bottom-color:${w.b ? "#2f5a3a" : "transparent"};border-left-color:${w.l ? "#2f5a3a" : "transparent"}">${label}</button>`);
     }
 
     const step = (dx, dy) => tryMove(run.x + dx, run.y + dy);
 
     panel(`Lantern Hedge Maze · ${st.solves} solved`, `
       <p class="muted">Walk from the fox to the gate, collecting all three lanterns. Tap an adjacent square or use the buttons. A fresh maze grows every day.</p>
-      <div style="display:grid;grid-template-columns:repeat(${N},1fr);width:min(360px,92vw);margin:10px auto;border:2px solid #2f5a3a;border-radius:6px;overflow:hidden">${cells.join("")}</div>
+      <div><div style="display:grid;grid-template-columns:repeat(${N},1fr);grid-template-rows:repeat(${N},minmax(0,1fr));aspect-ratio:1;flex:none;box-sizing:border-box;width:100%;max-width:360px;margin:10px auto;border:2px solid #2f5a3a;border-radius:6px;overflow:hidden">${cells.join("")}</div></div>
       <div class="chips" style="justify-content:center">
         <button type="button" class="btn" data-step="0:-1">Up</button>
         <button type="button" class="btn" data-step="-1:0">Left</button>
